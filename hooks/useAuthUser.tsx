@@ -18,7 +18,7 @@ export default function useAuthUser() {
   const signIn = async () => {
     try {
       await signInWithPopup(auth, provider);
-      router.push("/user");
+      router.push("/set-up-profile");
     } catch (error) {
       const err = error as Error;
       throw new Error(err.message);
