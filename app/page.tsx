@@ -1,12 +1,10 @@
-import NavLink from "@/components/NavLink/NavLink";
+import Login from "@/components/Login/Login";
 
 export default function Home() {
   return (
     <div className="flex justify-center flex-col items-center h-screen">
-      <h1 className="font-primary">Dreams</h1>
-      <NavLink href="/login" className="mt-3 text-lg">
-        Login
-      </NavLink>
+      <h1 className="font-primary mb-2">Dreams</h1>
+      <Login />
     </div>
   );
 }
