@@ -26,15 +26,15 @@ export default function useAuthUser() {
 
       const response = await getUserCollection(authUser, baseUser);
 
-      console.log(response);
-
       if (response?.profileCreated) {
         router.push("/user-profile");
       } else {
         router.push("/set-up-profile");
       }
+      setLoading(false);
     } catch (error) {
       const err = error as Error;
+      setLoading(false);
       throw new Error(err.message);
     }
   };
