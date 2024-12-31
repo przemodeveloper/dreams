@@ -21,6 +21,7 @@ export default function DatingProfileForm() {
         bio,
         age,
         gender,
+        profileCreated: new Date().toISOString(),
       });
     }
   };

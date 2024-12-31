@@ -9,10 +9,11 @@ interface UserProfile extends User {
   bio?: string;
   age?: number;
   gender?: string;
+  profileCreated?: string;
 }
 
 export default function useAuthUser() {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<Partial<UserProfile> | null>(null);
   const router = useRouter();
 
   const signIn = async () => {
@@ -37,7 +38,7 @@ export default function useAuthUser() {
       const querySnapshot = await getDocs(query(userProfileCollection));
       const [userData] = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
-      }));
+      })) || [{}];
 
       setUser((prevUser) => {
         if (prevUser) {
