@@ -120,7 +120,7 @@ export default function DatingProfileForm() {
       <div className="w-full text-right px-3 mb-4">
         <button
           type="submit"
-          className="bg-black text-white font-bold py-2 px-4 rounded"
+          className="border-2 bg-black hover:bg-white hover:border-2 hover:border-black hover:text-black text-white font-bold py-2 px-4 rounded"
         >
           Start your dream
         </button>
