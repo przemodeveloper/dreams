@@ -2,7 +2,7 @@ import { auth, db, provider } from "@/firebase";
 import { signInWithPopup, type User } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UserProfile extends User {
   username?: string;
@@ -25,6 +25,33 @@ export default function useAuthUser() {
     }
   };
 
+  const getUserCollection = useCallback(
+    async (authUser: UserProfile, baseUser: UserProfile) => {
+      const userProfileCollection = collection(
+        db,
+        "profiles",
+        authUser.uid,
+        "userProfile"
+      );
+
+      const querySnapshot = await getDocs(query(userProfileCollection));
+      const [userData] = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+
+      setUser((prevUser) => {
+        if (prevUser) {
+          return {
+            ...prevUser,
+            ...userData,
+          };
+        }
+        return { ...baseUser, ...userData };
+      });
+    },
+    []
+  );
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -34,36 +61,12 @@ export default function useAuthUser() {
 
         setUser(baseUser);
 
-        const userProfileCollection = collection(
-          db,
-          "profiles",
-          authUser.uid,
-          "userProfile"
-        );
-
-        async function getCollection() {
-          const querySnapshot = await getDocs(query(userProfileCollection));
-          const [userData] = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-          }));
-
-          setUser((prevUser) => {
-            if (prevUser) {
-              return {
-                ...prevUser,
-                ...userData,
-              };
-            }
-            return { ...baseUser, ...userData };
-          });
-        }
-
-        getCollection();
+        getUserCollection(authUser, baseUser);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [getUserCollection]);
 
   return { user, signIn };
 }
