@@ -15,12 +15,24 @@ interface UserProfile extends User {
 
 export default function useAuthUser() {
   const [user, setUser] = useState<Partial<UserProfile> | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const signIn = async () => {
     try {
-      await signInWithPopup(auth, provider);
-      router.push("/set-up-profile");
+      const result = await signInWithPopup(auth, provider);
+      const authUser = result.user;
+      const baseUser: UserProfile = { ...authUser };
+
+      const response = await getUserCollection(authUser, baseUser);
+
+      console.log(response);
+
+      if (response?.profileCreated) {
+        router.push("/user-profile");
+      } else {
+        router.push("/set-up-profile");
+      }
     } catch (error) {
       const err = error as Error;
       throw new Error(err.message);
@@ -50,6 +62,9 @@ export default function useAuthUser() {
         }
         return { ...baseUser, ...userData };
       });
+
+      setLoading(false);
+      return { ...baseUser, ...userData };
     },
     []
   );
@@ -64,11 +79,13 @@ export default function useAuthUser() {
         setUser(baseUser);
 
         getUserCollection(authUser, baseUser);
+      } else {
+        setLoading(false);
       }
     });
 
     return () => unsubscribe();
   }, [getUserCollection]);
 
-  return { user, signIn };
+  return { user, signIn, loading };
 }
