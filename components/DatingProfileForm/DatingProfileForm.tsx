@@ -12,6 +12,7 @@ export default function DatingProfileForm() {
     const formData = new FormData(event.currentTarget);
     const username = formData.get("username");
     const bio = formData.get("bio");
+    const dream = formData.get("dream");
     const age = formData.get("age");
     const gender = formData.get("gender");
 
@@ -19,6 +20,7 @@ export default function DatingProfileForm() {
       addDoc(collection(db, "profiles", user.uid, "userProfile"), {
         username,
         bio,
+        dream,
         age,
         gender,
         profileCreated: new Date().toISOString(),
@@ -53,6 +55,7 @@ export default function DatingProfileForm() {
         </label>
         <textarea
           id="bio"
+          name="bio"
           rows={4}
           className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
         />

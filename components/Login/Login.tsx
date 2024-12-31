@@ -16,7 +16,9 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user?.profileCreated) {
+      router.push("/user-profile");
+    } else {
       router.push("/set-up-profile");
     }
   }, [user, router]);

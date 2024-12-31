@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 interface UserProfile extends User {
   username?: string;
   bio?: string;
+  dream?: string;
   age?: number;
   gender?: string;
   profileCreated?: string;
