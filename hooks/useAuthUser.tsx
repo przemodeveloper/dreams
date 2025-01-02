@@ -1,17 +1,9 @@
 import { auth, db, provider } from "@/firebase";
-import { signInWithPopup, type User } from "firebase/auth";
+import type { UserProfile } from "@/models/auth";
+import { signInWithPopup } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-
-interface UserProfile extends User {
-  username?: string;
-  bio?: string;
-  dream?: string;
-  age?: number;
-  gender?: string;
-  profileCreated?: string;
-}
 
 export default function useAuthUser() {
   const [user, setUser] = useState<Partial<UserProfile> | null>(null);

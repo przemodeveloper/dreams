@@ -1,7 +1,4 @@
-interface Option {
-  value: string;
-  label: string;
-}
+import type { Option } from "@/models/form";
 
 interface SelectProps {
   name: string;

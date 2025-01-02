@@ -13,3 +13,8 @@ export interface InitialFormState {
     gender?: string[];
   };
 }
+
+export interface Option {
+  value: string;
+  label: string;
+}
