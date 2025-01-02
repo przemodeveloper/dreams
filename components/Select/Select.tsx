@@ -6,7 +6,7 @@ interface Option {
 interface SelectProps {
   name: string;
   id: string;
-  required: boolean;
+  required?: boolean;
   options: Option[];
   label: string;
 }

@@ -2,7 +2,7 @@ interface FormFieldProps {
   name: string;
   id: string;
   type: string;
-  required: boolean;
+  required?: boolean;
   label: string;
   Component: "input" | "textarea";
   rows?: number;
