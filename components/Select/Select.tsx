@@ -10,6 +10,7 @@ interface SelectProps {
   options: Option[];
   label: string;
   error?: string;
+  defaultValue?: string;
 }
 
 export default function Select({
@@ -19,6 +20,7 @@ export default function Select({
   options,
   label,
   error,
+  defaultValue,
 }: SelectProps) {
   return (
     <>
@@ -36,6 +38,7 @@ export default function Select({
           name={name}
           id={id}
           required={required}
+          defaultValue={defaultValue}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>

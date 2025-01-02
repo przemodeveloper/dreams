@@ -10,6 +10,7 @@ interface FormFieldProps {
   min?: number;
   max?: number;
   error?: string;
+  defaultValue?: string;
 }
 
 export default function FormField({
@@ -24,6 +25,7 @@ export default function FormField({
   min,
   max,
   error,
+  defaultValue,
 }: FormFieldProps) {
   return (
     <>
@@ -38,6 +40,7 @@ export default function FormField({
           error ? "bg-red-100" : "bg-gray-200"
         } text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
         type={type}
+        defaultValue={defaultValue}
         value={value}
         name={name}
         {...(Component === "textarea" ? { rows } : {})}

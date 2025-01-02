@@ -1,6 +1,6 @@
-import { initialErrorState } from "@/components/DatingProfileForm/DatingProfileForm";
+import { initialFormState } from "@/components/DatingProfileForm/DatingProfileForm";
 import { db } from "@/firebase";
-import type { InitialErrorState } from "@/models/form";
+import type { InitialFormState } from "@/models/form";
 import { addDoc, collection } from "firebase/firestore";
 import { z } from "zod";
 
@@ -20,16 +20,16 @@ const datingProfileSchema = z.object({
 });
 
 export async function handleSetProfile(
-  prevState: InitialErrorState,
+  prevState: InitialFormState,
   formData: FormData,
   userId?: string
 ) {
   const userProfile = {
-    username: formData.get("username") || undefined,
-    bio: formData.get("bio"),
-    dream: formData.get("dream") || undefined,
+    username: String(formData.get("username")) || undefined,
+    bio: String(formData.get("bio")) || undefined,
+    dream: String(formData.get("dream")) || undefined,
     age: Number(formData.get("age")) || undefined,
-    gender: formData.get("gender") || undefined,
+    gender: String(formData.get("gender")) || undefined,
     profileCreated: new Date().toISOString(),
   };
 
@@ -37,8 +37,12 @@ export async function handleSetProfile(
 
   if (userId && result.success) {
     addDoc(collection(db, "profiles", userId, "userProfile"), userProfile);
-    return initialErrorState;
+    return initialFormState;
   }
 
-  return result.error?.formErrors?.fieldErrors || initialErrorState;
+  return {
+    formValues: userProfile || initialFormState.formValues,
+    formErrors:
+      result.error?.formErrors?.fieldErrors || initialFormState.formErrors,
+  };
 }
