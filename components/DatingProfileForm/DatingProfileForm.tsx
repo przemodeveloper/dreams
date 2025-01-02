@@ -68,6 +68,7 @@ export default function DatingProfileForm() {
           name="age"
           id="age"
           type="number"
+          min={18}
           required
           label="Age"
           Component="input"

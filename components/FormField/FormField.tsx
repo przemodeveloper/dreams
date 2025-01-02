@@ -7,6 +7,8 @@ interface FormFieldProps {
   Component: "input" | "textarea";
   rows?: number;
   value?: string;
+  min?: number;
+  max?: number;
 }
 
 export default function FormField({
@@ -18,6 +20,8 @@ export default function FormField({
   Component,
   value,
   rows,
+  min,
+  max,
 }: FormFieldProps) {
   return (
     <>
@@ -33,6 +37,8 @@ export default function FormField({
         value={value}
         name={name}
         {...(Component === "textarea" ? { rows } : {})}
+        {...(type === "number" && min ? { min } : {})}
+        {...(type === "number" && max ? { max } : {})}
         required={required}
         id={id}
       />
