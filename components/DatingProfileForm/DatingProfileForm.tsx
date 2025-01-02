@@ -5,6 +5,7 @@ import FormField from "../FormField/FormField";
 import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
 import { useActionState } from "react";
+import SubmitButton from "../SubmitButton/SubmitButton";
 
 export default function DatingProfileForm() {
   const { user } = useUserData();
@@ -81,12 +82,7 @@ export default function DatingProfileForm() {
       </div>
 
       <div className="w-full text-right px-3 mb-4">
-        <button
-          type="submit"
-          className="border-2 bg-black hover:bg-white hover:border-2 hover:border-black hover:text-black text-white font-bold py-2 px-4 rounded"
-        >
-          Start your dream
-        </button>
+        <SubmitButton />
       </div>
     </form>
   );
