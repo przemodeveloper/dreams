@@ -1,5 +1,6 @@
-import { initialFormState } from "@/components/DatingProfileForm/datingProfile.consts";
+import { initialFormState } from "@/components/DatingProfileForm/DatingProfileForm";
 import { db } from "@/firebase";
+import type { InitialFormState } from "@/models/form";
 import { addDoc, collection } from "firebase/firestore";
 import { z } from "zod";
 
@@ -18,7 +19,11 @@ const datingProfileSchema = z.object({
   }),
 });
 
-export async function handleSetProfile(formData: FormData, userId?: string) {
+export async function handleSetProfile(
+  prevState: InitialFormState,
+  formData: FormData,
+  userId?: string
+) {
   const userProfile = {
     username: String(formData.get("username")) || undefined,
     bio: String(formData.get("bio")) || undefined,

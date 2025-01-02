@@ -8,6 +8,7 @@ interface SelectProps {
   label: string;
   error?: string;
   defaultValue?: string;
+  keyValue?: string;
 }
 
 export default function Select({
@@ -18,6 +19,7 @@ export default function Select({
   label,
   error,
   defaultValue,
+  keyValue,
 }: SelectProps) {
   return (
     <>
@@ -29,6 +31,7 @@ export default function Select({
       </label>
       <div>
         <select
+          key={keyValue}
           className={`font-secondary appearance-none block w-full ${
             error ? "bg-red-100" : "bg-gray-200"
           } text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}

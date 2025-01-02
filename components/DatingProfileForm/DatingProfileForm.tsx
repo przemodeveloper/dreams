@@ -4,34 +4,42 @@ import FormField from "../FormField/FormField";
 import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
 import SubmitButton from "../SubmitButton/SubmitButton";
-import { useState } from "react";
+import { useActionState } from "react";
 import type { InitialFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
-import {
-  dreamOptions,
-  genderOptions,
-  initialFormState,
-} from "./datingProfile.consts";
+import { dreamOptions, genderOptions } from "./datingProfile.consts";
 import useAuthUser from "@/hooks/useAuthUser";
+
+export const initialFormState = {
+  formValues: {
+    age: "",
+    username: "",
+    gender: "",
+    dream: "",
+    bio: "",
+  },
+  formErrors: {
+    age: [""],
+    username: [""],
+    dream: [""],
+    gender: [""],
+  },
+};
 
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
 
-  const [state, setState] = useState<InitialFormState>(initialFormState);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const updatedState = await handleSetProfile(formData, user?.uid);
-    setState(updatedState);
-  };
+  const [state, formAction] = useActionState(
+    (prevState: InitialFormState, formData: FormData) =>
+      handleSetProfile(prevState, formData, user?.uid),
+    initialFormState
+  );
 
   const { formErrors } = state || initialFormState.formErrors;
   const { formValues } = state || initialFormState.formValues;
 
   return (
-    <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+    <form className="w-full max-w-lg" action={formAction}>
       <div className="w-full px-3 mb-4">
         <FormField
           name="username"
@@ -58,6 +66,7 @@ export default function DatingProfileForm() {
 
       <div className="w-full px-3 mb-4">
         <Select
+          keyValue={formValues.dream}
           name="dream"
           id="dream"
           label="Dream"
@@ -82,6 +91,7 @@ export default function DatingProfileForm() {
 
       <div className="w-full px-3 mb-4">
         <Select
+          keyValue={formValues.gender}
           name="gender"
           id="gender"
           label="Gender"
