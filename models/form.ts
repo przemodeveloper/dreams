@@ -4,6 +4,7 @@ export interface InitialFormState {
     username?: string | undefined;
     dream?: string | undefined;
     gender?: string | undefined;
+    bio?: string | undefined;
   };
   formErrors: {
     age?: string[];

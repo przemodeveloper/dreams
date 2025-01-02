@@ -10,3 +10,19 @@ export const dreamOptions = [
   { label: "Travel", value: "travel" },
   { label: "Start a family", value: "family" },
 ];
+
+export const initialFormState = {
+  formValues: {
+    age: "",
+    username: "",
+    gender: "",
+    dream: "",
+    bio: "",
+  },
+  formErrors: {
+    age: [""],
+    username: [""],
+    dream: [""],
+    gender: [""],
+  },
+};

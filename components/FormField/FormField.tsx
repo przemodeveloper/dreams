@@ -10,7 +10,7 @@ interface FormFieldProps {
   min?: number;
   max?: number;
   error?: string;
-  defaultValue?: string;
+  defaultValue?: string | number;
 }
 
 export default function FormField({
