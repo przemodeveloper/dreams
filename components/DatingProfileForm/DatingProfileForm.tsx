@@ -4,16 +4,23 @@ import useUserData from "@/hooks/useAuthUser";
 import FormField from "../FormField/FormField";
 import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
-import { useActionState } from "react";
 import SubmitButton from "../SubmitButton/SubmitButton";
+import { useActionState } from "react";
+
+export const initialErrorState = {
+  age: [""],
+  username: [""],
+  dream: [""],
+  gender: [""],
+};
 
 export default function DatingProfileForm() {
   const { user } = useUserData();
 
   const [state, formAction] = useActionState(
-    (prevState: void | null, formData: FormData) =>
+    (prevState: typeof initialErrorState, formData: FormData) =>
       handleSetProfile(prevState, formData, user?.uid),
-    null
+    initialErrorState
   );
 
   return (

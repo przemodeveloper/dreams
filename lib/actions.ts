@@ -1,8 +1,9 @@
+import { initialErrorState } from "@/components/DatingProfileForm/DatingProfileForm";
 import { db } from "@/firebase";
 import { addDoc, collection } from "firebase/firestore";
 
 export async function handleSetProfile(
-  prevState: void | null,
+  prevState: typeof initialErrorState,
   formData: FormData,
   userId?: string
 ) {
@@ -18,4 +19,6 @@ export async function handleSetProfile(
   if (userId) {
     addDoc(collection(db, "profiles", userId, "userProfile"), userProfile);
   }
+
+  return initialErrorState;
 }
