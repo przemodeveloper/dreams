@@ -8,6 +8,7 @@ import SubmitButton from "../SubmitButton/SubmitButton";
 import { useActionState } from "react";
 import type { InitialErrorState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
+import { dreamOptions, genderOptions } from "./datingProfile.consts";
 
 export const initialErrorState = {
   age: [""],
@@ -54,12 +55,7 @@ export default function DatingProfileForm() {
           name="dream"
           id="dream"
           label="Dream"
-          options={[
-            { label: "Select your dream", value: "" },
-            { label: "Live abroad", value: "abroad" },
-            { label: "Travel", value: "travel" },
-            { label: "Start a family", value: "family" },
-          ]}
+          options={dreamOptions}
           error={joinErrorMessages(state.dream)}
         />
       </div>
@@ -81,11 +77,7 @@ export default function DatingProfileForm() {
           name="gender"
           id="gender"
           label="Gender"
-          options={[
-            { label: "Select gender", value: "" },
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-          ]}
+          options={genderOptions}
           error={joinErrorMessages(state.gender)}
         />
       </div>
