@@ -6,6 +6,8 @@ import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import { useActionState } from "react";
+import type { InitialErrorState } from "@/models/form";
+import { joinErrorMessages } from "@/utils/joinErrorMessages";
 
 export const initialErrorState = {
   age: [""],
@@ -18,7 +20,7 @@ export default function DatingProfileForm() {
   const { user } = useUserData();
 
   const [state, formAction] = useActionState(
-    (prevState: typeof initialErrorState, formData: FormData) =>
+    (prevState: InitialErrorState, formData: FormData) =>
       handleSetProfile(prevState, formData, user?.uid),
     initialErrorState
   );
@@ -30,9 +32,9 @@ export default function DatingProfileForm() {
           name="username"
           id="username"
           type="text"
-          required
           label="Username"
           Component="input"
+          error={joinErrorMessages(state.username)}
         />
       </div>
 
@@ -41,7 +43,6 @@ export default function DatingProfileForm() {
           name="bio"
           id="bio"
           type="textarea"
-          required
           label="Bio"
           Component="textarea"
           rows={4}
@@ -52,7 +53,6 @@ export default function DatingProfileForm() {
         <Select
           name="dream"
           id="dream"
-          required
           label="Dream"
           options={[
             { label: "Select your dream", value: "" },
@@ -60,6 +60,7 @@ export default function DatingProfileForm() {
             { label: "Travel", value: "travel" },
             { label: "Start a family", value: "family" },
           ]}
+          error={joinErrorMessages(state.dream)}
         />
       </div>
 
@@ -69,9 +70,9 @@ export default function DatingProfileForm() {
           id="age"
           type="number"
           min={18}
-          required
           label="Age"
           Component="input"
+          error={joinErrorMessages(state.age)}
         />
       </div>
 
@@ -79,13 +80,13 @@ export default function DatingProfileForm() {
         <Select
           name="gender"
           id="gender"
-          required
           label="Gender"
           options={[
             { label: "Select gender", value: "" },
             { label: "Male", value: "male" },
             { label: "Female", value: "female" },
           ]}
+          error={joinErrorMessages(state.gender)}
         />
       </div>
 

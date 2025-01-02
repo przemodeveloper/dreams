@@ -9,6 +9,7 @@ interface SelectProps {
   required?: boolean;
   options: Option[];
   label: string;
+  error?: string;
 }
 
 export default function Select({
@@ -17,6 +18,7 @@ export default function Select({
   required,
   options,
   label,
+  error,
 }: SelectProps) {
   return (
     <>
@@ -28,7 +30,9 @@ export default function Select({
       </label>
       <div>
         <select
-          className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+          className={`font-secondary appearance-none block w-full ${
+            error ? "bg-red-100" : "bg-gray-200"
+          } text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
           name={name}
           id={id}
           required={required}
@@ -40,6 +44,7 @@ export default function Select({
           ))}
         </select>
       </div>
+      {error && <p className="text-red-500 text-xs">{error}</p>}
     </>
   );
 }

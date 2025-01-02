@@ -9,6 +9,7 @@ interface FormFieldProps {
   value?: string;
   min?: number;
   max?: number;
+  error?: string;
 }
 
 export default function FormField({
@@ -22,6 +23,7 @@ export default function FormField({
   rows,
   min,
   max,
+  error,
 }: FormFieldProps) {
   return (
     <>
@@ -32,7 +34,9 @@ export default function FormField({
         {label}
       </label>
       <Component
-        className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+        className={`font-secondary appearance-none block w-full  ${
+          error ? "bg-red-100" : "bg-gray-200"
+        } text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
         type={type}
         value={value}
         name={name}
@@ -42,6 +46,7 @@ export default function FormField({
         required={required}
         id={id}
       />
+      {error && <p className="text-red-500 text-xs">{error}</p>}
     </>
   );
 }
