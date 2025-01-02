@@ -12,6 +12,7 @@ export async function handleSetProfile(
     dream: formData.get("dream"),
     age: formData.get("age"),
     gender: formData.get("gender"),
+    profileCreated: new Date().toISOString(),
   };
 
   if (userId) {
