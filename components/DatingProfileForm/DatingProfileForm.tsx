@@ -1,124 +1,83 @@
 "use client";
 
-import { db } from "@/firebase";
 import useUserData from "@/hooks/useAuthUser";
-import { addDoc, collection } from "firebase/firestore";
+import FormField from "../FormField/FormField";
+import Select from "../Select/Select";
+import { handleSetProfile } from "@/lib/actions";
+import { useActionState } from "react";
 
 export default function DatingProfileForm() {
   const { user } = useUserData();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const username = formData.get("username");
-    const bio = formData.get("bio");
-    const dream = formData.get("dream");
-    const age = formData.get("age");
-    const gender = formData.get("gender");
-
-    if (user?.uid) {
-      addDoc(collection(db, "profiles", user.uid, "userProfile"), {
-        username,
-        bio,
-        dream,
-        age,
-        gender,
-        profileCreated: new Date().toISOString(),
-      });
-    }
-  };
+  const [state, formAction] = useActionState(
+    (prevState: void | null, formData: FormData) =>
+      handleSetProfile(prevState, formData, user?.uid),
+    null
+  );
 
   return (
-    <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+    <form className="w-full max-w-lg" action={formAction}>
       <div className="w-full px-3 mb-4">
-        <label
-          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="username"
-        >
-          Username
-        </label>
-        <input
-          className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-          type="text"
+        <FormField
           name="username"
-          required
           id="username"
-        />
-      </div>
-
-      <div className="w-full px-3 mb-4">
-        <label
-          htmlFor="bio"
-          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-        >
-          Bio
-        </label>
-        <textarea
-          id="bio"
-          name="bio"
-          rows={4}
-          className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-        />
-      </div>
-
-      <div className="w-full px-3 mb-4">
-        <label
-          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="dream"
-        >
-          Dream
-        </label>
-        <div>
-          <select
-            className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-            name="dream"
-            id="dream"
-            required
-          >
-            <option value="">Select your dream</option>
-            <option value="abroad">Live abroad</option>
-            <option value="travel">Travel</option>
-            <option value="family">Start a family</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="w-full px-3 mb-4">
-        <label
-          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="age"
-        >
-          Age
-        </label>
-        <input
-          className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          type="number"
-          min={18}
+          type="text"
           required
+          label="Username"
+          Component="input"
+        />
+      </div>
+
+      <div className="w-full px-3 mb-4">
+        <FormField
+          name="bio"
+          id="bio"
+          type="textarea"
+          required
+          label="Bio"
+          Component="textarea"
+          rows={4}
+        />
+      </div>
+
+      <div className="w-full px-3 mb-4">
+        <Select
+          name="dream"
+          id="dream"
+          required
+          label="Dream"
+          options={[
+            { label: "Select your dream", value: "" },
+            { label: "Live abroad", value: "abroad" },
+            { label: "Travel", value: "travel" },
+            { label: "Start a family", value: "family" },
+          ]}
+        />
+      </div>
+
+      <div className="w-full px-3 mb-4">
+        <FormField
           name="age"
           id="age"
+          type="number"
+          required
+          label="Age"
+          Component="input"
         />
       </div>
 
       <div className="w-full px-3 mb-4">
-        <label
-          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="gender"
-        >
-          Gender
-        </label>
-        <div>
-          <select
-            className="font-secondary appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-            name="gender"
-            id="gender"
-            required
-          >
-            <option value="">Select gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
+        <Select
+          name="gender"
+          id="gender"
+          required
+          label="Gender"
+          options={[
+            { label: "Select gender", value: "" },
+            { label: "Male", value: "male" },
+            { label: "Female", value: "female" },
+          ]}
+        />
       </div>
 
       <div className="w-full text-right px-3 mb-4">
