@@ -4,6 +4,14 @@ export const genderOptions = [
   { label: "Female", value: "female" },
 ];
 
+export const orientationOptions = [
+  { label: "Select sexual orientation", value: "" },
+  { label: "Straight", value: "straight" },
+  { label: "Gay", value: "gay" },
+  { label: "Lesbian", value: "lesbian" },
+  { label: "Bisexual", value: "bisexual" },
+];
+
 export const dreamOptions = [
   { label: "Select your dream", value: "" },
   { label: "Live abroad", value: "abroad" },
@@ -12,17 +20,20 @@ export const dreamOptions = [
 ];
 
 export const initialFormState = {
+  success: false,
   formValues: {
     age: "",
     username: "",
     gender: "",
     dream: "",
     bio: "",
+    orientation: "",
   },
   formErrors: {
     age: [""],
     username: [""],
     dream: [""],
     gender: [""],
+    orientation: [""],
   },
 };

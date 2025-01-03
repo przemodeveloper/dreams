@@ -1,4 +1,5 @@
 export interface InitialFormState {
+  success?: boolean;
   formValues: {
     age?: number | string | undefined;
     username?: string | undefined;

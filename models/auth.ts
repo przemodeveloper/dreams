@@ -6,5 +6,6 @@ export interface UserProfile extends User {
   dream?: string;
   age?: number;
   gender?: string;
+  orientation?: string;
   profileCreated?: string;
 }

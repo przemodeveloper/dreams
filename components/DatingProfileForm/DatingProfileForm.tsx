@@ -7,31 +7,29 @@ import SubmitButton from "../SubmitButton/SubmitButton";
 import { useActionState } from "react";
 import type { InitialFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
-import { dreamOptions, genderOptions } from "./datingProfile.consts";
+import {
+  dreamOptions,
+  genderOptions,
+  initialFormState,
+  orientationOptions,
+} from "./datingProfile.consts";
 import useAuthUser from "@/hooks/useAuthUser";
-
-export const initialFormState = {
-  formValues: {
-    age: "",
-    username: "",
-    gender: "",
-    dream: "",
-    bio: "",
-  },
-  formErrors: {
-    age: [""],
-    username: [""],
-    dream: [""],
-    gender: [""],
-  },
-};
+import { useRouter } from "next/navigation";
 
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
+  const router = useRouter();
 
   const [state, formAction] = useActionState(
-    (prevState: InitialFormState, formData: FormData) =>
-      handleSetProfile(prevState, formData, user?.uid),
+    (prevState: InitialFormState, formData: FormData) => {
+      const result = handleSetProfile(prevState, formData, user?.uid);
+
+      console.log("result", result);
+      if (result.success) {
+        router.push("/user-profile");
+      }
+      return result;
+    },
     initialFormState
   );
 
@@ -98,6 +96,18 @@ export default function DatingProfileForm() {
           defaultValue={formValues.gender || ""}
           options={genderOptions}
           error={joinErrorMessages(formErrors.gender)}
+        />
+      </div>
+
+      <div className="w-full px-3 mb-4">
+        <Select
+          keyValue={formValues.orientation}
+          name="orientation"
+          id="orientation"
+          label="Sexual Orientation"
+          defaultValue={formValues.orientation || ""}
+          options={orientationOptions}
+          error={joinErrorMessages(formErrors.orientation)}
         />
       </div>
 
