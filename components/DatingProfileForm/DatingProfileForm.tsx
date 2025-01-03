@@ -15,6 +15,7 @@ import {
 } from "./datingProfile.consts";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/routes/routes";
 
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
@@ -26,7 +27,7 @@ export default function DatingProfileForm() {
 
       console.log("result", result);
       if (result.success) {
-        router.push("/user-profile");
+        router.push(ROUTES.USER_PROFILE);
       }
       return result;
     },

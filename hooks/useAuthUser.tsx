@@ -1,5 +1,6 @@
 import { auth, db, provider } from "@/firebase";
 import type { UserProfile } from "@/models/auth";
+import { ROUTES } from "@/routes/routes";
 import { signInWithPopup } from "firebase/auth";
 import { collection, getDocs, query } from "firebase/firestore";
 import { useRouter } from "next/navigation";
@@ -18,9 +19,9 @@ export default function useAuthUser() {
       const response = await getUserCollection(authUser);
 
       if (response?.profileCreated) {
-        router.push("/user-profile");
+        router.push(ROUTES.USER_PROFILE);
       } else {
-        router.push("/set-up-profile");
+        router.push(ROUTES.SET_UP_PROFILE);
       }
       setLoading(false);
     } catch (error) {
