@@ -14,9 +14,8 @@ export default function useAuthUser() {
     try {
       const result = await signInWithPopup(auth, provider);
       const authUser = result.user;
-      const baseUser: UserProfile = { ...authUser };
 
-      const response = await getUserCollection(authUser, baseUser);
+      const response = await getUserCollection(authUser);
 
       if (response?.profileCreated) {
         router.push("/user-profile");
@@ -31,46 +30,37 @@ export default function useAuthUser() {
     }
   };
 
-  const getUserCollection = useCallback(
-    async (authUser: UserProfile, baseUser: UserProfile) => {
-      const userProfileCollection = collection(
-        db,
-        "profiles",
-        authUser.uid,
-        "userProfile"
-      );
+  const getUserCollection = useCallback(async (authUser: UserProfile) => {
+    const userProfileCollection = collection(
+      db,
+      "profiles",
+      authUser.uid,
+      "userProfile"
+    );
 
-      const querySnapshot = await getDocs(query(userProfileCollection));
-      const [userData] = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      })) || [{}];
+    const querySnapshot = await getDocs(query(userProfileCollection));
+    const [userData] = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+    })) || [{}];
 
-      setUser((prevUser) => {
-        if (prevUser) {
-          return {
-            ...prevUser,
-            ...userData,
-          };
-        }
-        return { ...baseUser, ...userData };
-      });
+    setUser((prevUser) => {
+      if (prevUser) {
+        return {
+          ...prevUser,
+          ...userData,
+        };
+      }
+      return { ...authUser, ...userData };
+    });
 
-      setLoading(false);
-      return { ...baseUser, ...userData };
-    },
-    []
-  );
+    setLoading(false);
+    return { ...authUser, ...userData };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        const baseUser: UserProfile = {
-          ...authUser,
-        };
-
-        setUser(baseUser);
-
-        getUserCollection(authUser, baseUser);
+        getUserCollection(authUser);
       } else {
         setLoading(false);
       }

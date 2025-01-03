@@ -1,19 +1,19 @@
-import type { Metadata } from "next";
-import "./globals.css";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Dreams",
-  description: "New dating app for dreamers",
-};
+import useAuthUser from "@/hooks/useAuthUser";
+import "./globals.css";
+import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { user, loading } = useAuthUser();
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{loading ? <LoadingScreen /> : children}</body>
     </html>
   );
 }
