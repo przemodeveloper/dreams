@@ -51,18 +51,6 @@ export default function DatingProfileForm() {
       </div>
 
       <div className="w-full px-3 mb-4">
-        <FormField
-          name="bio"
-          id="bio"
-          type="textarea"
-          defaultValue={formValues.bio || ""}
-          label="Bio"
-          Component="textarea"
-          rows={4}
-        />
-      </div>
-
-      <div className="w-full px-3 mb-4">
         <Select
           keyValue={formValues.dream}
           name="dream"
@@ -71,6 +59,18 @@ export default function DatingProfileForm() {
           defaultValue={formValues.dream || ""}
           options={dreamOptions}
           error={joinErrorMessages(formErrors.dream)}
+        />
+      </div>
+
+      <div className="w-full px-3 mb-4">
+        <FormField
+          name="bio"
+          id="bio"
+          type="textarea"
+          defaultValue={formValues.bio || ""}
+          label="Bio"
+          Component="textarea"
+          rows={4}
         />
       </div>
 
