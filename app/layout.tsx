@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>{loading ? <LoadingScreen /> : children}</body>
+      <body>{loading && !user ? <LoadingScreen /> : children}</body>
     </html>
   );
 }
