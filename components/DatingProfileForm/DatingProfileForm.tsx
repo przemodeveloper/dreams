@@ -25,7 +25,6 @@ export default function DatingProfileForm() {
     (prevState: InitialFormState, formData: FormData) => {
       const result = handleSetProfile(prevState, formData, user?.uid);
 
-      console.log("result", result);
       if (result.success) {
         router.push(ROUTES.USER_PROFILE);
       }
