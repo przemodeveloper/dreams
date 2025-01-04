@@ -5,22 +5,16 @@ import {
   genderOptions,
   orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
+import UserLocation from "@/components/UserLocation/UserLocation";
 import useAuthUser from "@/hooks/useAuthUser";
+import { getLabel } from "@/utils/getLabel";
 
 export default function UserProfilePage() {
   const { user } = useAuthUser();
 
-  const dream = dreamOptions.find(
-    (option) => option.value === user?.dream
-  )?.label;
-
-  const gender = genderOptions.find(
-    (option) => option.value === user?.gender
-  )?.label;
-
-  const orientation = orientationOptions.find(
-    (option) => option.value === user?.orientation
-  )?.label;
+  const dream = getLabel(dreamOptions, user?.dream);
+  const gender = getLabel(genderOptions, user?.gender);
+  const orientation = getLabel(orientationOptions, user?.orientation);
 
   return (
     <>
@@ -44,7 +38,7 @@ export default function UserProfilePage() {
             </ul>
           </div>
 
-          <div className="w-full">
+          <div className="w-full mb-4">
             <p className="font-secondary font-bold">Essentials</p>
             <ul className="font-secondary flex space-x-2">
               <li className="bg-gray-200 rounded-full w-fit px-2 py-1">
@@ -54,6 +48,10 @@ export default function UserProfilePage() {
                 {orientation}
               </li>
             </ul>
+          </div>
+          <div className="w-full">
+            <p className="font-secondary font-bold">Location</p>
+            <UserLocation />
           </div>
         </div>
       )}
