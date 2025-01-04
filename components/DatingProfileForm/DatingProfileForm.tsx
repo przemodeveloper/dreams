@@ -16,6 +16,7 @@ import {
 import useAuthUser from "@/hooks/useAuthUser";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
+import ImagePicker from "../ImagePicker/ImagePicker";
 
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
@@ -37,7 +38,21 @@ export default function DatingProfileForm() {
   const { formValues } = state || initialFormState.formValues;
 
   return (
-    <form className="w-full max-w-lg" action={formAction}>
+    <form className="w-full max-w-xl" action={formAction}>
+      <div className="w-full px-3 gap-3 mb-4">
+        <label
+          className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          htmlFor="image"
+        >
+          Images
+        </label>
+        <div className="flex gap-3">
+          <ImagePicker />
+          <ImagePicker />
+          <ImagePicker />
+        </div>
+      </div>
+
       <div className="w-full px-3 mb-4">
         <FormField
           name="username"
