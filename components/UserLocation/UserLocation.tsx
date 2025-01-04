@@ -1,43 +1,18 @@
-import { useEffect, useState, useCallback } from "react";
-import { fromLatLng, setKey } from "react-geocode";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import { Loader } from "../Loader/Loader";
 
 export default function UserLocation() {
-  const [error, setError] = useState<string | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
+  const { address, error, loading } = useUserLocation();
 
-  const getUserLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          if (latitude && longitude) {
-            fromLatLng(latitude, longitude)
-              .then(({ results }) => {
-                const address = results[0].formatted_address;
-                setAddress(address);
-              })
-              .catch(console.error);
-          }
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
-      setError(null);
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
-  }, []);
-
-  useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-    if (apiKey) {
-      setKey(apiKey);
-    }
-
-    getUserLocation();
-  }, [getUserLocation]);
-
-  return <>{location && <p className="font-secondary">{address}</p>}</>;
+  return (
+    <>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <p className="font-secondary text-red-500">{error}</p>
+      ) : (
+        <p className="font-secondary">{address}</p>
+      )}
+    </>
+  );
 }
