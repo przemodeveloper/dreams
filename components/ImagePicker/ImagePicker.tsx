@@ -1,12 +1,14 @@
+import { uploadImage } from "@/utils/uploadImage";
 import { RiImageCircleFill } from "@remixicon/react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
 interface ImagePickerProps {
   imageRefId: string;
+  userId?: string;
 }
 
-export default function ImagePicker({ imageRefId }: ImagePickerProps) {
+export default function ImagePicker({ imageRefId, userId }: ImagePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<ArrayBuffer | string | null>(null);
 
@@ -14,10 +16,10 @@ export default function ImagePicker({ imageRefId }: ImagePickerProps) {
     inputRef.current?.click();
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (!file) {
+    if (!file || !userId) {
       setImage(null);
       return;
     }
@@ -29,6 +31,8 @@ export default function ImagePicker({ imageRefId }: ImagePickerProps) {
     };
 
     fileReader.readAsDataURL(file);
+
+    await uploadImage(file, imageRefId, userId);
   };
 
   return (
