@@ -4,6 +4,26 @@ import type { InitialFormState } from "@/models/form";
 import { addDoc, collection } from "firebase/firestore";
 import { z } from "zod";
 
+// const image = formData.get("image") as File;
+// const extension = image?.name.split(".").pop();
+
+// if (!extension) {
+//   return;
+// }
+
+// const imagesDirectoryRef = ref(
+//   storage,
+//   `images/${userId}/profile.${extension}`
+// );
+
+// uploadBytes(imagesDirectoryRef, image)
+//   .then(() => {
+//     console.log("Uploaded file to directory!");
+//   })
+//   .catch((error) => {
+//     console.error("Error uploading file:", error);
+//   });
+
 const datingProfileSchema = z.object({
   age: z
     .number({ required_error: "Age is required." })

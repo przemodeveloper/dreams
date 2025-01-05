@@ -1,12 +1,68 @@
 import { RiImageCircleFill } from "@remixicon/react";
+import Image from "next/image";
+import { useRef, useState } from "react";
 
-export default function ImagePicker() {
+interface ImagePickerProps {
+  imageRefId: string;
+}
+
+export default function ImagePicker({ imageRefId }: ImagePickerProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState<ArrayBuffer | string | null>(null);
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setImage(null);
+      return;
+    }
+
+    const fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      setImage(fileReader.result);
+    };
+
+    fileReader.readAsDataURL(file);
+  };
+
   return (
-    <button
-      type="button"
-      className="transition ease-in-out duration-300 group hover:bg-black border w-full border-gray-300 border-2 h-[300px] p-4 rounded-md"
-    >
-      <RiImageCircleFill className="transition ease-in-out duration-300 group-hover:text-white w-10 h-10 mx-auto" />
-    </button>
+    <div>
+      {image ? (
+        <Image
+          src={image as string}
+          alt="Image"
+          width={300}
+          height={300}
+          className="object-cover rounded-md h-[300px] border"
+        />
+      ) : (
+        <>
+          <button
+            onClick={handleClick}
+            type="button"
+            className="transition ease-in-out duration-300 group hover:bg-black border w-full border-gray-300 border-2 h-[300px] p-4 rounded-md"
+          >
+            <RiImageCircleFill className="transition ease-in-out duration-300 group-hover:text-white w-10 h-10 mx-auto" />
+          </button>
+        </>
+      )}
+
+      <input
+        type="file"
+        id="image"
+        onChange={handleImageChange}
+        accept="image/png, image/jpeg"
+        name="image"
+        ref={inputRef}
+        required
+        className="hidden"
+      />
+    </div>
   );
 }

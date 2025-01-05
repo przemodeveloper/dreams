@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,11 +13,15 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+const STORAGE_BUCKET_URL = "gs://dreams-a672f.firebasestorage.app";
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-export { db };
+const storage = getStorage(app, STORAGE_BUCKET_URL);
+
+export { db, storage };
 
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();

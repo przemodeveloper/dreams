@@ -46,10 +46,10 @@ export default function DatingProfileForm() {
         >
           Images
         </label>
-        <div className="flex gap-3">
-          <ImagePicker />
-          <ImagePicker />
-          <ImagePicker />
+        <div className="grid-cols-3 grid gap-3">
+          <ImagePicker imageRefId="profile_image_1" />
+          <ImagePicker imageRefId="profile_image_2" />
+          <ImagePicker imageRefId="profile_image_3" />
         </div>
       </div>
 
