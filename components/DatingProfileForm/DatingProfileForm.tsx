@@ -4,7 +4,7 @@ import FormField from "../FormField/FormField";
 import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
 import SubmitButton from "../SubmitButton/SubmitButton";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { InitialFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
 import {
@@ -18,9 +18,16 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import ImagePicker from "../ImagePicker/ImagePicker";
 
+interface Image {
+  file: File;
+  refId: string;
+}
+
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
   const router = useRouter();
+
+  const [images, setImages] = useState<Image[]>([]);
 
   const [state, formAction] = useActionState(
     (prevState: InitialFormState, formData: FormData) => {
@@ -33,6 +40,20 @@ export default function DatingProfileForm() {
     },
     initialFormState
   );
+
+  const handleAddImage = (image: File, imageRefId: string) => {
+    setImages((prevState) => {
+      return [...prevState, { file: image, refId: imageRefId }];
+    });
+  };
+
+  const handleRemoveImage = (imageRefId: string) => {
+    setImages((prevState) => {
+      return prevState.filter((image) => image.refId !== imageRefId);
+    });
+  };
+
+  console.log(images);
 
   const { formErrors } = state || initialFormState.formErrors;
   const { formValues } = state || initialFormState.formValues;
@@ -47,9 +68,24 @@ export default function DatingProfileForm() {
           Images
         </label>
         <div className="grid-cols-3 grid gap-3">
-          <ImagePicker imageRefId="profile_image_1" userId={user?.uid} />
-          <ImagePicker imageRefId="profile_image_2" userId={user?.uid} />
-          <ImagePicker imageRefId="profile_image_3" userId={user?.uid} />
+          <ImagePicker
+            imageRefId="profile_image_1"
+            userId={user?.uid}
+            onAddImage={handleAddImage}
+            onRemoveImage={handleRemoveImage}
+          />
+          <ImagePicker
+            imageRefId="profile_image_2"
+            userId={user?.uid}
+            onAddImage={handleAddImage}
+            onRemoveImage={handleRemoveImage}
+          />
+          <ImagePicker
+            imageRefId="profile_image_3"
+            userId={user?.uid}
+            onAddImage={handleAddImage}
+            onRemoveImage={handleRemoveImage}
+          />
         </div>
       </div>
 

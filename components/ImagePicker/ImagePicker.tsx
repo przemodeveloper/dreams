@@ -1,14 +1,20 @@
-import { uploadImage } from "@/utils/uploadImage";
-import { RiImageCircleFill } from "@remixicon/react";
+import { RiFileReduceLine, RiImageCircleFill } from "@remixicon/react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
 interface ImagePickerProps {
   imageRefId: string;
   userId?: string;
+  onAddImage: (image: File, imageRefId: string) => void;
+  onRemoveImage: (imageRefId: string) => void;
 }
 
-export default function ImagePicker({ imageRefId, userId }: ImagePickerProps) {
+export default function ImagePicker({
+  imageRefId,
+  userId,
+  onAddImage,
+  onRemoveImage,
+}: ImagePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<ArrayBuffer | string | null>(null);
 
@@ -32,19 +38,35 @@ export default function ImagePicker({ imageRefId, userId }: ImagePickerProps) {
 
     fileReader.readAsDataURL(file);
 
-    await uploadImage(file, imageRefId, userId);
+    onAddImage(file, imageRefId);
+
+    e.target.value = "";
+  };
+
+  const handleRemoveImage = () => {
+    setImage(null);
+    onRemoveImage(imageRefId);
   };
 
   return (
     <div>
       {image ? (
-        <Image
-          src={image as string}
-          alt="Image"
-          width={300}
-          height={300}
-          className="object-cover rounded-md h-[300px] border"
-        />
+        <div className="relative">
+          <Image
+            src={image as string}
+            alt="Image"
+            width={300}
+            height={300}
+            className="object-cover rounded-md h-[300px] border"
+          />
+          <button
+            type="button"
+            onClick={handleRemoveImage}
+            className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-black hover:text-white m-1 p-1 rounded-md"
+          >
+            <RiFileReduceLine />
+          </button>
+        </div>
       ) : (
         <>
           <button
