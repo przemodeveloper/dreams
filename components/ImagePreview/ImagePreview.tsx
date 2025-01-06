@@ -13,6 +13,7 @@ export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
         <div className="relative">
           <Image
             src={imgSrc}
+            priority={true}
             alt={alt}
             width={300}
             height={300}
