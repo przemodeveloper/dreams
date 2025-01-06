@@ -27,11 +27,9 @@ export default function DatingProfileForm() {
   const { user } = useAuthUser();
   const router = useRouter();
 
-  const [images, setImages] = useState<Image[]>([]);
-
   const [state, formAction] = useActionState(
-    (prevState: InitialFormState, formData: FormData) => {
-      const result = handleSetProfile(prevState, formData, user?.uid);
+    async (prevState: InitialFormState, formData: FormData) => {
+      const result = await handleSetProfile(prevState, formData, user?.uid);
 
       if (result.success) {
         router.push(ROUTES.USER_PROFILE);
@@ -40,20 +38,6 @@ export default function DatingProfileForm() {
     },
     initialFormState
   );
-
-  const handleAddImage = (image: File, imageRefId: string) => {
-    setImages((prevState) => {
-      return [...prevState, { file: image, refId: imageRefId }];
-    });
-  };
-
-  const handleRemoveImage = (imageRefId: string) => {
-    setImages((prevState) => {
-      return prevState.filter((image) => image.refId !== imageRefId);
-    });
-  };
-
-  console.log(images);
 
   const { formErrors } = state || initialFormState.formErrors;
   const { formValues } = state || initialFormState.formValues;
@@ -68,24 +52,9 @@ export default function DatingProfileForm() {
           Images
         </label>
         <div className="grid-cols-3 grid gap-3">
-          <ImagePicker
-            imageRefId="profile_image_1"
-            userId={user?.uid}
-            onAddImage={handleAddImage}
-            onRemoveImage={handleRemoveImage}
-          />
-          <ImagePicker
-            imageRefId="profile_image_2"
-            userId={user?.uid}
-            onAddImage={handleAddImage}
-            onRemoveImage={handleRemoveImage}
-          />
-          <ImagePicker
-            imageRefId="profile_image_3"
-            userId={user?.uid}
-            onAddImage={handleAddImage}
-            onRemoveImage={handleRemoveImage}
-          />
+          <ImagePicker imageRefId="profile_image_1" userId={user?.uid} />
+          <ImagePicker imageRefId="profile_image_2" userId={user?.uid} />
+          <ImagePicker imageRefId="profile_image_3" userId={user?.uid} />
         </div>
       </div>
 

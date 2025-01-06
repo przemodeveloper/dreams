@@ -1,6 +1,7 @@
 import { initialFormState } from "@/components/DatingProfileForm/datingProfile.consts";
 import { db } from "@/firebase";
 import type { InitialFormState } from "@/models/form";
+import { uploadImage } from "@/utils/uploadImage";
 import { addDoc, collection } from "firebase/firestore";
 import { z } from "zod";
 
@@ -22,7 +23,7 @@ const datingProfileSchema = z.object({
   }),
 });
 
-export function handleSetProfile(
+export async function handleSetProfile(
   prevState: InitialFormState,
   formData: FormData,
   userId?: string
@@ -37,10 +38,33 @@ export function handleSetProfile(
     profileCreated: new Date().toISOString(),
   };
 
+  const userImages = [
+    (formData.get("profile_image_1") as File)?.size > 0 && {
+      profile_image_1: formData.get("profile_image_1"),
+    },
+    (formData.get("profile_image_2") as File)?.size > 0 && {
+      profile_image_2: formData.get("profile_image_2"),
+    },
+    (formData.get("profile_image_3") as File)?.size > 0 && {
+      profile_image_3: formData.get("profile_image_3"),
+    },
+  ].filter(Boolean);
+
   const result = datingProfileSchema.safeParse(userProfile);
 
-  if (userId && result.success) {
-    addDoc(collection(db, "profiles", userId, "userProfile"), userProfile);
+  if (userId) {
+    if (userImages.length > 0) {
+      for (const image of userImages) {
+        const key = Object.keys(image)[0] as keyof typeof image;
+        const file = image[key] as File;
+        const imageRef = key;
+        await uploadImage(file, imageRef, userId);
+      }
+    }
+    await addDoc(
+      collection(db, "profiles", userId, "userProfile"),
+      userProfile
+    );
     return {
       ...initialFormState,
       success: true,
@@ -48,7 +72,7 @@ export function handleSetProfile(
   }
 
   return {
-    success: result.success,
+    success: result?.success,
     formValues: userProfile || initialFormState.formValues,
     formErrors:
       result.error?.formErrors?.fieldErrors || initialFormState.formErrors,

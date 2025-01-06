@@ -5,16 +5,9 @@ import { useRef, useState } from "react";
 interface ImagePickerProps {
   imageRefId: string;
   userId?: string;
-  onAddImage: (image: File, imageRefId: string) => void;
-  onRemoveImage: (imageRefId: string) => void;
 }
 
-export default function ImagePicker({
-  imageRefId,
-  userId,
-  onAddImage,
-  onRemoveImage,
-}: ImagePickerProps) {
+export default function ImagePicker({ imageRefId, userId }: ImagePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<ArrayBuffer | string | null>(null);
 
@@ -37,15 +30,10 @@ export default function ImagePicker({
     };
 
     fileReader.readAsDataURL(file);
-
-    onAddImage(file, imageRefId);
-
-    e.target.value = "";
   };
 
   const handleRemoveImage = () => {
     setImage(null);
-    onRemoveImage(imageRefId);
   };
 
   return (
@@ -81,12 +69,11 @@ export default function ImagePicker({
 
       <input
         type="file"
-        id="image"
+        id={imageRefId}
         onChange={handleImageChange}
         accept="image/png, image/jpeg"
-        name="image"
+        name={imageRefId}
         ref={inputRef}
-        required
         className="hidden"
       />
     </div>
