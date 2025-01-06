@@ -18,11 +18,6 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import ImagePicker from "../ImagePicker/ImagePicker";
 
-interface Image {
-  file: File;
-  refId: string;
-}
-
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
   const router = useRouter();

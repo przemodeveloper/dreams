@@ -5,12 +5,18 @@ import {
   genderOptions,
   orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
+import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import UserLocation from "@/components/UserLocation/UserLocation";
 import useAuthUser from "@/hooks/useAuthUser";
+import { useGetImages } from "@/hooks/useGetImages";
 import { getLabel } from "@/utils/getLabel";
+
+const imageRefIds = ["profile_image_1", "profile_image_2", "profile_image_3"];
 
 export default function UserProfilePage() {
   const { user } = useAuthUser();
+
+  const { images } = useGetImages(imageRefIds, user?.uid);
 
   const dream = getLabel(dreamOptions, user?.dream);
   const gender = getLabel(genderOptions, user?.gender);
@@ -20,6 +26,17 @@ export default function UserProfilePage() {
     <>
       {user && (
         <div className="h-screen flex justify-center items-center flex-col w-2/3 md:w-1/3 mx-auto">
+          <div className="grid-cols-3 grid gap-3 mb-4">
+            {images?.map((image, index) => {
+              return (
+                <ImagePreview
+                  key={`image-${index}-${image}`}
+                  imgSrc={image}
+                  alt={`Image ${image}`}
+                />
+              );
+            })}
+          </div>
           <h3 className="font-secondary border-b-2 mb-4 w-full">
             {user?.username}, {user?.age}
           </h3>
