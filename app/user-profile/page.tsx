@@ -7,11 +7,10 @@ import {
 } from "@/components/DatingProfileForm/datingProfile.consts";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import UserLocation from "@/components/UserLocation/UserLocation";
+import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useGetImages } from "@/hooks/useGetImages";
 import { getLabel } from "@/utils/getLabel";
-
-const imageRefIds = ["profile_image_1", "profile_image_2", "profile_image_3"];
 
 export default function UserProfilePage() {
   const { user } = useAuthUser();

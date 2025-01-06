@@ -1,4 +1,5 @@
 import { initialFormState } from "@/components/DatingProfileForm/datingProfile.consts";
+import { imageRefIds } from "@/constants/user-profile";
 import { db } from "@/firebase";
 import type { InitialFormState } from "@/models/form";
 import { uploadImage } from "@/utils/uploadImage";
@@ -38,7 +39,7 @@ export async function handleSetProfile(
     profileCreated: new Date().toISOString(),
   };
 
-  const userImages = ["profile_image_1", "profile_image_2", "profile_image_3"]
+  const userImages = imageRefIds
     .map((key) => {
       const file = formData.get(key) as File;
       return file?.size > 0 ? { key, file } : null;

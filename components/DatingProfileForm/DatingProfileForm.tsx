@@ -17,6 +17,7 @@ import useAuthUser from "@/hooks/useAuthUser";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import ImagePicker from "../ImagePicker/ImagePicker";
+import { imageRefIds } from "@/constants/user-profile";
 
 export default function DatingProfileForm() {
   const { user } = useAuthUser();
@@ -47,9 +48,15 @@ export default function DatingProfileForm() {
           Images
         </label>
         <div className="grid-cols-3 grid gap-3">
-          <ImagePicker imageRefId="profile_image_1" userId={user?.uid} />
-          <ImagePicker imageRefId="profile_image_2" userId={user?.uid} />
-          <ImagePicker imageRefId="profile_image_3" userId={user?.uid} />
+          {imageRefIds.map((imageRefId) => {
+            return (
+              <ImagePicker
+                key={imageRefId}
+                imageRefId={imageRefId}
+                userId={user?.uid}
+              />
+            );
+          })}
         </div>
       </div>
 
