@@ -29,9 +29,9 @@ export default function UserProfilePage() {
             {images?.map((image, index) => {
               return (
                 <ImagePreview
-                  key={`image-${index}-${image}`}
+                  key={`profile_image_${index + 1}`}
                   imgSrc={image}
-                  alt={`Image ${image}`}
+                  alt={`profile_image_${index + 1}`}
                 />
               );
             })}
