@@ -38,28 +38,24 @@ export async function handleSetProfile(
     profileCreated: new Date().toISOString(),
   };
 
-  const userImages = [
-    (formData.get("profile_image_1") as File)?.size > 0 && {
-      profile_image_1: formData.get("profile_image_1"),
-    },
-    (formData.get("profile_image_2") as File)?.size > 0 && {
-      profile_image_2: formData.get("profile_image_2"),
-    },
-    (formData.get("profile_image_3") as File)?.size > 0 && {
-      profile_image_3: formData.get("profile_image_3"),
-    },
-  ].filter(Boolean);
+  const userImages = ["profile_image_1", "profile_image_2", "profile_image_3"]
+    .map((key) => {
+      const file = formData.get(key) as File;
+      return file?.size > 0 ? { key, file } : null;
+    })
+    .filter(Boolean);
 
   const result = datingProfileSchema.safeParse(userProfile);
 
   if (userId) {
     if (userImages.length > 0) {
-      for (const image of userImages) {
-        const key = Object.keys(image)[0] as keyof typeof image;
-        const file = image[key] as File;
-        const imageRef = key;
-        await uploadImage(file, imageRef, userId);
-      }
+      await Promise.all(
+        userImages.map(async (image) => {
+          if (image) {
+            await uploadImage(image.file, image.key, userId);
+          }
+        })
+      );
     }
     await addDoc(
       collection(db, "profiles", userId, "userProfile"),
