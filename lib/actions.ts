@@ -48,7 +48,7 @@ export async function handleSetProfile(
 
   const result = datingProfileSchema.safeParse(userProfile);
 
-  if (userId) {
+  if (userId && result?.success) {
     if (userImages.length > 0) {
       await Promise.all(
         userImages.map(async (image) => {
