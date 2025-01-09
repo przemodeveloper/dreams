@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export function useGetImages(imageRefIds: string[], userId?: string) {
   const [images, setImages] = useState<(string | null)[]>([]);
+  const [loading, setLoading] = useState("pending");
 
   useEffect(() => {
     if (!userId || !imageRefIds) {
@@ -23,11 +24,13 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
         })
       );
 
+      setLoading("resolved");
+
       setImages(urls);
     }
 
     downloadImagesUrls();
   }, [imageRefIds, userId]);
 
-  return { images };
+  return { images, loading };
 }

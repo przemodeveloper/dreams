@@ -15,13 +15,13 @@ export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
             src={imgSrc}
             priority={true}
             alt={alt}
-            width={300}
+            width={250}
             height={300}
-            className="object-cover rounded-md h-[300px] border"
+            className="object-cover rounded h-auto w-full border"
           />
         </div>
       ) : (
-        <div className="h-[300px] bg-gray-200 rounded-md flex justify-center items-center">
+        <div className="h-auto w-full bg-gray-200 rounded-md flex justify-center items-center">
           <RiFileReduceLine />
         </div>
       )}
