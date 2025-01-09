@@ -6,6 +6,7 @@ import {
   orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
+import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import UserLocation from "@/components/UserLocation/UserLocation";
 import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
@@ -15,7 +16,7 @@ import { getLabel } from "@/utils/getLabel";
 export default function UserProfilePage() {
   const { user } = useAuthUser();
 
-  const { images } = useGetImages(imageRefIds, user?.uid);
+  const { images, loading } = useGetImages(imageRefIds, user?.uid);
 
   const dream = getLabel(dreamOptions, user?.dream);
   const gender = getLabel(genderOptions, user?.gender);
@@ -26,6 +27,9 @@ export default function UserProfilePage() {
       {user && (
         <div className="flex h-screen justify-center items-center flex-col w-full">
           <div className="grid-cols-3 grid gap-3 mb-4">
+            {loading === "pending" && (
+              <ImageSkeleton height={258} width={258} count={3} />
+            )}
             {images?.map((image, index) => {
               return (
                 <ImagePreview
