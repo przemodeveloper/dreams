@@ -1,4 +1,4 @@
-import { RiFileReduceLine } from "@remixicon/react";
+import { RiImageCircleFill } from "@remixicon/react";
 import Image from "next/image";
 
 interface ImagePreviewProps {
@@ -22,7 +22,7 @@ export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
         </div>
       ) : (
         <div className="h-auto w-full bg-gray-200 rounded-md flex justify-center items-center">
-          <RiFileReduceLine />
+          <RiImageCircleFill className="w-10 h-10" />
         </div>
       )}
     </>

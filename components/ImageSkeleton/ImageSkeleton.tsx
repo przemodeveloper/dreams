@@ -14,13 +14,11 @@ const ImageSkeleton = ({ count = 1, width, height }: ImageSkeletonProps) => {
       {skeletons.map((index) => {
         return (
           <div
-            className="rounded animate-pulse"
+            className="animate-pulse w-full bg-gray-200 h-48 rounded-lg mb-5 flex justify-center items-center"
             style={{ width: `${width}px`, height: `${height}px` }}
             key={index}
           >
-            <div className="flex items-center justify-center h-full w-full mb-4 bg-gray-300 rounded dark:bg-black">
-              <RiImageCircleFill className="w-10 h-10 text-gray-200 dark:text-gray-600" />
-            </div>
+            <RiImageCircleFill className="w-10 h-10 dark:text-black" />
           </div>
         );
       })}
