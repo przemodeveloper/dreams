@@ -5,15 +5,17 @@ import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const { user, loading } = useAuthUser();
+	const { user, loading } = useAuthUser();
 
-  return (
-    <html lang="en">
-      <body>{loading && !user ? <LoadingScreen /> : children}</body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body>
+				{loading === "pending" && !user ? <LoadingScreen /> : children}
+			</body>
+		</html>
+	);
 }
