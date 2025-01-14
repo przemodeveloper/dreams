@@ -26,7 +26,7 @@ export default function Home() {
 
 	return (
 		<>
-			{!user && !loading && (
+			{!user && loading === "resolved" && (
 				<div className="flex justify-center flex-col items-center h-screen">
 					<h1 className="font-primary mb-2">Dreams</h1>
 					<Login />
