@@ -17,7 +17,7 @@ export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
 						alt={alt}
 						width={250}
 						height={300}
-						className="object-cover rounded h-auto w-full border"
+						className="object-cover rounded h-full w-full border"
 					/>
 				</div>
 			) : (
