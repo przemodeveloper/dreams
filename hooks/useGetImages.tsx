@@ -1,36 +1,47 @@
 import { storage } from "@/firebase";
-import { getDownloadURL, ref } from "firebase/storage";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
 export function useGetImages(imageRefIds: string[], userId?: string) {
-  const [images, setImages] = useState<(string | null)[]>([]);
-  const [loading, setLoading] = useState("pending");
+	const [images, setImages] = useState<(string | null)[]>([]);
+	const [loading, setLoading] = useState("pending");
 
-  useEffect(() => {
-    if (!userId || !imageRefIds) {
-      return;
-    }
+	useEffect(() => {
+		if (!userId || !imageRefIds) {
+			return;
+		}
 
-    async function downloadImagesUrls() {
-      const urls = await Promise.all(
-        imageRefIds.map(async (imageRefId) => {
-          const imagesRef = ref(storage, `images/${userId}/${imageRefId}.jpg`);
+		async function downloadImagesUrls() {
+			try {
+				const folderRef = ref(storage, `images/${userId}`);
+				const fileList = await listAll(folderRef);
 
-          try {
-            return await getDownloadURL(imagesRef);
-          } catch (error) {
-            return null;
-          }
-        })
-      );
+				const fileMap = new Map(
+					fileList.items.map((item) => [item.name.split(".")[0], item.fullPath])
+				);
 
-      setLoading("resolved");
+				const urls = await Promise.all(
+					imageRefIds.map(async (imageRefId) => {
+						const filePath = fileMap.get(imageRefId);
+						if (!filePath) return null;
+						try {
+							const imagesRef = ref(storage, filePath);
+							return await getDownloadURL(imagesRef);
+						} catch {
+							return null;
+						}
+					})
+				);
 
-      setImages(urls);
-    }
+				setImages(urls);
+				setLoading("resolved");
+			} catch {
+				setLoading("error");
+			}
+		}
 
-    downloadImagesUrls();
-  }, [imageRefIds, userId]);
+		downloadImagesUrls();
+	}, [imageRefIds, userId]);
 
-  return { images, loading };
+	return { images, loading };
 }
