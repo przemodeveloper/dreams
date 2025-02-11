@@ -37,6 +37,7 @@ export async function handleSetProfile(
     gender: String(formData.get("gender")) || undefined,
     orientation: String(formData.get("orientation")) || undefined,
     profileCreated: new Date().toISOString(),
+    userId,
   };
 
   const userImages = imageRefIds
