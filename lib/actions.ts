@@ -24,7 +24,7 @@ const datingProfileSchema = z.object({
   }),
 });
 
-export async function handleUploadImage(formData: FormData, userId?: string) {
+export async function handleUploadImage(prevState: InitialFormState, formData: FormData, userId?: string) {
   const userImages = imageRefIds
     .map((key) => {
       const file = formData.get(key) as File;
