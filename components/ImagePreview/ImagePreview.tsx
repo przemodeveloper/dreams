@@ -1,4 +1,3 @@
-import { RiImageCircleFill } from "@remixicon/react";
 import Image from "next/image";
 
 interface ImagePreviewProps {
@@ -20,11 +19,7 @@ export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
 						className="object-cover rounded h-full w-full border"
 					/>
 				</div>
-			) : (
-				<div className="h-full w-full bg-gray-200 rounded flex justify-center items-center">
-					<RiImageCircleFill className="w-10 h-10" />
-				</div>
-			)}
+			) : null}
 		</>
 	);
 }

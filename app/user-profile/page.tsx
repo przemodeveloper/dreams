@@ -5,6 +5,7 @@ import {
 	genderOptions,
 	orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
+import ImagePicker from "@/components/ImagePicker/ImagePicker";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import UserLocation from "@/components/UserLocation/UserLocation";
@@ -13,6 +14,7 @@ import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useGetImages } from "@/hooks/useGetImages";
 import { getLabel } from "@/utils/getLabel";
+import { useMemo } from "react";
 
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
@@ -25,6 +27,14 @@ export default function UserProfilePage() {
 	const dream = getLabel(dreamOptions, user?.dream);
 	const gender = getLabel(genderOptions, user?.gender);
 	const orientation = getLabel(orientationOptions, user?.orientation);
+
+	const notUploadedImageRefIds = useMemo(
+		() =>
+			imageRefIds.filter(
+				(imageRefId) => !images.some((url) => url?.includes(imageRefId))
+			),
+		[images]
+	);
 
 	return (
 		<>
@@ -39,6 +49,14 @@ export default function UserProfilePage() {
 									key={`profile_image_${index + 1}`}
 									imgSrc={image}
 									alt={`profile_image_${index + 1}`}
+								/>
+							))}
+
+							{notUploadedImageRefIds?.map((imageRefId) => (
+								<ImagePicker
+									key={imageRefId}
+									imageRefId={imageRefId}
+									userId={user?.uid}
 								/>
 							))}
 						</>
