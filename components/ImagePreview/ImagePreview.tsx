@@ -1,3 +1,4 @@
+import { RiFileReduceLine } from "@remixicon/react";
 import Image from "next/image";
 
 interface ImagePreviewProps {
@@ -6,18 +7,28 @@ interface ImagePreviewProps {
 }
 
 export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
+	const handleRemoveImage = () => {
+		// TODO: Implement remove image
+	};
+
 	return (
 		<>
 			{imgSrc ? (
 				<div className="relative">
 					<Image
 						src={imgSrc}
-						priority={true}
 						alt={alt}
-						width={250}
+						width={300}
 						height={300}
-						className="object-cover rounded h-full w-full border"
+						className="object-cover rounded-md h-[300px] border"
 					/>
+					<button
+						type="button"
+						onClick={handleRemoveImage}
+						className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-black hover:text-white m-1 p-1 rounded-md"
+					>
+						<RiFileReduceLine />
+					</button>
 				</div>
 			) : null}
 		</>
