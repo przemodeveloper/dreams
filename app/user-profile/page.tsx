@@ -14,6 +14,7 @@ import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useGetImages } from "@/hooks/useGetImages";
 import { getLabel } from "@/utils/getLabel";
+import { RiEditCircleLine } from "@remixicon/react";
 import { useMemo } from "react";
 
 export default function UserProfilePage() {
@@ -38,7 +39,7 @@ export default function UserProfilePage() {
 
 	return (
 		<>
-			<div className="flex h-screen justify-center items-center flex-col w-full">
+			<form className="flex h-screen justify-center items-center flex-col w-full">
 				<div className="grid-cols-3 h-1/3 w-full md:w-1/2 grid gap-3 mb-4">
 					{loadingImages === "pending" && images.length === 0 ? (
 						<ImageSkeleton count={3} />
@@ -72,12 +73,23 @@ export default function UserProfilePage() {
 							</h3>
 
 							<div className="border-b-2 mb-4 w-full">
-								<p className="font-secondary font-bold">Bio</p>
+								<div className="flex items-center">
+									<p className="font-secondary text-lg font-bold">Bio</p>
+									<button type="button" className="ml-1">
+										<RiEditCircleLine size="20px" />
+									</button>
+								</div>
 								<p className="font-secondary text-xl">{user?.bio}</p>
 							</div>
 
 							<div className="w-full mb-4">
-								<p className="font-secondary font-bold">Dream</p>
+								<div className="flex items-center">
+									<p className="font-secondary text-lg font-bold">Dream</p>
+									<button type="button" className="ml-1">
+										<RiEditCircleLine size="20px" />
+									</button>
+								</div>
+
 								<ul className="font-secondary flex space-x-2">
 									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
 										{dream}
@@ -86,7 +98,13 @@ export default function UserProfilePage() {
 							</div>
 
 							<div className="w-full mb-4">
-								<p className="font-secondary font-bold">Essentials</p>
+								<div className="flex items-center">
+									<p className="font-secondary text-lg font-bold">Essentials</p>
+									<button type="button" className="ml-1">
+										<RiEditCircleLine size="20px" />
+									</button>
+								</div>
+
 								<ul className="font-secondary flex space-x-2">
 									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
 										{gender}
@@ -103,7 +121,7 @@ export default function UserProfilePage() {
 						</>
 					)}
 				</div>
-			</div>
+			</form>
 		</>
 	);
 }
