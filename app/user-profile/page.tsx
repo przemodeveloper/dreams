@@ -40,7 +40,7 @@ export default function UserProfilePage() {
 	return (
 		<>
 			<form className="flex h-screen justify-center items-center flex-col w-full">
-				<div className="grid-cols-3 h-1/3 w-full md:w-1/2 grid gap-3 mb-4">
+				<div className="grid-cols-3 h-1/3 w-full md:w-2/3 lg:w-1/2 grid gap-3 mb-4">
 					{loadingImages === "pending" && images.length === 0 ? (
 						<ImageSkeleton count={3} />
 					) : (
@@ -115,7 +115,7 @@ export default function UserProfilePage() {
 								</ul>
 							</div>
 							<div className="w-full">
-								<p className="font-secondary font-bold">Location</p>
+								<p className="font-secondary text-lg font-bold">Location</p>
 								<UserLocation />
 							</div>
 						</>
