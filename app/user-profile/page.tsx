@@ -5,7 +5,6 @@ import {
 	genderOptions,
 	orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
-import ImagePicker from "@/components/ImagePicker/ImagePicker";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import UserLocation from "@/components/UserLocation/UserLocation";
@@ -39,6 +38,8 @@ export default function UserProfilePage() {
 		[images]
 	);
 
+	console.log(notUploadedImageRefIds);
+
 	return (
 		<div className="h-screen">
 			<form className="flex justify-center items-center flex-col w-full h-full">
@@ -50,18 +51,12 @@ export default function UserProfilePage() {
 							{images?.map((image, index) => (
 								<ImagePreview
 									key={`profile_image_${index + 1}`}
+									imageRefId={`profile_image_${index + 1}`}
 									onDeleteImage={handleDeleteImage}
 									filePath={image.filePath}
 									imgSrc={image.downloadUrl}
-									alt={`profile_image_${index + 1}`}
-								/>
-							))}
-
-							{notUploadedImageRefIds?.map((imageRefId) => (
-								<ImagePicker
-									key={imageRefId}
-									imageRefId={imageRefId}
 									userId={user?.uid}
+									alt={`profile_image_${index + 1}`}
 								/>
 							))}
 						</>

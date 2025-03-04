@@ -1,17 +1,22 @@
 import { RiFileReduceLine } from "@remixicon/react";
 import Image from "next/image";
+import ImagePicker from "../ImagePicker/ImagePicker";
 
 interface ImagePreviewProps {
 	imgSrc: string | null;
 	alt: string;
 	filePath: string;
+	userId?: string;
+	imageRefId: string;
 	onDeleteImage: (imageRef: string) => Promise<void>;
 }
 
 export default function ImagePreview({
 	imgSrc,
 	alt,
+	imageRefId,
 	filePath,
+	userId,
 	onDeleteImage,
 }: ImagePreviewProps) {
 	const handleRemoveImage = async () => {
@@ -37,7 +42,11 @@ export default function ImagePreview({
 						<RiFileReduceLine />
 					</button>
 				</div>
-			) : null}
+			) : (
+				<>
+					<ImagePicker imageRefId={imageRefId} userId={userId} />
+				</>
+			)}
 		</>
 	);
 }

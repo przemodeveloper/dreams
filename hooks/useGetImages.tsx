@@ -12,7 +12,12 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 	const [loading, setLoading] = useState("pending");
 
 	const handleDeleteImage = async (filePath: string) => {
-		const userImages = images.filter((image) => image.filePath !== filePath);
+		const userImages = [...images];
+		const deletedImageIndex = images.findIndex(
+			(image) => image.filePath === filePath
+		);
+		userImages[deletedImageIndex] = { filePath: "", downloadUrl: "" };
+
 		setImages(userImages);
 		const imageRef = ref(storage, filePath);
 
