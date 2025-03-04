@@ -9,6 +9,7 @@ interface ImagePreviewProps {
 	userId?: string;
 	imageRefId: string;
 	onDeleteImage: (imageRef: string) => Promise<void>;
+	onUploadImage: (file: File) => Promise<void>;
 }
 
 export default function ImagePreview({
@@ -17,6 +18,7 @@ export default function ImagePreview({
 	imageRefId,
 	filePath,
 	userId,
+	onUploadImage,
 	onDeleteImage,
 }: ImagePreviewProps) {
 	const handleRemoveImage = async () => {
@@ -44,7 +46,11 @@ export default function ImagePreview({
 				</div>
 			) : (
 				<>
-					<ImagePicker imageRefId={imageRefId} userId={userId} />
+					<ImagePicker
+						imageRefId={imageRefId}
+						userId={userId}
+						onUploadImage={onUploadImage}
+					/>
 				</>
 			)}
 		</>

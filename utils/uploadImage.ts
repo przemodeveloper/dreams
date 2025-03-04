@@ -18,7 +18,7 @@ export async function uploadImage(
   );
 
   try {
-    await uploadBytes(imagesDirectoryRef, image);
+    return await uploadBytes(imagesDirectoryRef, image);
   } catch (error) {
     throw new Error((error as Error).message);
   }

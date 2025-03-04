@@ -1,4 +1,5 @@
 import { storage } from "@/firebase";
+import { uploadImage } from "@/utils/uploadImage";
 import { deleteObject, getDownloadURL, listAll, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
@@ -10,6 +11,26 @@ interface ImageObject {
 export function useGetImages(imageRefIds: string[], userId?: string) {
 	const [images, setImages] = useState<ImageObject[]>([]);
 	const [loading, setLoading] = useState("pending");
+
+	const handleUploadImage = async (
+		file: File,
+		imageRefId: string,
+		index: number,
+		userId?: string
+	) => {
+		if (!userId) return;
+		const res = await uploadImage(file, imageRefId, userId);
+
+		const imageRef = ref(storage, res?.metadata.fullPath);
+		const downloadUrl = await getDownloadURL(imageRef);
+
+		const userImages = [...images];
+		if (!res) return;
+		userImages[index] = { filePath: res?.metadata.fullPath, downloadUrl };
+		setImages(userImages);
+	};
+
+	console.log(images);
 
 	const handleDeleteImage = async (filePath: string) => {
 		const userImages = [...images];
@@ -71,5 +92,5 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 		downloadImagesUrls();
 	}, [imageRefIds, userId]);
 
-	return { images, loading, handleDeleteImage };
+	return { images, loading, handleUploadImage, handleDeleteImage };
 }

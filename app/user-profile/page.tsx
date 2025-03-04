@@ -14,7 +14,6 @@ import useAuthUser from "@/hooks/useAuthUser";
 import { useGetImages } from "@/hooks/useGetImages";
 import { getLabel } from "@/utils/getLabel";
 import { RiEditCircleLine } from "@remixicon/react";
-import { useMemo } from "react";
 
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
@@ -23,22 +22,12 @@ export default function UserProfilePage() {
 		images,
 		loading: loadingImages,
 		handleDeleteImage,
+		handleUploadImage,
 	} = useGetImages(imageRefIds, user?.uid);
 
 	const dream = getLabel(dreamOptions, user?.dream);
 	const gender = getLabel(genderOptions, user?.gender);
 	const orientation = getLabel(orientationOptions, user?.orientation);
-
-	const notUploadedImageRefIds = useMemo(
-		() =>
-			imageRefIds.filter(
-				(imageRefId) =>
-					!images.some((imageObj) => imageObj.downloadUrl?.includes(imageRefId))
-			),
-		[images]
-	);
-
-	console.log(notUploadedImageRefIds);
 
 	return (
 		<div className="h-screen">
@@ -53,6 +42,14 @@ export default function UserProfilePage() {
 									key={`profile_image_${index + 1}`}
 									imageRefId={`profile_image_${index + 1}`}
 									onDeleteImage={handleDeleteImage}
+									onUploadImage={async (file) =>
+										await handleUploadImage(
+											file,
+											`profile_image_${index + 1}`,
+											index,
+											user?.uid
+										)
+									}
 									filePath={image.filePath}
 									imgSrc={image.downloadUrl}
 									userId={user?.uid}
