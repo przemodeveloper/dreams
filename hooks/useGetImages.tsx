@@ -1,10 +1,31 @@
 import { storage } from "@/firebase";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, listAll, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
+interface ImageObject {
+	filePath: string;
+	downloadUrl: string;
+}
+
 export function useGetImages(imageRefIds: string[], userId?: string) {
-	const [images, setImages] = useState<(string | null)[]>([]);
+	const [images, setImages] = useState<ImageObject[]>([]);
 	const [loading, setLoading] = useState("pending");
+
+	const handleDeleteImage = async (filePath: string) => {
+		const userImages = images.filter((image) => image.filePath !== filePath);
+		setImages(userImages);
+		const imageRef = ref(storage, filePath);
+
+		await deleteObject(imageRef)
+			.then(() => {
+				// TO DO: Replace with toast notification
+				console.log("File deleted successfully");
+			})
+			.catch((error) => {
+				// TO DO: Replace with toast notification
+				console.error("Error deleting file", error);
+			});
+	};
 
 	useEffect(() => {
 		if (!userId || !imageRefIds) {
@@ -23,12 +44,14 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 				const urls = await Promise.all(
 					imageRefIds.map(async (imageRefId) => {
 						const filePath = fileMap.get(imageRefId);
-						if (!filePath) return null;
+						if (!filePath) return { filePath: "", downloadUrl: "" };
 						try {
 							const imagesRef = ref(storage, filePath);
-							return await getDownloadURL(imagesRef);
+							const downloadUrl = await getDownloadURL(imagesRef);
+
+							return { filePath, downloadUrl };
 						} catch {
-							return null;
+							return { filePath: "", downloadUrl: "" };
 						}
 					})
 				);
@@ -43,5 +66,5 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 		downloadImagesUrls();
 	}, [imageRefIds, userId]);
 
-	return { images, loading };
+	return { images, loading, handleDeleteImage };
 }

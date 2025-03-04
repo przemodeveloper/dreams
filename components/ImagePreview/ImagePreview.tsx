@@ -4,11 +4,18 @@ import Image from "next/image";
 interface ImagePreviewProps {
 	imgSrc: string | null;
 	alt: string;
+	filePath: string;
+	onDeleteImage: (imageRef: string) => Promise<void>;
 }
 
-export default function ImagePreview({ imgSrc, alt }: ImagePreviewProps) {
-	const handleRemoveImage = () => {
-		// TODO: Implement remove image
+export default function ImagePreview({
+	imgSrc,
+	alt,
+	filePath,
+	onDeleteImage,
+}: ImagePreviewProps) {
+	const handleRemoveImage = async () => {
+		await onDeleteImage(filePath);
 	};
 
 	return (

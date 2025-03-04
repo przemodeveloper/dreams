@@ -20,10 +20,11 @@ import { useMemo } from "react";
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
 
-	const { images, loading: loadingImages } = useGetImages(
-		imageRefIds,
-		user?.uid
-	);
+	const {
+		images,
+		loading: loadingImages,
+		handleDeleteImage,
+	} = useGetImages(imageRefIds, user?.uid);
 
 	const dream = getLabel(dreamOptions, user?.dream);
 	const gender = getLabel(genderOptions, user?.gender);
@@ -32,14 +33,15 @@ export default function UserProfilePage() {
 	const notUploadedImageRefIds = useMemo(
 		() =>
 			imageRefIds.filter(
-				(imageRefId) => !images.some((url) => url?.includes(imageRefId))
+				(imageRefId) =>
+					!images.some((imageObj) => imageObj.downloadUrl?.includes(imageRefId))
 			),
 		[images]
 	);
 
 	return (
-		<>
-			<form className="flex h-screen justify-center items-center flex-col w-full">
+		<div className="h-screen">
+			<form className="flex justify-center items-center flex-col w-full h-full">
 				<div className="grid-cols-3 h-1/3 w-full md:w-2/3 lg:w-1/2 grid gap-3 mb-4">
 					{loadingImages === "pending" && images.length === 0 ? (
 						<ImageSkeleton count={3} />
@@ -48,7 +50,9 @@ export default function UserProfilePage() {
 							{images?.map((image, index) => (
 								<ImagePreview
 									key={`profile_image_${index + 1}`}
-									imgSrc={image}
+									onDeleteImage={handleDeleteImage}
+									filePath={image.filePath}
+									imgSrc={image.downloadUrl}
 									alt={`profile_image_${index + 1}`}
 								/>
 							))}
@@ -122,6 +126,6 @@ export default function UserProfilePage() {
 					)}
 				</div>
 			</form>
-		</>
+		</div>
 	);
 }
