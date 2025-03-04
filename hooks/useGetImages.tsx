@@ -30,8 +30,6 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 		setImages(userImages);
 	};
 
-	console.log(images);
-
 	const handleDeleteImage = async (filePath: string) => {
 		const userImages = [...images];
 		const deletedImageIndex = images.findIndex(
