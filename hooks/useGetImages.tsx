@@ -6,38 +6,55 @@ import { useEffect, useState } from "react";
 interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
+	imageRefId: string;
+}
+
+export interface UploadingImage {
+	loading: "idle" | "pending" | "resolved" | "error";
+	imageRefId: string | null;
 }
 
 export function useGetImages(imageRefIds: string[], userId?: string) {
 	const [images, setImages] = useState<ImageObject[]>([]);
-	const [loading, setLoading] = useState("pending");
+	const [downloadingImages, setDownloadingImages] = useState("pending");
+	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
+		loading: "idle",
+		imageRefId: null,
+	});
 
 	const handleUploadImage = async (
 		file: File,
 		imageRefId: string,
-		index: number,
 		userId?: string
 	) => {
 		if (!userId) return;
+		setUploadingImage({ loading: "pending", imageRefId });
 		const res = await uploadImage(file, imageRefId, userId);
 
 		const imageRef = ref(storage, res?.metadata.fullPath);
 		const downloadUrl = await getDownloadURL(imageRef);
 
-		const userImages = [...images];
 		if (!res) return;
-		userImages[index] = { filePath: res?.metadata.fullPath, downloadUrl };
-		setImages(userImages);
+
+		setImages((prevState) => {
+			return prevState.map((image) =>
+				imageRefId === image.imageRefId
+					? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
+					: image
+			);
+		});
+		setUploadingImage({ loading: "resolved", imageRefId });
 	};
 
 	const handleDeleteImage = async (filePath: string) => {
-		const userImages = [...images];
-		const deletedImageIndex = images.findIndex(
-			(image) => image.filePath === filePath
-		);
-		userImages[deletedImageIndex] = { filePath: "", downloadUrl: "" };
+		setImages((prevState) => {
+			return prevState.map((image) =>
+				image.filePath === filePath
+					? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
+					: image
+			);
+		});
 
-		setImages(userImages);
 		const imageRef = ref(storage, filePath);
 
 		await deleteObject(imageRef)
@@ -68,27 +85,33 @@ export function useGetImages(imageRefIds: string[], userId?: string) {
 				const urls = await Promise.all(
 					imageRefIds.map(async (imageRefId) => {
 						const filePath = fileMap.get(imageRefId);
-						if (!filePath) return { filePath: "", downloadUrl: "" };
+						if (!filePath) return { filePath: "", downloadUrl: "", imageRefId };
 						try {
 							const imagesRef = ref(storage, filePath);
 							const downloadUrl = await getDownloadURL(imagesRef);
 
-							return { filePath, downloadUrl };
+							return { filePath, downloadUrl, imageRefId };
 						} catch {
-							return { filePath: "", downloadUrl: "" };
+							return { filePath: "", downloadUrl: "", imageRefId };
 						}
 					})
 				);
 
 				setImages(urls);
-				setLoading("resolved");
+				setDownloadingImages("resolved");
 			} catch {
-				setLoading("error");
+				setDownloadingImages("error");
 			}
 		}
 
 		downloadImagesUrls();
 	}, [imageRefIds, userId]);
 
-	return { images, loading, handleUploadImage, handleDeleteImage };
+	return {
+		images,
+		downloadingImages,
+		uploadingImage,
+		handleUploadImage,
+		handleDeleteImage,
+	};
 }

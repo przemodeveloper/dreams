@@ -20,7 +20,8 @@ export default function UserProfilePage() {
 
 	const {
 		images,
-		loading: loadingImages,
+		downloadingImages,
+		uploadingImage,
 		handleDeleteImage,
 		handleUploadImage,
 	} = useGetImages(imageRefIds, user?.uid);
@@ -32,28 +33,24 @@ export default function UserProfilePage() {
 	return (
 		<div className="h-screen">
 			<form className="flex justify-center items-center flex-col w-full h-full">
-				<div className="grid-cols-3 h-1/3 w-full md:w-2/3 lg:w-1/2 grid gap-3 mb-4">
-					{loadingImages === "pending" && images.length === 0 ? (
+				<div className="relative grid-cols-3 h-1/3 w-full md:w-2/3 lg:w-1/2 grid gap-3 mb-4">
+					{downloadingImages === "pending" && images.length === 0 ? (
 						<ImageSkeleton count={3} />
 					) : (
 						<>
-							{images?.map((image, index) => (
+							{images?.map((image) => (
 								<ImagePreview
-									key={`profile_image_${index + 1}`}
-									imageRefId={`profile_image_${index + 1}`}
+									key={image.imageRefId}
+									imageRefId={image.imageRefId}
+									uploadingImage={uploadingImage}
 									onDeleteImage={handleDeleteImage}
 									onUploadImage={async (file) =>
-										await handleUploadImage(
-											file,
-											`profile_image_${index + 1}`,
-											index,
-											user?.uid
-										)
+										await handleUploadImage(file, image.imageRefId, user?.uid)
 									}
 									filePath={image.filePath}
 									imgSrc={image.downloadUrl}
 									userId={user?.uid}
-									alt={`profile_image_${index + 1}`}
+									alt={image.imageRefId}
 								/>
 							))}
 						</>

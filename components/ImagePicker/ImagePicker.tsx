@@ -43,7 +43,7 @@ export default function ImagePicker({
 	};
 
 	return (
-		<div>
+		<div className="h-full">
 			{image ? (
 				<div className="relative">
 					<Image
