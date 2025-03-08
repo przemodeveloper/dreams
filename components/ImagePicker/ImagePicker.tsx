@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 interface ImagePickerProps {
 	imageRefId: string;
 	userId?: string;
-	onUploadImage: (file: File) => Promise<void>;
+	onUploadImage?: (file: File) => Promise<void>;
 }
 
 export default function ImagePicker({
@@ -35,7 +35,7 @@ export default function ImagePicker({
 		};
 
 		fileReader.readAsDataURL(file);
-		await onUploadImage(file);
+		if (onUploadImage) await onUploadImage(file);
 	};
 
 	const handleRemoveImage = () => {
