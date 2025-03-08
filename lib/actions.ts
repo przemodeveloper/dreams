@@ -49,7 +49,8 @@ export async function handleUploadImage(prevState: InitialFormState, formData: F
 export async function handleSetProfile(
   prevState: InitialFormState,
   formData: FormData,
-  userId?: string
+  location: string | null,
+  userId?: string,
 ) {
   const userProfile = {
     username: String(formData.get("username")) || undefined,
@@ -59,6 +60,7 @@ export async function handleSetProfile(
     gender: String(formData.get("gender")) || undefined,
     orientation: String(formData.get("orientation")) || undefined,
     profileCreated: new Date().toISOString(),
+    location: location || "",
     userId,
   };
 

@@ -7,7 +7,6 @@ import {
 } from "@/components/DatingProfileForm/datingProfile.consts";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
-import UserLocation from "@/components/UserLocation/UserLocation";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
 import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
@@ -29,6 +28,7 @@ export default function UserProfilePage() {
 	const dream = getLabel(dreamOptions, user?.dream);
 	const gender = getLabel(genderOptions, user?.gender);
 	const orientation = getLabel(orientationOptions, user?.orientation);
+	const location = user?.location;
 
 	return (
 		<div className="h-screen">
@@ -106,10 +106,21 @@ export default function UserProfilePage() {
 										{orientation}
 									</li>
 								</ul>
-							</div>
-							<div className="w-full">
-								<p className="font-secondary text-lg font-bold">Location</p>
-								<UserLocation />
+
+								<div className="w-full mb-4">
+									<div className="flex items-center">
+										<p className="font-secondary text-lg font-bold">Location</p>
+										<button type="button" className="ml-1">
+											<RiEditCircleLine size="20px" />
+										</button>
+									</div>
+
+									<ul className="font-secondary flex space-x-2">
+										<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
+											{location}
+										</li>
+									</ul>
+								</div>
 							</div>
 						</>
 					)}

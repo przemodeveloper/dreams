@@ -8,4 +8,6 @@ export interface UserProfile extends User {
   gender?: string;
   orientation?: string;
   profileCreated?: string;
+  location?: string;
+  userId?: string;
 }

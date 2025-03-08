@@ -18,14 +18,22 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import ImagePicker from "../ImagePicker/ImagePicker";
 import { imageRefIds } from "@/constants/user-profile";
+import UserLocation from "../UserLocation/UserLocation";
+import { useUserLocation } from "@/hooks/useUserLocation";
 
 export default function DatingProfileForm() {
 	const { user } = useAuthUser();
 	const router = useRouter();
+	const { address, error, loading } = useUserLocation();
 
 	const [state, formAction] = useActionState(
 		async (prevState: InitialFormState, formData: FormData) => {
-			const result = await handleSetProfile(prevState, formData, user?.uid);
+			const result = await handleSetProfile(
+				prevState,
+				formData,
+				address,
+				user?.uid
+			);
 
 			if (result.success) {
 				router.push(ROUTES.USER_PROFILE);
@@ -131,6 +139,13 @@ export default function DatingProfileForm() {
 					options={orientationOptions}
 					error={joinErrorMessages(formErrors.orientation)}
 				/>
+			</div>
+
+			<div className="w-full px-3 mb-4">
+				<p className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+					Location
+				</p>
+				<UserLocation address={address} error={error} loading={loading} />
 			</div>
 
 			<div className="w-full text-right px-3 mb-4">

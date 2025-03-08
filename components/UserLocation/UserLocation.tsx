@@ -1,18 +1,25 @@
-import { useUserLocation } from "@/hooks/useUserLocation";
 import { Loader } from "../Loader/Loader";
 
-export default function UserLocation() {
-  const { address, error, loading } = useUserLocation();
+interface UserLocationProps {
+	address: string | null;
+	error: string | null;
+	loading: boolean;
+}
 
-  return (
-    <>
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <p className="font-secondary text-red-500">{error}</p>
-      ) : (
-        <p className="font-secondary">{address}</p>
-      )}
-    </>
-  );
+export default function UserLocation({
+	address,
+	error,
+	loading,
+}: UserLocationProps) {
+	return (
+		<>
+			{loading ? (
+				<Loader />
+			) : error ? (
+				<p className="font-secondary text-red-500">{error}</p>
+			) : (
+				<p className="font-secondary">{address}</p>
+			)}
+		</>
+	);
 }
