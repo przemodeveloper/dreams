@@ -5,17 +5,34 @@ import {
 	genderOptions,
 	orientationOptions,
 } from "@/components/DatingProfileForm/datingProfile.consts";
+import FormField from "@/components/FormField/FormField";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
+import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
 import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useGetImages } from "@/hooks/useGetImages";
+import { Option } from "@/models/form";
 import { getLabel } from "@/utils/getLabel";
-import { RiEditCircleLine } from "@remixicon/react";
+import {
+	RiCloseCircleFill,
+	RiEditCircleLine,
+	RiSave2Fill,
+} from "@remixicon/react";
+import { useState } from "react";
+
+type Field = "bio" | "dream" | "gender" | "orientation";
 
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
+
+	const [editState, setEditState] = useState({
+		bio: false,
+		dream: false,
+		gender: false,
+		orientation: false,
+	});
 
 	const {
 		images,
@@ -25,10 +42,93 @@ export default function UserProfilePage() {
 		handleUploadImage,
 	} = useGetImages(imageRefIds, user?.uid);
 
-	const dream = getLabel(dreamOptions, user?.dream);
-	const gender = getLabel(genderOptions, user?.gender);
-	const orientation = getLabel(orientationOptions, user?.orientation);
 	const location = user?.location;
+
+	const renderEditableField = ({
+		label,
+		field,
+		type,
+		options,
+	}: {
+		label: string;
+		field: Field;
+		type: "textarea" | "input" | "select";
+		options?: Option[];
+	}) => {
+		return (
+			<div className="border-b-2 w-full">
+				<div className="flex items-center">
+					<label
+						htmlFor={`field-${field}`}
+						className="font-secondary text-lg font-bold"
+					>
+						{label}
+					</label>
+					<div className="flex items-center">
+						<button
+							type="button"
+							className="ml-1"
+							onClick={() =>
+								setEditState((prevState) => ({ ...prevState, [field]: true }))
+							}
+						>
+							<RiEditCircleLine size="20px" />
+						</button>
+					</div>
+				</div>
+
+				{editState[field] ? (
+					<>
+						{type === "textarea" && (
+							<FormField
+								name="bio"
+								id={`field-${field}`}
+								type="textarea"
+								defaultValue={user?.bio || ""}
+								Component="textarea"
+								rows={4}
+							/>
+						)}
+						{type === "select" && options && (
+							<Select
+								keyValue={user?.[field]}
+								name={field}
+								id={`field-${field}`}
+								defaultValue={user?.[field] || ""}
+								options={options}
+							/>
+						)}
+						<div className="flex gap-2 mb-2 justify-end">
+							<button type="button">
+								<RiSave2Fill />
+							</button>
+							<button
+								type="button"
+								onClick={() =>
+									setEditState((prevState) => ({
+										...prevState,
+										[field]: false,
+									}))
+								}
+							>
+								<RiCloseCircleFill />
+							</button>
+						</div>
+					</>
+				) : (
+					<p className="font-secondary mb-2">
+						{type === "select" && options ? (
+							<div className="bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
+								{getLabel(options, user?.[field])}
+							</div>
+						) : (
+							<p className="text-lg">{user?.[field]}</p>
+						)}
+					</p>
+				)}
+			</div>
+		);
+	};
 
 	return (
 		<div className="h-screen">
@@ -61,23 +161,48 @@ export default function UserProfilePage() {
 						<UserProfileSkeleton />
 					) : (
 						<>
-							<h3 className="font-secondary border-b-2 mb-4 w-full">
+							<h3 className="font-secondary border-b-2 mb-3 w-full">
 								{user?.username}, {user?.age}
 							</h3>
 
-							<div className="border-b-2 mb-4 w-full">
-								<div className="flex items-center">
-									<p className="font-secondary text-lg font-bold">Bio</p>
-									<button type="button" className="ml-1">
-										<RiEditCircleLine size="20px" />
-									</button>
-								</div>
-								<p className="font-secondary text-xl">{user?.bio}</p>
+							<div className="mb-3 w-full">
+								{renderEditableField({
+									label: "Bio",
+									field: "bio",
+									type: "textarea",
+								})}
 							</div>
 
-							<div className="w-full mb-4">
+							<div className="mb-3 w-full">
+								{renderEditableField({
+									label: "Dream",
+									field: "dream",
+									type: "select",
+									options: dreamOptions,
+								})}
+							</div>
+
+							<div className="mb-3 w-full">
+								{renderEditableField({
+									label: "Gender",
+									field: "gender",
+									type: "select",
+									options: genderOptions,
+								})}
+							</div>
+
+							<div className="mb-3 w-full">
+								{renderEditableField({
+									label: "Orientation",
+									field: "orientation",
+									type: "select",
+									options: orientationOptions,
+								})}
+							</div>
+
+							<div className="w-full">
 								<div className="flex items-center">
-									<p className="font-secondary text-lg font-bold">Dream</p>
+									<p className="font-secondary text-lg font-bold">Location</p>
 									<button type="button" className="ml-1">
 										<RiEditCircleLine size="20px" />
 									</button>
@@ -85,42 +210,9 @@ export default function UserProfilePage() {
 
 								<ul className="font-secondary flex space-x-2">
 									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-										{dream}
+										{location}
 									</li>
 								</ul>
-							</div>
-
-							<div className="w-full mb-4">
-								<div className="flex items-center">
-									<p className="font-secondary text-lg font-bold">Essentials</p>
-									<button type="button" className="ml-1">
-										<RiEditCircleLine size="20px" />
-									</button>
-								</div>
-
-								<ul className="font-secondary flex space-x-2">
-									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-										{gender}
-									</li>
-									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-										{orientation}
-									</li>
-								</ul>
-
-								<div className="w-full mb-4">
-									<div className="flex items-center">
-										<p className="font-secondary text-lg font-bold">Location</p>
-										<button type="button" className="ml-1">
-											<RiEditCircleLine size="20px" />
-										</button>
-									</div>
-
-									<ul className="font-secondary flex space-x-2">
-										<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-											{location}
-										</li>
-									</ul>
-								</div>
 							</div>
 						</>
 					)}
