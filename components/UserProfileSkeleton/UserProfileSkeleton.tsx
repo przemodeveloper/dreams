@@ -6,7 +6,13 @@ export default function UserProfileSkeleton() {
 			<p className="font-secondary font-bold">Bio</p>
 			<div className="h-4 bg-gray-300 rounded-full mb-4" />
 
-			<p className="font-secondary font-bold">Essentials</p>
+			<p className="font-secondary font-bold">Dream</p>
+			<div className="h-4 bg-gray-300 rounded-full mb-4" />
+
+			<p className="font-secondary font-bold">Gender</p>
+			<div className="h-4 bg-gray-300 rounded-full mb-4" />
+
+			<p className="font-secondary font-bold">Orientation</p>
 			<div className="h-4 bg-gray-300 rounded-full mb-4" />
 
 			<p className="font-secondary font-bold">Location</p>
