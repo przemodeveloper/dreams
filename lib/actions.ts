@@ -26,28 +26,6 @@ const datingProfileSchema = z.object({
   }),
 });
 
-export async function handleUploadImage(prevState: InitialFormState, formData: FormData, userId?: string) {
-  const userImages = imageRefIds
-    .map((key) => {
-      const file = formData.get(key) as File;
-      return file?.size > 0 ? { key, file } : null;
-    })
-    .filter(Boolean);
-
-
-  if (userId) {
-    if (userImages.length > 0) {
-      await Promise.all(
-        userImages.map(async (image) => {
-          if (image) {
-            await uploadImage(image.file, image.key, userId);
-          }
-        }),
-      );
-    }
-  }
-}
-
 export async function handleSetProfile(
   prevState: InitialFormState,
   formData: FormData,
