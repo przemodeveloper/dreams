@@ -1,9 +1,11 @@
 import { initialFormState } from "@/components/DatingProfileForm/datingProfile.consts";
 import { imageRefIds } from "@/constants/user-profile";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
+import type { ImageObject } from "@/hooks/useManageImages";
 import type { InitialFormState } from "@/models/form";
 import { uploadImage } from "@/utils/uploadImage";
 import { addDoc, collection } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { z } from "zod";
 
 const datingProfileSchema = z.object({
@@ -67,25 +69,44 @@ export async function handleSetProfile(
   const userImages = imageRefIds
     .map((key) => {
       const file = formData.get(key) as File;
-      return file?.size > 0 ? { key, file } : null;
+      return file?.size > 0 ? { key, file } : { key };
     })
     .filter(Boolean);
 
   const result = datingProfileSchema.safeParse(userProfile);
 
   if (userId && result?.success) {
+    const images: ImageObject[] = [];
+
     if (userImages.length > 0) {
+
       await Promise.all(
         userImages.map(async (image) => {
-          if (image) {
-            await uploadImage(image.file, image.key, userId);
+          if (image?.file) {
+            const res = await uploadImage(image.file, image.key, userId);
+            const imageRef = ref(storage, res?.metadata.fullPath);
+            const url = await getDownloadURL(imageRef);
+
+            if (url) {
+              images.push({
+                filePath: res?.metadata.fullPath || "",
+                downloadUrl: url,
+                imageRefId: image.key,
+              });
+            }
+          } else {
+            images.push({
+              filePath: "",
+              downloadUrl: "",
+              imageRefId: image.key,
+            });
           }
         })
       );
     }
     await addDoc(
       collection(db, "profiles", userId, "userProfile"),
-      userProfile
+      {...userProfile, images: images.sort((a, b) => a.imageRefId.localeCompare(b.imageRefId))},
     );
     return {
       ...initialFormState,

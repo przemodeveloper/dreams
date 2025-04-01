@@ -1,7 +1,7 @@
 import { RiFileReduceLine } from "@remixicon/react";
 import Image from "next/image";
 import ImagePicker from "../ImagePicker/ImagePicker";
-import type { UploadingImage } from "@/hooks/useGetImages";
+import type { UploadingImage } from "@/hooks/useManageImages";
 import { Loader } from "../Loader/Loader";
 
 interface ImagePreviewProps {

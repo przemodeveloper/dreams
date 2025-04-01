@@ -10,10 +10,9 @@ import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
-import { imageRefIds } from "@/constants/user-profile";
 import useAuthUser from "@/hooks/useAuthUser";
-import { useGetImages } from "@/hooks/useGetImages";
-import { Option } from "@/models/form";
+import { useManageImages } from "@/hooks/useManageImages";
+import type { Option } from "@/models/form";
 import { getLabel } from "@/utils/getLabel";
 import {
 	RiCloseCircleFill,
@@ -34,13 +33,8 @@ export default function UserProfilePage() {
 		orientation: false,
 	});
 
-	const {
-		images,
-		downloadingImages,
-		uploadingImage,
-		handleDeleteImage,
-		handleUploadImage,
-	} = useGetImages(imageRefIds, user?.uid);
+	const { images, uploadingImage, handleDeleteImage, handleUploadImage } =
+		useManageImages(user?.images, user?.uid);
 
 	const location = user?.location;
 
@@ -134,7 +128,7 @@ export default function UserProfilePage() {
 		<div>
 			<form className="flex justify-center items-center flex-col pt-4">
 				<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
-					{downloadingImages === "pending" && images.length === 0 ? (
+					{loadingUser === "pending" ? (
 						<ImageSkeleton count={3} />
 					) : (
 						<>
