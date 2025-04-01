@@ -131,9 +131,9 @@ export default function UserProfilePage() {
 	};
 
 	return (
-		<div className="h-screen">
-			<form className="flex justify-center items-center flex-col w-full h-full">
-				<div className="relative grid-cols-3 w-full md:w-2/3 lg:w-1/2 grid gap-3 mb-4">
+		<div>
+			<form className="flex justify-center items-center flex-col pt-4">
+				<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
 					{downloadingImages === "pending" && images.length === 0 ? (
 						<ImageSkeleton count={3} />
 					) : (
@@ -156,7 +156,7 @@ export default function UserProfilePage() {
 						</>
 					)}
 				</div>
-				<div className="flex items-center flex-col w-2/3 md:w-1/3 mx-auto">
+				<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
 					{loadingUser === "pending" && !user ? (
 						<UserProfileSkeleton />
 					) : (
