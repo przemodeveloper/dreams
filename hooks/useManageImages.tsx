@@ -1,4 +1,5 @@
 import { db, storage } from "@/firebase";
+import type { UserProfile } from "@/models/auth";
 import { uploadImage } from "@/utils/uploadImage";
 import {
 	collection,
@@ -19,6 +20,40 @@ export interface ImageObject {
 export interface UploadingImage {
 	loading: "idle" | "pending" | "resolved" | "error";
 	imageRefId: string | null;
+}
+
+export function useSubscribeUserProfile(userId: string) {
+	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
+
+	useEffect(() => {
+		if (!userId) return;
+
+		const getProfileDocRef = async () => {
+			const userProfileCollection = collection(
+				db,
+				"profiles",
+				userId,
+				"userProfile"
+			);
+			const snapshot = await getDocs(userProfileCollection);
+			if (snapshot.empty) throw new Error("User profile not found");
+			const userProfileDocId = snapshot.docs[0].id;
+			return doc(db, "profiles", userId, "userProfile", userProfileDocId);
+		};
+
+		let unsubscribe: () => void;
+
+		getProfileDocRef().then((profileDocRef) => {
+			unsubscribe = onSnapshot(profileDocRef, (docSnap) => {
+				const data = docSnap.data();
+				setUserData((data as Partial<UserProfile>) || null);
+			});
+		});
+
+		return () => unsubscribe?.();
+	}, [userId]);
+
+	return { userData };
 }
 
 export function useManageImages(userImages?: ImageObject[], userId?: string) {
@@ -50,33 +85,13 @@ export function useManageImages(userImages?: ImageObject[], userId?: string) {
 		return profileDocRef;
 	};
 
+	const { userData } = useSubscribeUserProfile(userId || "");
+
 	useEffect(() => {
-		if (!userId) return;
-
-		const getProfileDocRef = async () => {
-			const userProfileCollection = collection(
-				db,
-				"profiles",
-				userId,
-				"userProfile"
-			);
-			const snapshot = await getDocs(userProfileCollection);
-			if (snapshot.empty) throw new Error("User profile not found");
-			const userProfileDocId = snapshot.docs[0].id;
-			return doc(db, "profiles", userId, "userProfile", userProfileDocId);
-		};
-
-		let unsubscribe: () => void;
-
-		getProfileDocRef().then((profileDocRef) => {
-			unsubscribe = onSnapshot(profileDocRef, (docSnap) => {
-				const data = docSnap.data();
-				setImages(data?.images || []);
-			});
-		});
-
-		return () => unsubscribe?.();
-	}, [userId]);
+		if (userData?.images) {
+			setImages(userData.images);
+		}
+	}, [userData?.images]);
 
 	const handleUploadImage = async (
 		file: File,
