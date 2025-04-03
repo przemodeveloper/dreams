@@ -12,11 +12,13 @@ import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useManageUser } from "@/hooks/useManageUser";
+import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Option } from "@/models/form";
 import { getLabel } from "@/utils/getLabel";
 import {
 	RiCloseCircleFill,
 	RiEditCircleLine,
+	RiRefreshLine,
 	RiSave2Fill,
 } from "@remixicon/react";
 import { useEffect, useState } from "react";
@@ -24,13 +26,28 @@ import { useEffect, useState } from "react";
 export type Field = "bio" | "dream" | "gender" | "orientation" | "age";
 
 const OPTIONS = {
-	gender: genderOptions,
-	orientation: orientationOptions,
-	dream: dreamOptions,
+	gender: genderOptions.filter((option) => option.value !== ""),
+	orientation: orientationOptions.filter((option) => option.value !== ""),
+	dream: dreamOptions.filter((option) => option.value !== ""),
 };
 
 export default function UserProfilePage() {
-	const { user, loading: loadingUser } = useAuthUser();
+	const { user } = useAuthUser();
+
+	const {
+		uploadingImage,
+		handleDeleteImage,
+		handleUploadImage,
+		handleUpdateUserProfile,
+		userData,
+		loading,
+	} = useManageUser(user?.uid);
+
+	const {
+		location: updatedLocation,
+		loading: loadingLocation,
+		getUserLocation,
+	} = useUserLocation({ skipOnMount: true });
 
 	const [values, setValues] = useState({
 		bio: {
@@ -61,13 +78,12 @@ export default function UserProfilePage() {
 		age: false,
 	});
 
-	const {
-		uploadingImage,
-		handleDeleteImage,
-		handleUploadImage,
-		handleUpdateUserProfile,
-		userData,
-	} = useManageUser(user?.uid);
+	const handleUpdateLocation = async () => {
+		getUserLocation();
+		if (updatedLocation) {
+			await handleUpdateUserProfile("location", updatedLocation);
+		}
+	};
 
 	useEffect(() => {
 		if (userData) {
@@ -215,118 +231,124 @@ export default function UserProfilePage() {
 						</div>
 					</>
 				) : (
-					<p className="font-secondary mb-2">
+					<>
 						{component === "select" && options ? (
-							<div className="bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
+							<p className="font-secondary mb-2 bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
 								{getLabel(options, String(userData?.[field]))}
-							</div>
+							</p>
 						) : (
-							<p className="text-lg">{userData?.[field]}</p>
+							<p className="font-secondary mb-2 text-lg">{userData?.[field]}</p>
 						)}
-					</p>
+					</>
 				)}
 			</div>
 		);
 	};
 
 	return (
-		<div>
-			<form className="flex justify-center items-center flex-col pt-4">
-				<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
-					{loadingUser === "pending" ? (
-						<ImageSkeleton count={3} />
-					) : (
-						<>
-							{userData?.images?.map((image) => (
-								<ImagePreview
-									key={image.imageRefId}
-									imageRefId={image.imageRefId}
-									uploadingImage={uploadingImage}
-									onDeleteImage={handleDeleteImage}
-									onUploadImage={async (file) =>
-										await handleUploadImage(file, image.imageRefId, user?.uid)
-									}
-									filePath={image.filePath}
-									imgSrc={image.downloadUrl}
-									userId={user?.uid}
-									alt={image.imageRefId}
-								/>
-							))}
-						</>
-					)}
-				</div>
-				<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
-					{loadingUser === "pending" && !user ? (
-						<UserProfileSkeleton />
-					) : (
-						<>
-							<h3 className="font-secondary border-b-2 mb-3 w-full">
-								{userData?.username}, {userData?.age}
-							</h3>
+		<form className="flex justify-center items-center flex-col pt-4">
+			<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
+				{!userData && loading === "pending" ? (
+					<ImageSkeleton count={3} />
+				) : (
+					<>
+						{userData?.images?.map((image) => (
+							<ImagePreview
+								key={image.imageRefId}
+								imageRefId={image.imageRefId}
+								uploadingImage={uploadingImage}
+								onDeleteImage={handleDeleteImage}
+								onUploadImage={async (file) =>
+									await handleUploadImage(file, image.imageRefId, user?.uid)
+								}
+								filePath={image.filePath}
+								imgSrc={image.downloadUrl}
+								userId={user?.uid}
+								alt={image.imageRefId}
+							/>
+						))}
+					</>
+				)}
+			</div>
+			<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
+				{!userData && loading === "pending" ? (
+					<UserProfileSkeleton />
+				) : (
+					<>
+						<h3 className="font-secondary border-b-2 mb-3 w-full">
+							{userData?.username}, {userData?.age}
+						</h3>
 
-							<div className="mb-3 w-full">
-								{renderEditableField({
-									label: "Bio",
-									field: "bio",
-									type: "text",
-									component: "textarea",
-								})}
+						<div className="mb-3 w-full">
+							{renderEditableField({
+								label: "Bio",
+								field: "bio",
+								type: "text",
+								component: "textarea",
+							})}
+						</div>
+
+						<div className="mb-3 w-full">
+							{renderEditableField({
+								label: "Age",
+								field: "age",
+								type: "number",
+								component: "input",
+							})}
+						</div>
+
+						<div className="mb-3 w-full">
+							{renderEditableField({
+								label: "Dream",
+								field: "dream",
+								component: "select",
+								options: OPTIONS.dream,
+							})}
+						</div>
+
+						<div className="mb-3 w-full">
+							{renderEditableField({
+								label: "Gender",
+								field: "gender",
+								component: "select",
+								options: OPTIONS.gender,
+							})}
+						</div>
+
+						<div className="mb-3 w-full">
+							{renderEditableField({
+								label: "Orientation",
+								field: "orientation",
+								component: "select",
+								options: OPTIONS.orientation,
+							})}
+						</div>
+
+						<div className="w-full">
+							<div className="flex items-center">
+								<p className="font-secondary text-lg font-bold">Location</p>
+								<button
+									type="button"
+									className="ml-1"
+									title="Update location"
+									onClick={handleUpdateLocation}
+								>
+									<RiRefreshLine
+										size="20px"
+										className={`${loadingLocation ? "animate-spin" : ""}`}
+									/>
+								</button>
 							</div>
 
-							<div className="mb-3 w-full">
-								{renderEditableField({
-									label: "Age",
-									field: "age",
-									type: "number",
-									component: "input",
-								})}
-							</div>
-
-							<div className="mb-3 w-full">
-								{renderEditableField({
-									label: "Dream",
-									field: "dream",
-									component: "select",
-									options: dreamOptions,
-								})}
-							</div>
-
-							<div className="mb-3 w-full">
-								{renderEditableField({
-									label: "Gender",
-									field: "gender",
-									component: "select",
-									options: genderOptions,
-								})}
-							</div>
-
-							<div className="mb-3 w-full">
-								{renderEditableField({
-									label: "Orientation",
-									field: "orientation",
-									component: "select",
-									options: orientationOptions,
-								})}
-							</div>
-
-							<div className="w-full">
-								<div className="flex items-center">
-									<p className="font-secondary text-lg font-bold">Location</p>
-									<button type="button" className="ml-1">
-										<RiEditCircleLine size="20px" />
-									</button>
-								</div>
-
-								<ul className="font-secondary flex space-x-2">
-									<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-										{location}
-									</li>
-								</ul>
-							</div>
-						</>
-					)}
-				</div>
-			</form>
-		</div>
+							<ul className="font-secondary flex space-x-2">
+								<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
+									{location?.address}
+								</li>
+							</ul>
+						</div>
+					</>
+				)}
+			</div>
+		</form>
 	);
 }

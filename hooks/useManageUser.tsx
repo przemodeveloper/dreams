@@ -18,7 +18,6 @@ export interface UploadingImage {
 }
 
 export function useManageUser(userId?: string) {
-	// const [images, setImages] = useState<ImageObject[]>([]);
 	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
 		loading: "idle",
 		imageRefId: null,
@@ -46,9 +45,12 @@ export function useManageUser(userId?: string) {
 		return profileDocRef;
 	};
 
-	const { userData } = useSubscribeUserProfile(userId || "");
+	const { userData, loading } = useSubscribeUserProfile(userId || "");
 
-	const handleUpdateUserProfile = async (field: Field, value: string) => {
+	const handleUpdateUserProfile = async (
+		field: Field | "location",
+		value: string | object
+	) => {
 		if (!userId) return;
 
 		const profileDocRef = await getProfileDocRef(userId);
@@ -119,5 +121,6 @@ export function useManageUser(userId?: string) {
 		handleDeleteImage,
 		handleUpdateUserProfile,
 		userData,
+		loading,
 	};
 }

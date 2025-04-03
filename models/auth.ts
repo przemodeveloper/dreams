@@ -10,6 +10,12 @@ export interface UserProfile extends User {
   gender?: string;
   orientation?: string;
   profileCreated?: string;
-  location?: string;
+  location?: {
+    address?: string;
+    coords?: {
+      lat?: number;
+      lng?: number;
+    };
+  };
   userId?: string;
 }

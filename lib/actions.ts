@@ -24,12 +24,27 @@ const datingProfileSchema = z.object({
   orientation: z.string({
     required_error: "Sexual orientation is required.",
   }),
+  location: z.object({
+    address: z.string({
+      required_error: "Address is required.",
+    }),
+    coords: z.object({
+      lat: z.number().optional(),
+      lng: z.number().optional(),
+    }),
+  }).required()
 });
 
 export async function handleSetProfile(
   prevState: InitialFormState,
   formData: FormData,
-  location: string | null,
+  location: {
+    address: string;
+    coords: {
+      latitude: number;
+      longitude: number;
+    }
+  } | null,
   userId?: string,
 ) {
   const userProfile = {
@@ -40,7 +55,7 @@ export async function handleSetProfile(
     gender: String(formData.get("gender")) || undefined,
     orientation: String(formData.get("orientation")) || undefined,
     profileCreated: new Date().toISOString(),
-    location: location || "",
+    location,
     userId,
   };
 
@@ -52,6 +67,8 @@ export async function handleSetProfile(
     .filter(Boolean);
 
   const result = datingProfileSchema.safeParse(userProfile);
+
+  console.log(userProfile)
 
   if (userId && result?.success) {
     const images: ImageObject[] = [];

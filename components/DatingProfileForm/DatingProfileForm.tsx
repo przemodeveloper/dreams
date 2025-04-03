@@ -24,14 +24,14 @@ import { useUserLocation } from "@/hooks/useUserLocation";
 export default function DatingProfileForm() {
 	const { user } = useAuthUser();
 	const router = useRouter();
-	const { address, error, loading } = useUserLocation();
+	const { location, error, loading } = useUserLocation({ skipOnMount: false });
 
 	const [state, formAction] = useActionState(
 		async (prevState: InitialFormState, formData: FormData) => {
 			const result = await handleSetProfile(
 				prevState,
 				formData,
-				address,
+				location,
 				user?.uid
 			);
 
@@ -111,7 +111,7 @@ export default function DatingProfileForm() {
 					type="number"
 					min={18}
 					label="Age"
-					defaultValue={formValues.age}
+					defaultValue={String(formValues.age)}
 					Component="input"
 					error={joinErrorMessages(formErrors.age)}
 				/>
@@ -145,7 +145,13 @@ export default function DatingProfileForm() {
 				<p className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
 					Location
 				</p>
-				<UserLocation address={address} error={error} loading={loading} />
+				{location && (
+					<UserLocation
+						address={location?.address}
+						error={error}
+						loading={loading}
+					/>
+				)}
 			</div>
 
 			<div className="w-full text-right px-3 mb-4">

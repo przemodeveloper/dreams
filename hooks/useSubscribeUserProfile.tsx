@@ -1,10 +1,17 @@
 import { db } from "@/firebase";
 import { UserProfile } from "@/models/auth";
-import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import {
+	collection,
+	doc,
+	FirestoreError,
+	getDocs,
+	onSnapshot,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export function useSubscribeUserProfile(userId: string) {
 	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
+	const [loading, setLoading] = useState("pending");
 
 	useEffect(() => {
 		if (!userId) return;
@@ -25,14 +32,22 @@ export function useSubscribeUserProfile(userId: string) {
 		let unsubscribe: () => void;
 
 		getProfileDocRef().then((profileDocRef) => {
-			unsubscribe = onSnapshot(profileDocRef, (docSnap) => {
-				const data = docSnap.data();
-				setUserData((data as Partial<UserProfile>) || null);
-			});
+			unsubscribe = onSnapshot(
+				profileDocRef,
+				(docSnap) => {
+					const data = docSnap.data();
+					setUserData((data as Partial<UserProfile>) || null);
+					setLoading("resolved");
+				},
+				(error: FirestoreError) => {
+					setLoading("error");
+					throw new Error(error.message);
+				}
+			);
 		});
 
 		return () => unsubscribe?.();
 	}, [userId]);
 
-	return { userData };
+	return { userData, loading };
 }

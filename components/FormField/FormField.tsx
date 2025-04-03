@@ -7,6 +7,7 @@ interface FormFieldProps {
 	Component: "input" | "textarea";
 	rows?: number;
 	value?: string;
+	defaultValue?: string;
 	min?: number;
 	max?: number;
 	error?: string;
@@ -23,6 +24,7 @@ export default function FormField({
 	label,
 	Component,
 	value,
+	defaultValue,
 	rows,
 	min,
 	max,
@@ -45,7 +47,8 @@ export default function FormField({
 				} text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
 				type={type}
 				onChange={onChange}
-				value={value}
+				{...(value ? { value } : {})}
+				{...(defaultValue ? { defaultValue } : {})}
 				name={name}
 				{...(Component === "textarea" ? { rows } : {})}
 				{...(type === "number" && min ? { min } : {})}
