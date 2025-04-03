@@ -13,38 +13,42 @@ export function useUserLocation({
 	} | null>(null);
 	const [loading, setLoading] = useState(false);
 
-	const getUserLocation = useCallback(() => {
+	const getUserLocation = useCallback(async () => {
 		setLoading(true);
+		setError(null);
+
 		const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 		if (apiKey) {
 			setKey(apiKey);
 		}
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(
-				(position) => {
-					const { latitude, longitude } = position.coords;
-					if (latitude && longitude) {
-						fromLatLng(latitude, longitude)
-							.then(({ results }) => {
-								if (results && results.length > 0) {
-									const address = results[0].formatted_address;
-									setLocation({ address, coords: { latitude, longitude } });
-								} else {
-									setError("No address found for the given coordinates.");
-								}
-							})
-							.catch(console.error)
-							.finally(() => setLoading(false));
-					}
-				},
-				(error) => {
-					setError(error.message);
-					setLoading(false);
-				}
-			);
-			setError(null);
-		} else {
+
+		if (!navigator.geolocation) {
 			setError("Geolocation is not supported by this browser.");
+			setLoading(false);
+			return;
+		}
+
+		try {
+			const position = await new Promise<GeolocationPosition>(
+				(resolve, reject) =>
+					navigator.geolocation.getCurrentPosition(resolve, reject)
+			);
+
+			const { latitude, longitude } = position.coords;
+
+			const { results } = await fromLatLng(latitude, longitude);
+
+			if (results.length > 0) {
+				const address = results[0].formatted_address;
+				setLocation({ address, coords: { latitude, longitude } });
+			} else {
+				setError("No address found for the given coordinates.");
+			}
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "Failed to fetch location."
+			);
+		} finally {
 			setLoading(false);
 		}
 	}, []);
@@ -54,7 +58,9 @@ export function useUserLocation({
 			return;
 		}
 
-		getUserLocation();
+		(async function fetchLocation() {
+			await getUserLocation();
+		})();
 	}, [getUserLocation, skipOnMount]);
 
 	return { error, location, loading, getUserLocation };

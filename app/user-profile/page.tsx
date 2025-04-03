@@ -78,8 +78,10 @@ export default function UserProfilePage() {
 		age: false,
 	});
 
+	const location = userData?.location;
+
 	const handleUpdateLocation = async () => {
-		getUserLocation();
+		await getUserLocation();
 		if (updatedLocation) {
 			await handleUpdateUserProfile("location", updatedLocation);
 		}
@@ -88,29 +90,24 @@ export default function UserProfilePage() {
 	useEffect(() => {
 		if (userData) {
 			setValues((prevState) => {
-				const formValues: Record<string, { value: string; label?: string }> =
-					{};
+				const updatedValues = { ...prevState };
 
 				for (const key in prevState) {
-					formValues[key as keyof typeof prevState] = {
+					updatedValues[key as keyof typeof prevState] = {
 						value: String(userData[key as keyof typeof prevState]) || "",
-						...((key === "dream" ||
-							key === "gender" ||
-							key === "orientation") && {
-							label: getLabel(OPTIONS[key], userData[key]),
+						...(OPTIONS[key as keyof typeof OPTIONS] && {
+							label: getLabel(
+								OPTIONS[key as keyof typeof OPTIONS],
+								userData[key as keyof typeof OPTIONS]
+							),
 						}),
 					};
 				}
 
-				return {
-					...prevState,
-					...formValues,
-				};
+				return updatedValues;
 			});
 		}
 	}, [userData]);
-
-	const location = userData?.location;
 
 	const renderEditableField = ({
 		label,
@@ -276,7 +273,7 @@ export default function UserProfilePage() {
 				) : (
 					<>
 						<h3 className="font-secondary border-b-2 mb-3 w-full">
-							{userData?.username}, {userData?.age}
+							{userData?.username}
 						</h3>
 
 						<div className="mb-3 w-full">
@@ -340,11 +337,7 @@ export default function UserProfilePage() {
 								</button>
 							</div>
 
-							<ul className="font-secondary flex space-x-2">
-								<li className="bg-gray-200 rounded-full w-fit px-2 py-1">
-									{location?.address}
-								</li>
-							</ul>
+							<p className="w-fit py-1">{location?.address}</p>
 						</div>
 					</>
 				)}
