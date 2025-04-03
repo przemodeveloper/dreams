@@ -13,7 +13,7 @@ import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSke
 import useAuthUser from "@/hooks/useAuthUser";
 import { useManageUser } from "@/hooks/useManageUser";
 import { useUserLocation } from "@/hooks/useUserLocation";
-import type { Option } from "@/models/form";
+import type { Field, Option } from "@/models/form";
 import { getLabel } from "@/utils/getLabel";
 import {
 	RiCloseCircleFill,
@@ -23,12 +23,10 @@ import {
 } from "@remixicon/react";
 import { useEffect, useState } from "react";
 
-export type Field = "bio" | "dream" | "gender" | "orientation" | "age";
-
 const OPTIONS = {
-	gender: genderOptions.filter((option) => option.value !== ""),
-	orientation: orientationOptions.filter((option) => option.value !== ""),
-	dream: dreamOptions.filter((option) => option.value !== ""),
+	gender: genderOptions.filter((option) => Boolean(option.value)),
+	orientation: orientationOptions.filter((option) => Boolean(option.value)),
+	dream: dreamOptions.filter((option) => Boolean(option.value)),
 };
 
 export default function UserProfilePage() {
@@ -173,18 +171,20 @@ export default function UserProfilePage() {
 					>
 						{label}
 					</label>
-					<div className="flex items-center">
-						<button
-							type="button"
-							className="ml-1"
-							title={`Edit ${label}`}
-							onClick={() =>
-								setEditState((prevState) => ({ ...prevState, [field]: true }))
-							}
-						>
-							<RiEditCircleLine size="20px" />
-						</button>
-					</div>
+					{!editState[field] && (
+						<div className="flex items-center">
+							<button
+								type="button"
+								className="ml-1"
+								title={`Edit ${label}`}
+								onClick={() =>
+									setEditState((prevState) => ({ ...prevState, [field]: true }))
+								}
+							>
+								<RiEditCircleLine size="20px" />
+							</button>
+						</div>
+					)}
 				</div>
 
 				{editState[field] ? (

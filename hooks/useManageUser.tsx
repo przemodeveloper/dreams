@@ -4,7 +4,7 @@ import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import { useSubscribeUserProfile } from "./useSubscribeUserProfile";
-import { Field } from "@/app/user-profile/page";
+import { Field } from "@/models/form";
 
 export interface ImageObject {
 	filePath: string;
