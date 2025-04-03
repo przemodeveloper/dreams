@@ -23,6 +23,12 @@ import { useEffect, useState } from "react";
 
 export type Field = "bio" | "dream" | "gender" | "orientation" | "age";
 
+const OPTIONS = {
+	gender: genderOptions,
+	orientation: orientationOptions,
+	dream: dreamOptions,
+};
+
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
 
@@ -66,26 +72,23 @@ export default function UserProfilePage() {
 	useEffect(() => {
 		if (userData) {
 			setValues((prevState) => {
+				const formValues: Record<string, { value: string; label?: string }> =
+					{};
+
+				for (const key in prevState) {
+					formValues[key as keyof typeof prevState] = {
+						value: String(userData[key as keyof typeof prevState]) || "",
+						...((key === "dream" ||
+							key === "gender" ||
+							key === "orientation") && {
+							label: getLabel(OPTIONS[key], userData[key]),
+						}),
+					};
+				}
+
 				return {
 					...prevState,
-					bio: {
-						value: userData.bio || "",
-					},
-					age: {
-						value: String(userData.age) || "",
-					},
-					dream: {
-						value: userData.dream || "",
-						label: getLabel(dreamOptions, userData.dream),
-					},
-					gender: {
-						value: userData.gender || "",
-						label: getLabel(genderOptions, userData.gender),
-					},
-					orientation: {
-						value: userData.orientation || "",
-						label: getLabel(orientationOptions, userData.orientation),
-					},
+					...formValues,
 				};
 			});
 		}
@@ -96,12 +99,14 @@ export default function UserProfilePage() {
 	const renderEditableField = ({
 		label,
 		field,
+		component,
 		type,
 		options,
 	}: {
 		label: string;
 		field: Field;
-		type: "textarea" | "input" | "select";
+		component: "textarea" | "input" | "select";
+		type?: "text" | "number";
 		options?: Option[];
 	}) => {
 		const handleChange = (
@@ -159,6 +164,7 @@ export default function UserProfilePage() {
 						<button
 							type="button"
 							className="ml-1"
+							title={`Edit ${label}`}
 							onClick={() =>
 								setEditState((prevState) => ({ ...prevState, [field]: true }))
 							}
@@ -170,28 +176,18 @@ export default function UserProfilePage() {
 
 				{editState[field] ? (
 					<>
-						{type === "input" && (
+						{(component === "textarea" || component === "input") && (
 							<FormField
 								name={field}
 								id={`field-${field}`}
-								type="text"
+								type={type || "text"}
 								value={values[field].value}
-								onChange={(e) => handleChange(e, "input")}
-								Component="input"
+								onChange={(e) => handleChange(e, component)}
+								Component={component}
+								{...(component === "textarea" ? { rows: 4 } : {})}
 							/>
 						)}
-						{type === "textarea" && (
-							<FormField
-								name={field}
-								id={`field-${field}`}
-								type="text"
-								value={values[field].value}
-								onChange={(e) => handleChange(e, "textarea")}
-								Component="textarea"
-								rows={4}
-							/>
-						)}
-						{type === "select" && options && (
+						{component === "select" && options && (
 							<Select
 								keyValue={values[field].value}
 								name={field}
@@ -202,17 +198,25 @@ export default function UserProfilePage() {
 							/>
 						)}
 						<div className="flex gap-2 mb-2 justify-end">
-							<button type="button" onClick={handleSave}>
+							<button
+								type="button"
+								onClick={handleSave}
+								title={`Save ${label} changes`}
+							>
 								<RiSave2Fill />
 							</button>
-							<button type="button" onClick={handleDiscard}>
+							<button
+								type="button"
+								onClick={handleDiscard}
+								title={`Discard ${label} changes`}
+							>
 								<RiCloseCircleFill />
 							</button>
 						</div>
 					</>
 				) : (
 					<p className="font-secondary mb-2">
-						{type === "select" && options ? (
+						{component === "select" && options ? (
 							<div className="bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
 								{getLabel(options, String(userData?.[field]))}
 							</div>
@@ -264,7 +268,8 @@ export default function UserProfilePage() {
 								{renderEditableField({
 									label: "Bio",
 									field: "bio",
-									type: "textarea",
+									type: "text",
+									component: "textarea",
 								})}
 							</div>
 
@@ -272,7 +277,8 @@ export default function UserProfilePage() {
 								{renderEditableField({
 									label: "Age",
 									field: "age",
-									type: "input",
+									type: "number",
+									component: "input",
 								})}
 							</div>
 
@@ -280,7 +286,7 @@ export default function UserProfilePage() {
 								{renderEditableField({
 									label: "Dream",
 									field: "dream",
-									type: "select",
+									component: "select",
 									options: dreamOptions,
 								})}
 							</div>
@@ -289,7 +295,7 @@ export default function UserProfilePage() {
 								{renderEditableField({
 									label: "Gender",
 									field: "gender",
-									type: "select",
+									component: "select",
 									options: genderOptions,
 								})}
 							</div>
@@ -298,7 +304,7 @@ export default function UserProfilePage() {
 								{renderEditableField({
 									label: "Orientation",
 									field: "orientation",
-									type: "select",
+									component: "select",
 									options: orientationOptions,
 								})}
 							</div>
