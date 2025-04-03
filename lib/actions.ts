@@ -1,7 +1,7 @@
 import { initialFormState } from "@/components/DatingProfileForm/datingProfile.consts";
 import { imageRefIds } from "@/constants/user-profile";
 import { db, storage } from "@/firebase";
-import type { ImageObject } from "@/hooks/useManageImages";
+import type { ImageObject } from "@/hooks/useManageUser";
 import type { InitialFormState } from "@/models/form";
 import { uploadImage } from "@/utils/uploadImage";
 import { addDoc, collection } from "firebase/firestore";

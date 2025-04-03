@@ -11,7 +11,7 @@ import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
 import useAuthUser from "@/hooks/useAuthUser";
-import { useManageImages } from "@/hooks/useManageImages";
+import { useManageUser } from "@/hooks/useManageUser";
 import type { Option } from "@/models/form";
 import { getLabel } from "@/utils/getLabel";
 import {
@@ -19,24 +19,79 @@ import {
 	RiEditCircleLine,
 	RiSave2Fill,
 } from "@remixicon/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-type Field = "bio" | "dream" | "gender" | "orientation";
+export type Field = "bio" | "dream" | "gender" | "orientation" | "age";
 
 export default function UserProfilePage() {
 	const { user, loading: loadingUser } = useAuthUser();
+
+	const [values, setValues] = useState({
+		bio: {
+			value: "",
+		},
+		dream: {
+			value: "",
+			label: "",
+		},
+		age: {
+			value: "",
+		},
+		gender: {
+			value: "",
+			label: "",
+		},
+		orientation: {
+			value: "",
+			label: "",
+		},
+	});
 
 	const [editState, setEditState] = useState({
 		bio: false,
 		dream: false,
 		gender: false,
 		orientation: false,
+		age: false,
 	});
 
-	const { images, uploadingImage, handleDeleteImage, handleUploadImage } =
-		useManageImages(user?.images, user?.uid);
+	const {
+		uploadingImage,
+		handleDeleteImage,
+		handleUploadImage,
+		handleUpdateUserProfile,
+		userData,
+	} = useManageUser(user?.uid);
 
-	const location = user?.location;
+	useEffect(() => {
+		if (userData) {
+			setValues((prevState) => {
+				return {
+					...prevState,
+					bio: {
+						value: userData.bio || "",
+					},
+					age: {
+						value: String(userData.age) || "",
+					},
+					dream: {
+						value: userData.dream || "",
+						label: getLabel(dreamOptions, userData.dream),
+					},
+					gender: {
+						value: userData.gender || "",
+						label: getLabel(genderOptions, userData.gender),
+					},
+					orientation: {
+						value: userData.orientation || "",
+						label: getLabel(orientationOptions, userData.orientation),
+					},
+				};
+			});
+		}
+	}, [userData]);
+
+	const location = userData?.location;
 
 	const renderEditableField = ({
 		label,
@@ -49,6 +104,48 @@ export default function UserProfilePage() {
 		type: "textarea" | "input" | "select";
 		options?: Option[];
 	}) => {
+		const handleChange = (
+			e: React.ChangeEvent<
+				HTMLTextAreaElement | HTMLSelectElement | HTMLInputElement
+			>,
+			fieldType?: "textarea" | "select" | "input",
+			options?: Option[]
+		) => {
+			setValues((prevState) => ({
+				...prevState,
+				[field]: {
+					...prevState[field],
+					value: e.target.value,
+					...(fieldType === "select" &&
+						options && {
+							label: getLabel(options, e.target.value),
+						}),
+				},
+			}));
+		};
+
+		const handleDiscard = () => {
+			setEditState((prevState) => ({
+				...prevState,
+				[field]: false,
+			}));
+			setValues((prevState) => ({
+				...prevState,
+				[field]: {
+					value: userData?.[field],
+					label: getLabel(options || [], String(userData?.[field])),
+				},
+			}));
+		};
+
+		const handleSave = async () => {
+			await handleUpdateUserProfile(field, values[field].value);
+			setEditState((prevState) => ({
+				...prevState,
+				[field]: false,
+			}));
+		};
+
 		return (
 			<div className="border-b-2 w-full">
 				<div className="flex items-center">
@@ -73,38 +170,42 @@ export default function UserProfilePage() {
 
 				{editState[field] ? (
 					<>
+						{type === "input" && (
+							<FormField
+								name={field}
+								id={`field-${field}`}
+								type="text"
+								value={values[field].value}
+								onChange={(e) => handleChange(e, "input")}
+								Component="input"
+							/>
+						)}
 						{type === "textarea" && (
 							<FormField
-								name="bio"
+								name={field}
 								id={`field-${field}`}
-								type="textarea"
-								defaultValue={user?.bio || ""}
+								type="text"
+								value={values[field].value}
+								onChange={(e) => handleChange(e, "textarea")}
 								Component="textarea"
 								rows={4}
 							/>
 						)}
 						{type === "select" && options && (
 							<Select
-								keyValue={user?.[field]}
+								keyValue={values[field].value}
 								name={field}
 								id={`field-${field}`}
-								defaultValue={user?.[field] || ""}
+								value={values[field].value}
 								options={options}
+								onChange={(e) => handleChange(e, "select", options)}
 							/>
 						)}
 						<div className="flex gap-2 mb-2 justify-end">
-							<button type="button">
+							<button type="button" onClick={handleSave}>
 								<RiSave2Fill />
 							</button>
-							<button
-								type="button"
-								onClick={() =>
-									setEditState((prevState) => ({
-										...prevState,
-										[field]: false,
-									}))
-								}
-							>
+							<button type="button" onClick={handleDiscard}>
 								<RiCloseCircleFill />
 							</button>
 						</div>
@@ -113,10 +214,10 @@ export default function UserProfilePage() {
 					<p className="font-secondary mb-2">
 						{type === "select" && options ? (
 							<div className="bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
-								{getLabel(options, user?.[field])}
+								{getLabel(options, String(userData?.[field]))}
 							</div>
 						) : (
-							<p className="text-lg">{user?.[field]}</p>
+							<p className="text-lg">{userData?.[field]}</p>
 						)}
 					</p>
 				)}
@@ -132,7 +233,7 @@ export default function UserProfilePage() {
 						<ImageSkeleton count={3} />
 					) : (
 						<>
-							{images?.map((image) => (
+							{userData?.images?.map((image) => (
 								<ImagePreview
 									key={image.imageRefId}
 									imageRefId={image.imageRefId}
@@ -156,7 +257,7 @@ export default function UserProfilePage() {
 					) : (
 						<>
 							<h3 className="font-secondary border-b-2 mb-3 w-full">
-								{user?.username}, {user?.age}
+								{userData?.username}, {userData?.age}
 							</h3>
 
 							<div className="mb-3 w-full">
@@ -164,6 +265,14 @@ export default function UserProfilePage() {
 									label: "Bio",
 									field: "bio",
 									type: "textarea",
+								})}
+							</div>
+
+							<div className="mb-3 w-full">
+								{renderEditableField({
+									label: "Age",
+									field: "age",
+									type: "input",
 								})}
 							</div>
 

@@ -1,4 +1,4 @@
-import type { ImageObject } from "@/hooks/useManageImages";
+import type { ImageObject } from "@/hooks/useManageUser";
 import type { User } from "firebase/auth";
 
 export interface UserProfile extends User {

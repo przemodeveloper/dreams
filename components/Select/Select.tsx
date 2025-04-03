@@ -7,8 +7,9 @@ interface SelectProps {
 	options: Option[];
 	label?: string;
 	error?: string;
-	defaultValue?: string;
+	value?: string;
 	keyValue?: string;
+	onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function Select({
@@ -18,8 +19,9 @@ export default function Select({
 	options,
 	label,
 	error,
-	defaultValue,
+	value,
 	keyValue,
+	onChange,
 }: SelectProps) {
 	return (
 		<>
@@ -40,7 +42,8 @@ export default function Select({
 					name={name}
 					id={id}
 					required={required}
-					defaultValue={defaultValue}
+					value={value}
+					onChange={onChange}
 				>
 					{options.map((option) => (
 						<option key={option.value} value={option.value}>

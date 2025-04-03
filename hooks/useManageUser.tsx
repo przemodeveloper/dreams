@@ -1,15 +1,10 @@
 import { db, storage } from "@/firebase";
-import type { UserProfile } from "@/models/auth";
 import { uploadImage } from "@/utils/uploadImage";
-import {
-	collection,
-	doc,
-	getDocs,
-	onSnapshot,
-	updateDoc,
-} from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSubscribeUserProfile } from "./useSubscribeUserProfile";
+import { Field } from "@/app/user-profile/page";
 
 export interface ImageObject {
 	filePath: string;
@@ -22,42 +17,8 @@ export interface UploadingImage {
 	imageRefId: string | null;
 }
 
-export function useSubscribeUserProfile(userId: string) {
-	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
-
-	useEffect(() => {
-		if (!userId) return;
-
-		const getProfileDocRef = async () => {
-			const userProfileCollection = collection(
-				db,
-				"profiles",
-				userId,
-				"userProfile"
-			);
-			const snapshot = await getDocs(userProfileCollection);
-			if (snapshot.empty) throw new Error("User profile not found");
-			const userProfileDocId = snapshot.docs[0].id;
-			return doc(db, "profiles", userId, "userProfile", userProfileDocId);
-		};
-
-		let unsubscribe: () => void;
-
-		getProfileDocRef().then((profileDocRef) => {
-			unsubscribe = onSnapshot(profileDocRef, (docSnap) => {
-				const data = docSnap.data();
-				setUserData((data as Partial<UserProfile>) || null);
-			});
-		});
-
-		return () => unsubscribe?.();
-	}, [userId]);
-
-	return { userData };
-}
-
-export function useManageImages(userImages?: ImageObject[], userId?: string) {
-	const [images, setImages] = useState<ImageObject[]>(userImages || []);
+export function useManageUser(userId?: string) {
+	// const [images, setImages] = useState<ImageObject[]>([]);
 	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
 		loading: "idle",
 		imageRefId: null,
@@ -87,11 +48,15 @@ export function useManageImages(userImages?: ImageObject[], userId?: string) {
 
 	const { userData } = useSubscribeUserProfile(userId || "");
 
-	useEffect(() => {
-		if (userData?.images) {
-			setImages(userData.images);
-		}
-	}, [userData?.images]);
+	const handleUpdateUserProfile = async (field: Field, value: string) => {
+		if (!userId) return;
+
+		const profileDocRef = await getProfileDocRef(userId);
+
+		await updateDoc(profileDocRef, {
+			[field]: value,
+		});
+	};
 
 	const handleUploadImage = async (
 		file: File,
@@ -112,7 +77,7 @@ export function useManageImages(userImages?: ImageObject[], userId?: string) {
 		if (!res) return;
 
 		await updateDoc(profileDocRef, {
-			images: images.map((image) =>
+			images: userData?.images?.map((image) =>
 				imageRefId === image.imageRefId
 					? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
 					: image
@@ -132,7 +97,7 @@ export function useManageImages(userImages?: ImageObject[], userId?: string) {
 		await deleteObject(imageRef)
 			.then(async () => {
 				await updateDoc(profileDocRef, {
-					images: images.map((image) =>
+					images: userData?.images?.map((image) =>
 						image.filePath === filePath
 							? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
 							: image
@@ -149,9 +114,10 @@ export function useManageImages(userImages?: ImageObject[], userId?: string) {
 	};
 
 	return {
-		images,
 		uploadingImage,
 		handleUploadImage,
 		handleDeleteImage,
+		handleUpdateUserProfile,
+		userData,
 	};
 }
