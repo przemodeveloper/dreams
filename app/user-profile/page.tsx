@@ -74,6 +74,8 @@ export default function UserProfilePage() {
 		if (result?.location) {
 			await handleUpdateUserProfile("location", result?.location);
 			notify("Location synced successfully!");
+		} else if (result?.error) {
+			notify(result.error);
 		}
 	};
 
@@ -155,6 +157,23 @@ export default function UserProfilePage() {
 			}));
 		};
 
+		const handleToggleEdit = () => {
+			setEditState((prevState) => {
+				const updatedEditState = { ...prevState };
+
+				for (const key in updatedEditState) {
+					if (key !== field) {
+						updatedEditState[key as keyof typeof updatedEditState] = false;
+					}
+				}
+
+				return {
+					...updatedEditState,
+					[field]: true,
+				};
+			});
+		};
+
 		return (
 			<div className="border-b-2 w-full">
 				<div className="flex items-center">
@@ -170,9 +189,7 @@ export default function UserProfilePage() {
 								type="button"
 								className="ml-1"
 								title={`Edit ${label}`}
-								onClick={() =>
-									setEditState((prevState) => ({ ...prevState, [field]: true }))
-								}
+								onClick={handleToggleEdit}
 							>
 								<RiEditCircleLine size="20px" />
 							</button>
