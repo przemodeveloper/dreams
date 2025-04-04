@@ -1,6 +1,46 @@
 import { useCallback, useEffect, useState } from "react";
 import { fromLatLng, setKey } from "react-geocode";
 
+const fetchGeolocation = async () => {
+	const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+	if (apiKey) {
+		setKey(apiKey);
+	}
+
+	if (!navigator.geolocation) {
+		return {
+			error: "Geolocation is not supported by this browser.",
+			location: null,
+		};
+	}
+
+	try {
+		const position = await new Promise<GeolocationPosition>((resolve, reject) =>
+			navigator.geolocation.getCurrentPosition(resolve, reject)
+		);
+
+		const { latitude, longitude } = position.coords;
+
+		const { results } = await fromLatLng(latitude, longitude);
+
+		if (results.length > 0) {
+			const address = results[0].formatted_address;
+
+			return {
+				location: { address, coords: { latitude, longitude } },
+				error: null,
+			};
+		} else {
+			return null;
+		}
+	} catch (err) {
+		return {
+			location: null,
+			error: err instanceof Error ? err.message : "Failed to fetch location.",
+		};
+	}
+};
+
 export function useUserLocation({
 	skipOnMount = false,
 }: {
@@ -17,40 +57,18 @@ export function useUserLocation({
 		setLoading(true);
 		setError(null);
 
-		const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-		if (apiKey) {
-			setKey(apiKey);
+		const result = await fetchGeolocation();
+
+		if (result?.error) {
+			setError(result.error);
 		}
 
-		if (!navigator.geolocation) {
-			setError("Geolocation is not supported by this browser.");
-			setLoading(false);
-			return;
+		if (result?.location) {
+			setLocation(result.location);
 		}
 
-		try {
-			const position = await new Promise<GeolocationPosition>(
-				(resolve, reject) =>
-					navigator.geolocation.getCurrentPosition(resolve, reject)
-			);
-
-			const { latitude, longitude } = position.coords;
-
-			const { results } = await fromLatLng(latitude, longitude);
-
-			if (results.length > 0) {
-				const address = results[0].formatted_address;
-				setLocation({ address, coords: { latitude, longitude } });
-			} else {
-				setError("No address found for the given coordinates.");
-			}
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to fetch location."
-			);
-		} finally {
-			setLoading(false);
-		}
+		setLoading(false);
+		return result;
 	}, []);
 
 	useEffect(() => {
@@ -58,7 +76,7 @@ export function useUserLocation({
 			return;
 		}
 
-		(async function fetchLocation() {
+		(async function () {
 			await getUserLocation();
 		})();
 	}, [getUserLocation, skipOnMount]);

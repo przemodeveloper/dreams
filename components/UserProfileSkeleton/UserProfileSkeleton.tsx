@@ -6,6 +6,9 @@ export default function UserProfileSkeleton() {
 			<p className="font-secondary font-bold">Bio</p>
 			<div className="h-4 bg-gray-300 rounded-full mb-4" />
 
+			<p className="font-secondary font-bold">Age</p>
+			<div className="h-4 bg-gray-300 rounded-full mb-4" />
+
 			<p className="font-secondary font-bold">Dream</p>
 			<div className="h-4 bg-gray-300 rounded-full mb-4" />
 

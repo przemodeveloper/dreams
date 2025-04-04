@@ -1,15 +1,12 @@
 "use client";
 
-import {
-	dreamOptions,
-	genderOptions,
-	orientationOptions,
-} from "@/components/DatingProfileForm/datingProfile.consts";
 import FormField from "@/components/FormField/FormField";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
+import { OPTIONS } from "@/constants/user-profile";
+import { useNotificationContext } from "@/context/notification-context";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useManageUser } from "@/hooks/useManageUser";
 import { useUserLocation } from "@/hooks/useUserLocation";
@@ -23,14 +20,10 @@ import {
 } from "@remixicon/react";
 import { useEffect, useState } from "react";
 
-const OPTIONS = {
-	gender: genderOptions.filter((option) => Boolean(option.value)),
-	orientation: orientationOptions.filter((option) => Boolean(option.value)),
-	dream: dreamOptions.filter((option) => Boolean(option.value)),
-};
-
 export default function UserProfilePage() {
 	const { user } = useAuthUser();
+
+	const { notify } = useNotificationContext();
 
 	const {
 		uploadingImage,
@@ -41,11 +34,9 @@ export default function UserProfilePage() {
 		loading,
 	} = useManageUser(user?.uid);
 
-	const {
-		location: updatedLocation,
-		loading: loadingLocation,
-		getUserLocation,
-	} = useUserLocation({ skipOnMount: true });
+	const { loading: loadingLocation, getUserLocation } = useUserLocation({
+		skipOnMount: true,
+	});
 
 	const [values, setValues] = useState({
 		bio: {
@@ -79,9 +70,10 @@ export default function UserProfilePage() {
 	const location = userData?.location;
 
 	const handleUpdateLocation = async () => {
-		await getUserLocation();
-		if (updatedLocation) {
-			await handleUpdateUserProfile("location", updatedLocation);
+		const result = await getUserLocation();
+		if (result?.location) {
+			await handleUpdateUserProfile("location", result?.location);
+			notify("Location synced successfully!");
 		}
 	};
 
@@ -156,6 +148,7 @@ export default function UserProfilePage() {
 
 		const handleSave = async () => {
 			await handleUpdateUserProfile(field, values[field].value);
+			notify(`${label} updated successfully!`);
 			setEditState((prevState) => ({
 				...prevState,
 				[field]: false,
@@ -243,7 +236,7 @@ export default function UserProfilePage() {
 	};
 
 	return (
-		<form className="flex justify-center items-center flex-col pt-4">
+		<div className="flex justify-center items-center flex-col pt-4">
 			<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
 				{!userData && loading === "pending" ? (
 					<ImageSkeleton count={3} />
@@ -326,8 +319,9 @@ export default function UserProfilePage() {
 								<p className="font-secondary text-lg font-bold">Location</p>
 								<button
 									type="button"
-									className="ml-1"
+									className="ml-1 disabled:opacity-50"
 									title="Update location"
+									disabled={loadingLocation}
 									onClick={handleUpdateLocation}
 								>
 									<RiRefreshLine
@@ -342,6 +336,6 @@ export default function UserProfilePage() {
 					</>
 				)}
 			</div>
-		</form>
+		</div>
 	);
 }

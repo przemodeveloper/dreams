@@ -4,52 +4,52 @@
 @tailwind utilities;
 
 :root {
-  --font-primary: "Agu Display", serif;
-  --font-secondary: "Roboto", serif;
+	--font-primary: "Agu Display", serif;
+	--font-secondary: "Roboto", serif;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: "Arial", sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f9f9f9;
-  min-height: 100vh;
-  padding: 0;
-  margin: 0;
+	font-family: "Arial", sans-serif;
+	line-height: 1.6;
+	color: #333;
+	background-color: #f9f9f9;
+	min-height: 100vh;
+	padding: 0;
+	margin: 0;
 }
 
 h1 {
-  @apply text-5xl font-bold leading-tight;
+	@apply text-5xl font-bold leading-tight;
 }
 
 h2 {
-  @apply text-4xl font-semibold leading-snug;
+	@apply text-4xl font-semibold leading-snug;
 }
 
 h3 {
-  @apply text-3xl font-medium leading-normal;
+	@apply text-3xl font-medium leading-normal;
 }
 
 h4 {
-  @apply text-2xl font-medium leading-relaxed;
+	@apply text-2xl font-medium leading-relaxed;
 }
 
 h5 {
-  @apply text-xl font-medium leading-relaxed;
+	@apply text-xl font-medium leading-relaxed;
 }
 
 p {
-  @apply text-base leading-6;
+	@apply text-base leading-6;
 }

@@ -3,6 +3,7 @@
 import useAuthUser from "@/hooks/useAuthUser";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+import { NotificationContextProvider } from "@/context/notification-context";
 
 export default function RootLayout({
 	children,
@@ -14,7 +15,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				{loading === "pending" && !user ? <LoadingScreen /> : children}
+				<NotificationContextProvider>
+					{loading === "pending" && !user ? <LoadingScreen /> : children}
+				</NotificationContextProvider>
 			</body>
 		</html>
 	);
