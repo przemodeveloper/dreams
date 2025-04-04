@@ -1,23 +1,23 @@
-"use client";
-
-import useAuthUser from "@/hooks/useAuthUser";
 import "./globals.css";
-import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
-import { NotificationContextProvider } from "@/context/notification-context";
+
+import { Metadata } from "next";
+import UserProvider from "@/components/UserProvider/UserProvider";
+
+export const metadata: Metadata = {
+	title: "Dreams",
+	description:
+		"Unique dating app designed to connect people who share similar aspirations and plans for the future",
+};
 
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const { user, loading } = useAuthUser();
-
 	return (
 		<html lang="en">
 			<body>
-				<NotificationContextProvider>
-					{loading === "pending" && !user ? <LoadingScreen /> : children}
-				</NotificationContextProvider>
+				<UserProvider>{children}</UserProvider>
 			</body>
 		</html>
 	);

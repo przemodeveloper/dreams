@@ -42,6 +42,8 @@ export default function ImagePreview({
 					<Image
 						src={imgSrc}
 						alt={alt}
+						loading="eager"
+						priority
 						width={300}
 						height={300}
 						className="object-cover rounded-md h-full border"
@@ -49,6 +51,7 @@ export default function ImagePreview({
 					<button
 						type="button"
 						onClick={handleRemoveImage}
+						title="Remove image"
 						className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-black hover:text-white m-1 p-1 rounded-md"
 					>
 						<RiFileReduceLine />

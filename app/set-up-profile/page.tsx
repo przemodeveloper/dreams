@@ -1,4 +1,9 @@
 import DatingProfileForm from "@/components/DatingProfileForm/DatingProfileForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Set up your Dreams profile",
+};
 
 export default function SetUpProfilePage() {
 	return (

@@ -49,6 +49,8 @@ export default function ImagePicker({
 					<Image
 						src={image as string}
 						alt="Image"
+						loading="eager"
+						priority
 						width={300}
 						height={300}
 						className="object-cover rounded-md h-[300px] border"
@@ -56,6 +58,7 @@ export default function ImagePicker({
 					<button
 						type="button"
 						onClick={handleRemoveImage}
+						title="Remove image"
 						className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-black hover:text-white m-1 p-1 rounded-md"
 					>
 						<RiFileReduceLine />
@@ -67,6 +70,7 @@ export default function ImagePicker({
 						onClick={handleClick}
 						type="button"
 						className="transition ease-in-out duration-300 group hover:bg-black border w-full border-gray-300 border-2 h-[300px] p-4 rounded-md"
+						title="Add image"
 					>
 						<RiImageCircleFill className="transition ease-in-out duration-300 group-hover:text-white w-10 h-10 mx-auto" />
 					</button>

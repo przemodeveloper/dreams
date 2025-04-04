@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 const NotificationContext = createContext({
-	notify: (message: string) => {},
+	notify: (message: string) => console.log(message),
 });
 
 export const NotificationContextProvider = ({
