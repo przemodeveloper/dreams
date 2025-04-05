@@ -2,10 +2,9 @@
 
 import FormField from "@/components/FormField/FormField";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
-import ImageSkeleton from "@/components/ImageSkeleton/ImageSkeleton";
 import Select from "@/components/Select/Select";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
-import { OPTIONS } from "@/constants/user-profile";
+import { initialValues, OPTIONS } from "@/constants/user-profile";
 import { useNotificationContext } from "@/context/notification-context";
 import useAuthUser from "@/hooks/useAuthUser";
 import { useManageUser } from "@/hooks/useManageUser";
@@ -38,28 +37,10 @@ export default function UpdateProfileForm() {
 		skipOnMount: true,
 	});
 
-	const [values, setValues] = useState({
-		bio: {
-			value: "",
-		},
-		dream: {
-			value: "",
-			label: "",
-		},
-		age: {
-			value: "",
-		},
-		gender: {
-			value: "",
-			label: "",
-		},
-		orientation: {
-			value: "",
-			label: "",
-		},
-	});
+	const [values, setValues] = useState(initialValues);
 
 	const [editState, setEditState] = useState({
+		username: false,
 		bio: false,
 		dream: false,
 		gender: false,
@@ -252,13 +233,115 @@ export default function UpdateProfileForm() {
 		);
 	};
 
+	const renderEditableUsername = () => {
+		const handleToggleEdit = () => {
+			setEditState((prevState) => {
+				const updatedEditState = { ...prevState };
+
+				for (const key in updatedEditState) {
+					if (key !== "username") {
+						updatedEditState[key as keyof typeof updatedEditState] = false;
+					}
+				}
+
+				return {
+					...updatedEditState,
+					username: true,
+				};
+			});
+		};
+
+		const handleChange = (
+			e: React.ChangeEvent<
+				HTMLTextAreaElement | HTMLSelectElement | HTMLInputElement
+			>
+		) => {
+			setValues((prevState) => ({
+				...prevState,
+				username: { value: e.target.value },
+			}));
+		};
+
+		const handleSave = async () => {
+			await handleUpdateUserProfile("username", values.username.value);
+			notify("Username updated successfully!");
+			setEditState((prevState) => ({
+				...prevState,
+				username: false,
+			}));
+		};
+
+		const handleDiscard = () => {
+			setEditState((prevState) => ({
+				...prevState,
+				username: false,
+			}));
+		};
+
+		return (
+			<div className="w-full">
+				<div className="flex items-center">
+					<label
+						htmlFor="field-username"
+						className="font-secondary text-lg font-bold hidden"
+					>
+						Username
+					</label>
+				</div>
+
+				{editState.username ? (
+					<>
+						<FormField
+							name="username"
+							id="field-username"
+							type="text"
+							value={values.username.value}
+							onChange={(e) => handleChange(e)}
+							Component="input"
+						/>
+						<div className="flex gap-2 mb-2 justify-end">
+							<button
+								type="button"
+								onClick={handleSave}
+								title="Save username changes"
+							>
+								<RiSave2Fill />
+							</button>
+							<button
+								type="button"
+								onClick={handleDiscard}
+								title="Discard username changes"
+							>
+								<RiCloseCircleFill />
+							</button>
+						</div>
+					</>
+				) : (
+					<div className="flex items-center">
+						<h3 className="font-secondary border-b-2 mb-3 w-full flex items-center">
+							{userData?.username}
+							<button
+								type="button"
+								className="ml-1"
+								title="Edit username"
+								onClick={handleToggleEdit}
+							>
+								<RiEditCircleLine size="25px" />
+							</button>
+						</h3>
+					</div>
+				)}
+			</div>
+		);
+	};
+
 	return (
 		<div className="flex justify-center items-center flex-col pt-4">
-			<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
-				{!userData && loading === "pending" ? (
-					<ImageSkeleton count={3} />
-				) : (
-					<>
+			{!userData && loading === "pending" ? (
+				<UserProfileSkeleton />
+			) : (
+				<>
+					<div className="relative w-full md:w-2/3 lg:w-1/2 grid grid-cols-3 gap-3 mb-4">
 						{userData?.images?.map((image) => (
 							<ImagePreview
 								key={image.imageRefId}
@@ -274,17 +357,9 @@ export default function UpdateProfileForm() {
 								alt={image.imageRefId}
 							/>
 						))}
-					</>
-				)}
-			</div>
-			<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
-				{!userData && loading === "pending" ? (
-					<UserProfileSkeleton />
-				) : (
-					<>
-						<h3 className="font-secondary border-b-2 mb-3 w-full">
-							{userData?.username}
-						</h3>
+					</div>
+					<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
+						<div className="mb-3 w-full">{renderEditableUsername()}</div>
 
 						<div className="mb-3 w-full">
 							{renderEditableField({
@@ -350,9 +425,9 @@ export default function UpdateProfileForm() {
 
 							<p className="w-fit py-1">{location?.address}</p>
 						</div>
-					</>
-				)}
-			</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

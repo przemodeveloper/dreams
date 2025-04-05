@@ -11,3 +11,27 @@ export const OPTIONS = {
   orientation: orientationOptions.filter((option) => Boolean(option.value)),
   dream: dreamOptions.filter((option) => Boolean(option.value)),
 };
+
+export const initialValues = {
+  username: {
+    value: "",
+  },
+  bio: {
+    value: "",
+  },
+  dream: {
+    value: "",
+    label: "",
+  },
+  age: {
+    value: "",
+  },
+  gender: {
+    value: "",
+    label: "",
+  },
+  orientation: {
+    value: "",
+    label: "",
+  },
+}

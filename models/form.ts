@@ -20,4 +20,4 @@ export interface Option {
   label: string;
 }
 
-export type Field = "bio" | "dream" | "gender" | "orientation" | "age";
+export type Field = "username" | "bio" | "dream" | "gender" | "orientation" | "age";
