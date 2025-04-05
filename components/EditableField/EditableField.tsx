@@ -137,9 +137,7 @@ export const EditableField = ({
 							{getLabel(options, String(initialValue))}
 						</p>
 					) : (
-						<p
-							className={`font-secondary mb-2 text-lg ${className} flex items-center`}
-						>
+						<p className={`font-secondary mb-2 ${className} flex items-center`}>
 							{initialValue}
 							{!editing && !showLabel && (
 								<button

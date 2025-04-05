@@ -88,6 +88,7 @@ export default function UpdateProfileForm() {
 								field="bio"
 								label="Bio"
 								type="text"
+								className="text-lg"
 								component="textarea"
 								initialValue={userData?.bio || ""}
 								onSave={handleSave}
@@ -103,6 +104,7 @@ export default function UpdateProfileForm() {
 								component="input"
 								initialValue={String(userData?.age)}
 								onSave={handleSave}
+								className="text-lg"
 							/>
 						</div>
 
@@ -125,6 +127,7 @@ export default function UpdateProfileForm() {
 								initialValue={userData?.gender || ""}
 								onSave={handleSave}
 								options={OPTIONS.gender}
+								className="text-lg"
 							/>
 						</div>
 
@@ -136,6 +139,7 @@ export default function UpdateProfileForm() {
 								initialValue={userData?.orientation || ""}
 								onSave={handleSave}
 								options={OPTIONS.orientation}
+								className="text-lg"
 							/>
 						</div>
 
