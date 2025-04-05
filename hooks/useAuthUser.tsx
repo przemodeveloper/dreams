@@ -8,7 +8,9 @@ import { useCallback, useEffect, useState } from "react";
 
 export default function useAuthUser() {
 	const [user, setUser] = useState<Partial<UserProfile> | null>(null);
-	const [loading, setLoading] = useState("pending");
+	const [loading, setLoading] = useState<"pending" | "resolved" | "rejected">(
+		"pending"
+	);
 	const router = useRouter();
 
 	const signIn = async () => {

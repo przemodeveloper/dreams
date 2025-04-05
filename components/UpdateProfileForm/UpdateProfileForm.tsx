@@ -4,15 +4,15 @@ import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import UserProfileSkeleton from "@/components/UserProfileSkeleton/UserProfileSkeleton";
 import { OPTIONS } from "@/constants/user-profile";
 import { useNotificationContext } from "@/context/notification-context";
-import useAuthUser from "@/hooks/useAuthUser";
 import { useManageUser } from "@/hooks/useManageUser";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Field } from "@/models/form";
 import { RiRefreshLine } from "@remixicon/react";
 import { EditableField } from "../EditableField/EditableField";
+import { useUserContext } from "@/context/user-context";
 
 export default function UpdateProfileForm() {
-	const { user } = useAuthUser();
+	const { user } = useUserContext();
 
 	const { notify } = useNotificationContext();
 

@@ -3,6 +3,7 @@
 import useAuthUser from "@/hooks/useAuthUser";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { NotificationContextProvider } from "@/context/notification-context";
+import { UserContextProvider } from "@/context/user-context";
 
 export default function UserProvider({
 	children,
@@ -12,8 +13,10 @@ export default function UserProvider({
 	const { user, loading } = useAuthUser();
 
 	return (
-		<NotificationContextProvider>
-			{loading === "pending" && !user ? <LoadingScreen /> : children}
-		</NotificationContextProvider>
+		<UserContextProvider value={{ user, loading }}>
+			<NotificationContextProvider>
+				{loading === "pending" && !user ? <LoadingScreen /> : children}
+			</NotificationContextProvider>
+		</UserContextProvider>
 	);
 }
