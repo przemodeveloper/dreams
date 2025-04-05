@@ -78,7 +78,7 @@ export default function UpdateProfileForm() {
 								component="input"
 								initialValue={userData?.username || ""}
 								onSave={handleSave}
-								className="text-2xl"
+								className="text-3xl"
 								showLabel={false}
 							/>
 						</div>
