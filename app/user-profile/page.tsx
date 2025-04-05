@@ -1,5 +1,5 @@
 import UpdateProfileForm from "@/components/UpdateProfileForm/UpdateProfileForm";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Update Dreams Profile",

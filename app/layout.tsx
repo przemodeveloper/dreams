@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Roboto } from "next/font/google";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import UserProvider from "@/components/UserProvider/UserProvider";
 
 export const metadata: Metadata = {

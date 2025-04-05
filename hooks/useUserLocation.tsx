@@ -30,9 +30,8 @@ const fetchGeolocation = async () => {
 				location: { address, coords: { latitude, longitude } },
 				error: null,
 			};
-		} else {
-			return null;
 		}
+		return null;
 	} catch (err) {
 		return {
 			location: null,
@@ -76,7 +75,7 @@ export function useUserLocation({
 			return;
 		}
 
-		(async function () {
+		(async () => {
 			await getUserLocation();
 		})();
 	}, [getUserLocation, skipOnMount]);
