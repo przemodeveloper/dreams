@@ -12,7 +12,7 @@ import { useState } from "react";
 interface EditableFieldProps {
 	field: Field;
 	label: string;
-	type: string;
+	type?: string;
 	component: string;
 	initialValue: string;
 	options?: Option[];

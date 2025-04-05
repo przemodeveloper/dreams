@@ -107,7 +107,6 @@ export default function UpdateProfileForm() {
 							<EditableField
 								field="dream"
 								label="Dream"
-								type="select"
 								component="select"
 								initialValue={userData?.dream || ""}
 								onSave={handleSave}
@@ -119,7 +118,6 @@ export default function UpdateProfileForm() {
 							<EditableField
 								field="gender"
 								label="Gender"
-								type="select"
 								component="select"
 								initialValue={userData?.gender || ""}
 								onSave={handleSave}
@@ -131,7 +129,6 @@ export default function UpdateProfileForm() {
 							<EditableField
 								field="orientation"
 								label="Orientation"
-								type="select"
 								component="select"
 								initialValue={userData?.orientation || ""}
 								onSave={handleSave}
