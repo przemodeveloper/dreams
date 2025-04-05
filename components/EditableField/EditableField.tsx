@@ -17,6 +17,10 @@ interface EditableFieldProps {
 	initialValue: string;
 	options?: Option[];
 	onSave: (field: Field, value: string, label: string) => Promise<void>;
+	min?: number;
+	max?: number;
+	className?: string;
+	showLabel?: boolean;
 }
 
 export const EditableField = ({
@@ -27,9 +31,13 @@ export const EditableField = ({
 	initialValue,
 	options,
 	onSave,
+	min,
+	max,
+	className = "",
+	showLabel = true,
 }: EditableFieldProps) => {
 	const [editing, setEditing] = useState(false);
-	const [value, setValue] = useState(initialValue);
+	const [value, setValue] = useState(initialValue || "");
 
 	const handleToggleEdit = () => {
 		setEditing(!editing);
@@ -56,23 +64,23 @@ export const EditableField = ({
 	return (
 		<div className="border-b-2 w-full">
 			<div className="flex items-center">
-				<label
-					htmlFor={`field-${field}`}
-					className="font-secondary text-lg font-bold"
-				>
-					{label}
-				</label>
-				{!editing && (
-					<div className="flex items-center">
-						<button
-							type="button"
-							className="ml-1"
-							title={`Edit ${label}`}
-							onClick={handleToggleEdit}
-						>
-							<RiEditCircleLine size="20px" />
-						</button>
-					</div>
+				{showLabel && (
+					<label
+						htmlFor={`field-${field}`}
+						className="font-secondary text-lg font-bold"
+					>
+						{label}
+					</label>
+				)}
+				{!editing && showLabel && (
+					<button
+						type="button"
+						className="ml-1"
+						title={`Edit ${label}`}
+						onClick={handleToggleEdit}
+					>
+						<RiEditCircleLine size="20px" />
+					</button>
 				)}
 			</div>
 
@@ -86,7 +94,10 @@ export const EditableField = ({
 							value={value}
 							onChange={handleChange}
 							Component={component}
+							className={className}
 							{...(component === "textarea" ? { rows: 4 } : {})}
+							{...(type === "number" && min ? { min } : {})}
+							{...(type === "number" && max ? { max } : {})}
 						/>
 					)}
 					{component === "select" && options && (
@@ -95,6 +106,7 @@ export const EditableField = ({
 							name={field}
 							id={`field-${field}`}
 							value={value}
+							className={className}
 							options={options}
 							onChange={handleChange}
 						/>
@@ -119,11 +131,27 @@ export const EditableField = ({
 			) : (
 				<>
 					{component === "select" && options ? (
-						<p className="font-secondary mb-2 bg-gray-200 rounded-full w-fit px-2 py-1 text-md">
+						<p
+							className={`font-secondary mb-2 bg-gray-200 rounded-full w-fit px-2 py-1 ${className}`}
+						>
 							{getLabel(options, String(initialValue))}
 						</p>
 					) : (
-						<p className="font-secondary mb-2 text-lg">{initialValue}</p>
+						<p
+							className={`font-secondary mb-2 text-lg ${className} flex items-center`}
+						>
+							{initialValue}
+							{!editing && !showLabel && (
+								<button
+									type="button"
+									className="ml-1"
+									title={`Edit ${label}`}
+									onClick={handleToggleEdit}
+								>
+									<RiEditCircleLine size="20px" />
+								</button>
+							)}
+						</p>
 					)}
 				</>
 			)}

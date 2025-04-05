@@ -78,6 +78,8 @@ export default function UpdateProfileForm() {
 								component="input"
 								initialValue={userData?.username || ""}
 								onSave={handleSave}
+								className="text-2xl"
+								showLabel={false}
 							/>
 						</div>
 
@@ -97,6 +99,7 @@ export default function UpdateProfileForm() {
 								field="age"
 								label="Age"
 								type="number"
+								min={18}
 								component="input"
 								initialValue={String(userData?.age)}
 								onSave={handleSave}

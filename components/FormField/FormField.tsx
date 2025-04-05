@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 interface FormFieldProps {
 	name: string;
 	id: string;
@@ -33,6 +34,11 @@ export default function FormField({
 	onChange,
 	className,
 }: FormFieldProps) {
+	const classes = clsx(
+		"font-secondary appearance-none block w-full text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none",
+		error ? "bg-red-100" : "bg-gray-200",
+		className
+	);
 	return (
 		<>
 			{label && (
@@ -44,9 +50,7 @@ export default function FormField({
 				</label>
 			)}
 			<Component
-				className={`font-secondary appearance-none block w-full ${className} ${
-					error ? "bg-red-100" : "bg-gray-200"
-				} text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
+				className={classes}
 				type={type}
 				onChange={onChange}
 				{...(value ? { value } : {})}

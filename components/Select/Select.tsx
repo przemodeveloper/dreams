@@ -1,4 +1,5 @@
 import type { Option } from "@/models/form";
+import clsx from "clsx";
 
 interface SelectProps {
 	name: string;
@@ -11,6 +12,7 @@ interface SelectProps {
 	defaultValue?: string;
 	keyValue?: string;
 	onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+	className?: string;
 }
 
 export default function Select({
@@ -24,7 +26,13 @@ export default function Select({
 	defaultValue,
 	keyValue,
 	onChange,
+	className,
 }: SelectProps) {
+	const classes = clsx(
+		"font-secondary appearance-none block w-full text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none",
+		error ? "bg-red-100" : "bg-gray-200",
+		className
+	);
 	return (
 		<>
 			{label && (
@@ -38,9 +46,7 @@ export default function Select({
 			<div>
 				<select
 					key={keyValue}
-					className={`font-secondary appearance-none block w-full ${
-						error ? "bg-red-100" : "bg-gray-200"
-					} text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
+					className={classes}
 					name={name}
 					id={id}
 					required={required}
