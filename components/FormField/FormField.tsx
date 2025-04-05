@@ -14,6 +14,7 @@ interface FormFieldProps {
 	onChange?: (
 		e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
 	) => void;
+	className?: string;
 }
 
 export default function FormField({
@@ -30,6 +31,7 @@ export default function FormField({
 	max,
 	error,
 	onChange,
+	className,
 }: FormFieldProps) {
 	return (
 		<>
@@ -42,7 +44,7 @@ export default function FormField({
 				</label>
 			)}
 			<Component
-				className={`font-secondary appearance-none block w-full  ${
+				className={`font-secondary appearance-none block w-full ${className} ${
 					error ? "bg-red-100" : "bg-gray-200"
 				} text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none`}
 				type={type}
