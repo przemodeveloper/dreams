@@ -47,6 +47,7 @@ export default function UpdateProfileForm({
 		if (!newSelectedInterests.length) return;
 
 		await onUpdateUserProfile("interests", newSelectedInterests.join(","));
+		notify("Interests updated successfully!");
 	};
 
 	const handleUpdateLocation = async () => {
