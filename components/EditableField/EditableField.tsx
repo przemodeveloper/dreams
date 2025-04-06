@@ -66,7 +66,7 @@ export const EditableField = ({
 				{showLabel && (
 					<label
 						htmlFor={`field-${field}`}
-						className="font-secondary text-lg font-bold"
+						className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
 					>
 						{label}
 					</label>

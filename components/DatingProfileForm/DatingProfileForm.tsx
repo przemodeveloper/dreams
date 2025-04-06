@@ -60,7 +60,7 @@ export default function DatingProfileForm() {
 		<form className="w-full max-w-xl" action={formAction}>
 			<div className="w-full px-3 gap-3 mb-4">
 				<label
-					className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+					className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
 					htmlFor="image"
 				>
 					Images

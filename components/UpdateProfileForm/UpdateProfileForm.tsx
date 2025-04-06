@@ -100,6 +100,17 @@ export default function UpdateProfileForm({
 
 				<div className="mb-3 w-full">
 					<EditableField
+						field="dream"
+						label="Dream"
+						component="select"
+						initialValue={userData?.dream || ""}
+						onSave={handleSave}
+						options={OPTIONS.dream}
+					/>
+				</div>
+
+				<div className="mb-3 w-full">
+					<EditableField
 						field="bio"
 						label="Bio"
 						type="text"
@@ -125,17 +136,6 @@ export default function UpdateProfileForm({
 
 				<div className="mb-3 w-full">
 					<EditableField
-						field="dream"
-						label="Dream"
-						component="select"
-						initialValue={userData?.dream || ""}
-						onSave={handleSave}
-						options={OPTIONS.dream}
-					/>
-				</div>
-
-				<div className="mb-3 w-full">
-					<EditableField
 						field="gender"
 						label="Gender"
 						component="select"
@@ -149,7 +149,7 @@ export default function UpdateProfileForm({
 				<div className="mb-3 w-full">
 					<EditableField
 						field="orientation"
-						label="Orientation"
+						label="Sexual Orientation"
 						component="select"
 						initialValue={userData?.orientation || ""}
 						onSave={handleSave}
@@ -167,7 +167,9 @@ export default function UpdateProfileForm({
 
 				<div className="w-full">
 					<div className="flex items-center">
-						<p className="font-secondary text-lg font-bold">Location</p>
+						<p className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold">
+							Location
+						</p>
 						<button
 							type="button"
 							className="ml-1 disabled:opacity-50"
@@ -176,7 +178,7 @@ export default function UpdateProfileForm({
 							onClick={handleUpdateLocation}
 						>
 							<RiRefreshLine
-								size="20px"
+								size="15px"
 								className={`${loadingLocation ? "animate-spin" : ""}`}
 							/>
 						</button>
