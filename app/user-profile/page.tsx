@@ -1,4 +1,4 @@
-import UpdateProfileForm from "@/components/UpdateProfileForm/UpdateProfileForm";
+import UpdateProfileLayout from "@/components/UpdateProfileLayout/UpdateProfileLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function UserProfilePage() {
-	return <UpdateProfileForm />;
+	return <UpdateProfileLayout />;
 }

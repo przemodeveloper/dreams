@@ -6,13 +6,14 @@ export interface UserProfile extends User {
   bio?: string;
   dream?: string;
   images?: ImageObject[];
-  age?: number;
-  gender?: string;
-  orientation?: string;
-  profileCreated?: string;
-  location?: {
-    address?: string;
-    coords?: {
+	age?: number;
+	gender?: string;
+	orientation?: string;
+	profileCreated?: string;
+	interests?: string;
+	location?: {
+		address?: string;
+		coords?: {
       lat?: number;
       lng?: number;
     };

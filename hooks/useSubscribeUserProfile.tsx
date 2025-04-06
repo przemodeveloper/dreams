@@ -1,17 +1,14 @@
 import { db } from "@/firebase";
-import { UserProfile } from "@/models/auth";
-import {
-	collection,
-	doc,
-	FirestoreError,
-	getDocs,
-	onSnapshot,
-} from "firebase/firestore";
+import type { UserProfile } from "@/models/auth";
+import type { FirestoreError } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export function useSubscribeUserProfile(userId: string) {
 	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
-	const [loading, setLoading] = useState("pending");
+	const [loading, setLoading] = useState<
+		"pending" | "idle" | "error" | "resolved"
+	>("pending");
 
 	useEffect(() => {
 		if (!userId) return;
