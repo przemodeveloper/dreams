@@ -160,7 +160,7 @@ export default function UpdateProfileForm() {
 								</button>
 							</div>
 
-							<p className="w-fit py-1">{location?.address}</p>
+							<p className="py-1 text-lg">{location?.address}</p>
 						</div>
 					</div>
 				</>

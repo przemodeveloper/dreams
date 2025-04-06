@@ -1,6 +1,5 @@
 import type { Field, Option } from "@/models/form";
 import FormField from "../FormField/FormField";
-import Select from "../Select/Select";
 import {
 	RiCloseCircleFill,
 	RiEditCircleLine,
@@ -13,7 +12,7 @@ interface EditableFieldProps {
 	field: Field;
 	label: string;
 	type?: string;
-	component: string;
+	component: "select" | "input" | "textarea";
 	initialValue: string;
 	options?: Option[];
 	onSave: (field: Field, value: string, label: string) => Promise<void>;
@@ -86,31 +85,21 @@ export const EditableField = ({
 
 			{editing ? (
 				<>
-					{(component === "textarea" || component === "input") && (
-						<FormField
-							name={field}
-							id={`field-${field}`}
-							type={type || "text"}
-							value={value}
-							onChange={handleChange}
-							Component={component}
-							className={className}
-							{...(component === "textarea" ? { rows: 4 } : {})}
-							{...(type === "number" && min ? { min } : {})}
-							{...(type === "number" && max ? { max } : {})}
-						/>
-					)}
-					{component === "select" && options && (
-						<Select
-							keyValue={value}
-							name={field}
-							id={`field-${field}`}
-							value={value}
-							className={className}
-							options={options}
-							onChange={handleChange}
-						/>
-					)}
+					<FormField
+						name={field}
+						keyValue={value}
+						id={`field-${field}`}
+						type={type || "text"}
+						value={value}
+						onChange={handleChange}
+						Component={component}
+						options={options}
+						className={className}
+						{...(component === "textarea" ? { rows: 4 } : {})}
+						{...(type === "number" && min ? { min } : {})}
+						{...(type === "number" && max ? { max } : {})}
+					/>
+
 					<div className="flex gap-2 mb-2 justify-end">
 						<button
 							type="button"

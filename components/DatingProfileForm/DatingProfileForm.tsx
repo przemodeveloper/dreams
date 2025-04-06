@@ -1,10 +1,9 @@
 "use client";
 
 import FormField from "../FormField/FormField";
-import Select from "../Select/Select";
 import { handleSetProfile } from "@/lib/actions";
 import SubmitButton from "../SubmitButton/SubmitButton";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { InitialFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
 import {
@@ -20,14 +19,25 @@ import ImagePicker from "../ImagePicker/ImagePicker";
 import { imageRefIds } from "@/constants/user-profile";
 import UserLocation from "../UserLocation/UserLocation";
 import { useUserLocation } from "@/hooks/useUserLocation";
+import InterestsList from "../InterestsList/InterestsList";
 
 export default function DatingProfileForm() {
 	const { user } = useAuthUser();
 	const router = useRouter();
 	const { location, error, loading } = useUserLocation({ skipOnMount: false });
+	const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+
+	const handleSelectInterest = (interest: string) => {
+		setSelectedInterests((prevState) =>
+			prevState.includes(interest)
+				? prevState.filter((i) => i !== interest)
+				: [...prevState, interest]
+		);
+	};
 
 	const [state, formAction] = useActionState(
 		async (prevState: InitialFormState, formData: FormData) => {
+			formData.append("interests", selectedInterests.join(","));
 			const result = await handleSetProfile(
 				prevState,
 				formData,
@@ -81,11 +91,12 @@ export default function DatingProfileForm() {
 			</div>
 
 			<div className="w-full px-3 mb-4">
-				<Select
+				<FormField
 					keyValue={formValues.dream}
 					name="dream"
 					id="dream"
 					label="Dream"
+					Component="select"
 					defaultValue={formValues.dream || ""}
 					options={dreamOptions}
 					error={joinErrorMessages(formErrors.dream)}
@@ -118,10 +129,11 @@ export default function DatingProfileForm() {
 			</div>
 
 			<div className="w-full px-3 mb-4">
-				<Select
+				<FormField
 					keyValue={formValues.gender}
 					name="gender"
 					id="gender"
+					Component="select"
 					label="Gender"
 					defaultValue={formValues.gender || ""}
 					options={genderOptions}
@@ -130,10 +142,11 @@ export default function DatingProfileForm() {
 			</div>
 
 			<div className="w-full px-3 mb-4">
-				<Select
+				<FormField
 					keyValue={formValues.orientation}
 					name="orientation"
 					id="orientation"
+					Component="select"
 					label="Sexual Orientation"
 					defaultValue={formValues.orientation || ""}
 					options={orientationOptions}
@@ -142,7 +155,17 @@ export default function DatingProfileForm() {
 			</div>
 
 			<div className="w-full px-3 mb-4">
-				<p className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+				<InterestsList
+					selectedInterests={selectedInterests}
+					onSelectInterest={handleSelectInterest}
+				/>
+				{formErrors.interests && (
+					<p className="text-red-500 text-sm">{formErrors.interests}</p>
+				)}
+			</div>
+
+			<div className="w-full px-3 mb-4">
+				<p className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
 					Location
 				</p>
 				{location && (
