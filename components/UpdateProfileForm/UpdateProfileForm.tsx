@@ -86,7 +86,7 @@ export default function UpdateProfileForm({
 					/>
 				))}
 			</div>
-			<div className="flex items-center flex-col w-2/3 lg:w-1/3 mx-auto">
+			<div className="flex items-center flex-col w-full px-3 md:px-0 md:w-2/3 lg:w-1/3 mx-auto">
 				<div className="mb-3 w-full">
 					<EditableField
 						field="username"
