@@ -8,7 +8,6 @@ import type { Field } from "@/models/form";
 import { RiRefreshLine } from "@remixicon/react";
 import { EditableField } from "../EditableField/EditableField";
 import InterestsList from "../InterestsList/InterestsList";
-import { useState } from "react";
 import type { UserProfile } from "@/models/auth";
 import type { UploadingImage } from "@/hooks/useManageUser";
 
@@ -31,10 +30,6 @@ export default function UpdateProfileForm({
 	) => Promise<void>;
 	userId?: string;
 }) {
-	const [selectedInterests, setSelectedInterests] = useState<string[]>(
-		userData?.interests?.split(",").filter(Boolean) || []
-	);
-
 	const { notify } = useNotificationContext();
 
 	const { loading: loadingLocation, getUserLocation } = useUserLocation({
@@ -44,11 +39,13 @@ export default function UpdateProfileForm({
 	const location = userData?.location;
 
 	const handleSelectInterest = async (interest: string) => {
+		const selectedInterests = userData?.interests?.split(",") || [];
 		const newSelectedInterests = selectedInterests.includes(interest)
 			? selectedInterests.filter((i) => i !== interest)
 			: [...selectedInterests, interest];
 
-		setSelectedInterests(newSelectedInterests);
+		if (!newSelectedInterests.length) return;
+
 		await onUpdateUserProfile("interests", newSelectedInterests.join(","));
 	};
 
@@ -162,7 +159,7 @@ export default function UpdateProfileForm({
 
 				<div className="w-full mb-4">
 					<InterestsList
-						selectedInterests={selectedInterests}
+						selectedInterests={userData?.interests?.split(",") || []}
 						onSelectInterest={handleSelectInterest}
 					/>
 				</div>
