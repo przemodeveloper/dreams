@@ -71,6 +71,7 @@ export default function useAuthUser() {
 			if (authUser) {
 				getUserCollection(authUser);
 			} else {
+				setUser(null);
 				setLoading("resolved");
 			}
 		});

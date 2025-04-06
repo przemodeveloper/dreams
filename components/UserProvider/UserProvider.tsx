@@ -5,6 +5,8 @@ import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { NotificationContextProvider } from "@/context/notification-context";
 import { UserContextProvider } from "@/context/user-context";
 import { useMemo } from "react";
+import Navbar from "../Navbar/Navbar";
+
 export default function UserProvider({
 	children,
 }: Readonly<{
@@ -16,6 +18,7 @@ export default function UserProvider({
 	return (
 		<UserContextProvider value={value}>
 			<NotificationContextProvider>
+				<Navbar />
 				{loading === "pending" && !user ? <LoadingScreen /> : children}
 			</NotificationContextProvider>
 		</UserContextProvider>

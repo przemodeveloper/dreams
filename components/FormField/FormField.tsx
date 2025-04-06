@@ -21,6 +21,7 @@ interface FormFieldProps {
 	) => void;
 	className?: string;
 	keyValue?: string;
+	placeholder?: string;
 }
 
 export default function FormField({
@@ -39,6 +40,7 @@ export default function FormField({
 	options,
 	onChange,
 	className,
+	placeholder,
 	keyValue,
 }: FormFieldProps) {
 	const classes = clsx(
@@ -63,6 +65,7 @@ export default function FormField({
 					{...(value ? { value } : {})}
 					{...(defaultValue ? { defaultValue } : {})}
 					name={name}
+					{...(placeholder ? { placeholder } : {})}
 					required={required}
 					id={id}
 					key={keyValue}
@@ -78,6 +81,7 @@ export default function FormField({
 					className={classes}
 					type={type}
 					onChange={onChange}
+					{...(placeholder ? { placeholder } : {})}
 					{...(value ? { value } : {})}
 					{...(defaultValue ? { defaultValue } : {})}
 					name={name}
