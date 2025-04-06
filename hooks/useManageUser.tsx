@@ -4,8 +4,8 @@ import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import { useSubscribeUserProfile } from "./useSubscribeUserProfile";
-import { Field } from "@/models/form";
-
+import type { Field } from "@/models/form";
+import { useNotificationContext } from "@/context/notification-context";
 export interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
@@ -22,6 +22,8 @@ export function useManageUser(userId?: string) {
 		loading: "idle",
 		imageRefId: null,
 	});
+
+	const { notify } = useNotificationContext();
 
 	const getProfileDocRef = async (userId: string) => {
 		const userProfileCollection = collection(
@@ -86,6 +88,8 @@ export function useManageUser(userId?: string) {
 			),
 		});
 
+		notify("Image uploaded successfully!");
+
 		setUploadingImage({ loading: "resolved", imageRefId });
 	};
 
@@ -106,12 +110,10 @@ export function useManageUser(userId?: string) {
 					),
 				});
 
-				// TO DO: Replace with toast notification
-				console.log("File deleted successfully");
+				notify("Image deleted successfully!");
 			})
 			.catch((error) => {
-				// TO DO: Replace with toast notification
-				console.error("Error deleting file", error);
+				notify(`Something went wrong while deleting image: ${error.message}`);
 			});
 	};
 
