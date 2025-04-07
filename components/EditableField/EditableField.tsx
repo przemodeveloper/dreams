@@ -1,12 +1,13 @@
 import type { Field, Option } from "@/models/form";
 import FormField from "../FormField/FormField";
 import {
+	RiAiGenerate2,
 	RiCloseCircleFill,
 	RiEditCircleLine,
 	RiSave2Fill,
 } from "@remixicon/react";
 import { getLabel } from "@/utils/getLabel";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface EditableFieldProps {
 	field: Field;
@@ -20,6 +21,8 @@ interface EditableFieldProps {
 	max?: number;
 	className?: string;
 	showLabel?: boolean;
+	aiGeneration?: () => Promise<void>;
+	aiText?: string;
 }
 
 export const EditableField = ({
@@ -34,9 +37,18 @@ export const EditableField = ({
 	max,
 	className = "",
 	showLabel = true,
+	aiGeneration,
+	aiText,
 }: EditableFieldProps) => {
 	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(initialValue || "");
+
+	useEffect(() => {
+		if (aiText) {
+			setValue("");
+			setValue(aiText);
+		}
+	}, [aiText]);
 
 	const handleToggleEdit = () => {
 		setEditing(!editing);
@@ -115,6 +127,11 @@ export const EditableField = ({
 						>
 							<RiCloseCircleFill />
 						</button>
+						{aiGeneration && (
+							<button type="button" onClick={aiGeneration}>
+								<RiAiGenerate2 />
+							</button>
+						)}
 					</div>
 				</>
 			) : (

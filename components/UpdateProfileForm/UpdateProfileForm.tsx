@@ -1,7 +1,7 @@
 "use client";
 
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
-import { OPTIONS } from "@/constants/user-profile";
+import { generateAiPrompt, OPTIONS } from "@/constants/user-profile";
 import { useNotificationContext } from "@/context/notification-context";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Field } from "@/models/form";
@@ -10,6 +10,8 @@ import { EditableField } from "../EditableField/EditableField";
 import InterestsList from "../InterestsList/InterestsList";
 import type { UserProfile } from "@/models/auth";
 import type { UploadingImage } from "@/hooks/useManageUser";
+import { useEffect, useState } from "react";
+import { getGeminiResponse } from "@/lib/api/gemini";
 
 export default function UpdateProfileForm({
 	userData,
@@ -31,10 +33,19 @@ export default function UpdateProfileForm({
 	userId?: string;
 }) {
 	const { notify } = useNotificationContext();
+	const [geminiResponse, setGeminiResponse] = useState<string>("");
+	const [displayedText, setDisplayedText] = useState<string>("");
 
 	const { loading: loadingLocation, getUserLocation } = useUserLocation({
 		skipOnMount: true,
 	});
+
+	const generateBioAi = async () => {
+		const response = await getGeminiResponse(
+			generateAiPrompt(userData?.username, userData?.dream, userData?.interests)
+		);
+		setGeminiResponse(response);
+	};
 
 	const location = userData?.location;
 
@@ -64,6 +75,22 @@ export default function UpdateProfileForm({
 		await onUpdateUserProfile(field, value);
 		notify(`${label} updated successfully!`);
 	};
+
+	useEffect(() => {
+		if (geminiResponse) {
+			let currentIndex = 0;
+			const interval = setInterval(() => {
+				if (currentIndex <= geminiResponse.length) {
+					setDisplayedText(geminiResponse.slice(0, currentIndex));
+					currentIndex++;
+				} else {
+					clearInterval(interval);
+				}
+			}, 40); // Adjust typing speed here (lower number = faster typing)
+
+			return () => clearInterval(interval);
+		}
+	}, [geminiResponse]);
 
 	return (
 		<>
@@ -118,6 +145,8 @@ export default function UpdateProfileForm({
 						component="textarea"
 						initialValue={userData?.bio || ""}
 						onSave={handleSave}
+						aiGeneration={generateBioAi}
+						aiText={displayedText}
 					/>
 				</div>
 
