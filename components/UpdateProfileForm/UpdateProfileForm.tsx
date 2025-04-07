@@ -34,7 +34,7 @@ export default function UpdateProfileForm({
 }) {
 	const { notify } = useNotificationContext();
 	const [geminiResponse, setGeminiResponse] = useState<string>("");
-	const [displayedText, setDisplayedText] = useState<string>("");
+	const [generatedBio, setGeneratedBio] = useState<string>("");
 
 	const { loading: loadingLocation, getUserLocation } = useUserLocation({
 		skipOnMount: true,
@@ -81,7 +81,7 @@ export default function UpdateProfileForm({
 			let currentIndex = 0;
 			const interval = setInterval(() => {
 				if (currentIndex <= geminiResponse.length) {
-					setDisplayedText(geminiResponse.slice(0, currentIndex));
+					setGeneratedBio(geminiResponse.slice(0, currentIndex));
 					currentIndex++;
 				} else {
 					clearInterval(interval);
@@ -146,7 +146,7 @@ export default function UpdateProfileForm({
 						initialValue={userData?.bio || ""}
 						onSave={handleSave}
 						aiGeneration={generateBioAi}
-						aiText={displayedText}
+						aiText={generatedBio}
 					/>
 				</div>
 
