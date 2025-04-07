@@ -62,11 +62,11 @@ export const EditableField = ({
 
 	return (
 		<div className="border-b-2 w-full">
-			<div className="flex items-center">
+			<div className="flex items-center mb-2">
 				{showLabel && (
 					<label
 						htmlFor={`field-${field}`}
-						className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+						className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold"
 					>
 						{label}
 					</label>
