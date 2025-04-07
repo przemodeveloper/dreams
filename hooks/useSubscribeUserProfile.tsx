@@ -43,7 +43,10 @@ export function useSubscribeUserProfile(userId: string) {
 			);
 		});
 
-		return () => unsubscribe?.();
+		return () => {
+			unsubscribe?.();
+			setUserData(null);
+		};
 	}, [userId]);
 
 	return { userData, loading };

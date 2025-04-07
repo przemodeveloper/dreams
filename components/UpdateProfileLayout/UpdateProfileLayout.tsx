@@ -6,25 +6,23 @@ import { useUserContext } from "@/context/user-context";
 import UserProfileSkeleton from "../UserProfileSkeleton/UserProfileSkeleton";
 
 export default function UpdateProfileLayout() {
-	const { user } = useUserContext();
+	const { user, loading } = useUserContext();
 
 	const {
+		handleUpdateUserProfile,
 		uploadingImage,
 		handleDeleteImage,
 		handleUploadImage,
-		handleUpdateUserProfile,
-		userData,
-		loading,
-	} = useManageUser(user?.uid);
+	} = useManageUser(user?.userId, user);
 
 	return (
 		<div className="flex justify-center items-center flex-col pt-4">
-			{loading === "pending" && !userData ? (
+			{loading === "pending" && !user ? (
 				<UserProfileSkeleton />
 			) : (
 				<UpdateProfileForm
-					userData={userData}
-					userId={user?.uid}
+					userData={user}
+					userId={user?.userId}
 					onUpdateUserProfile={handleUpdateUserProfile}
 					uploadingImage={uploadingImage}
 					onDeleteImage={handleDeleteImage}

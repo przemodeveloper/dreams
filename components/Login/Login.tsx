@@ -1,20 +1,36 @@
 "use client";
 
-import useAuthUser from "@/hooks/useAuthUser";
 import { RiGoogleFill } from "@remixicon/react";
 import FormField from "../FormField/FormField";
+import { signInWithPopup } from "firebase/auth";
+import { getSnapshot } from "@/utils/getSnapshot";
+import { auth, provider } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/routes/routes";
 
 export default function Login() {
-	const { signIn } = useAuthUser();
+	const router = useRouter();
 
-	const handleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault();
+	const handleSignIn = async () => {
+		try {
+			const result = await signInWithPopup(auth, provider);
+			const authUser = result.user;
 
-		await signIn();
+			const snapshot = await getSnapshot(authUser.uid);
+
+			if (snapshot.empty) {
+				router.push(ROUTES.SET_UP_PROFILE);
+			} else {
+				router.push(ROUTES.USER_PROFILE);
+			}
+		} catch (error) {
+			const err = error as Error;
+			throw new Error(err.message);
+		}
 	};
 
 	return (
-		<div className="flex flex-col items-center w-1/4">
+		<div className="flex flex-col items-center w-full px-5 sm:px-0 sm:w-1/2 md:w-1/3 lg:w-1/4">
 			<button
 				type="button"
 				className="text-lg flex items-center"

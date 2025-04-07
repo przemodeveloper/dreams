@@ -4,7 +4,6 @@ import useAuthUser from "@/hooks/useAuthUser";
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
 import { NotificationContextProvider } from "@/context/notification-context";
 import { UserContextProvider } from "@/context/user-context";
-import { useMemo } from "react";
 import Navbar from "../Navbar/Navbar";
 
 export default function UserProvider({
@@ -13,10 +12,9 @@ export default function UserProvider({
 	children: React.ReactNode;
 }>) {
 	const { user, loading } = useAuthUser();
-	const value = useMemo(() => ({ user, loading }), [user, loading]);
 
 	return (
-		<UserContextProvider value={value}>
+		<UserContextProvider userId={user?.uid} isLoggedIn={Boolean(user)}>
 			<NotificationContextProvider>
 				<Navbar />
 				{loading === "pending" && !user ? <LoadingScreen /> : children}

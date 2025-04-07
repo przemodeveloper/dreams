@@ -3,9 +3,9 @@ import { uploadImage } from "@/utils/uploadImage";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
-import { useSubscribeUserProfile } from "./useSubscribeUserProfile";
 import type { Field } from "@/models/form";
 import { useNotificationContext } from "@/context/notification-context";
+import type { UserProfile } from "@/models/auth";
 export interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
@@ -17,7 +17,10 @@ export interface UploadingImage {
 	imageRefId: string | null;
 }
 
-export function useManageUser(userId?: string) {
+export function useManageUser(
+	userId?: string,
+	userData?: Partial<UserProfile> | null
+) {
 	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
 		loading: "idle",
 		imageRefId: null,
@@ -46,8 +49,6 @@ export function useManageUser(userId?: string) {
 		);
 		return profileDocRef;
 	};
-
-	const { userData, loading } = useSubscribeUserProfile(userId || "");
 
 	const handleUpdateUserProfile = async (
 		field: Field | "location",
@@ -122,7 +123,5 @@ export function useManageUser(userId?: string) {
 		handleUploadImage,
 		handleDeleteImage,
 		handleUpdateUserProfile,
-		userData,
-		loading,
 	};
 }

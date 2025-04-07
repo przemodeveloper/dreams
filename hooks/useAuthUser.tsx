@@ -1,7 +1,6 @@
-import { auth, db, provider } from "@/firebase";
+import { auth, db } from "@/firebase";
 import type { UserProfile } from "@/models/auth";
 import { ROUTES } from "@/routes/routes";
-import { signInWithPopup } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -24,26 +23,6 @@ export default function useAuthUser() {
 		return snapshot;
 	}, []);
 
-	const signIn = async () => {
-		try {
-			const result = await signInWithPopup(auth, provider);
-			const authUser = result.user;
-
-			const snapshot = await getSnapshot(authUser.uid);
-
-			if (snapshot.empty) {
-				router.push(ROUTES.SET_UP_PROFILE);
-			} else {
-				router.push(ROUTES.USER_PROFILE);
-			}
-			setLoading("resolved");
-		} catch (error) {
-			const err = error as Error;
-			setLoading("rejected");
-			throw new Error(err.message);
-		}
-	};
-
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
 			if (authUser) {
@@ -63,5 +42,5 @@ export default function useAuthUser() {
 		return () => unsubscribe();
 	}, [router, getSnapshot]);
 
-	return { user, signIn, loading };
+	return { user, loading };
 }

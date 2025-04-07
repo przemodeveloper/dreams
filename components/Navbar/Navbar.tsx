@@ -19,8 +19,8 @@ const Navbar = () => {
 	};
 
 	return (
-		<nav className="bg-black text-white p-4 sticky top-0 z-50">
-			<div className="container mx-auto flex justify-between items-center">
+		<nav className="bg-black text-white p-4 sticky top-0 z-50 h-[60px]">
+			<div className="container mx-auto flex justify-between h-full items-center">
 				<Link href="/" className="text-xl font-bold font-primary">
 					Dreams
 				</Link>
@@ -37,7 +37,7 @@ const Navbar = () => {
 							<div className="relative w-10 h-10 rounded-full overflow-hidden">
 								<Image
 									src={userImage?.downloadUrl || AvatarImage}
-									alt="User avatar"
+									alt="User image"
 									fill
 									className="object-cover"
 								/>

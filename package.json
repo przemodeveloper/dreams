@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@remixicon/react": "^4.6.0",
     "clsx": "^2.1.1",
     "firebase": "^11.1.0",

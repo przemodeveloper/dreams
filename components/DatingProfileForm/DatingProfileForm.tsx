@@ -12,7 +12,6 @@ import {
 	initialFormState,
 	orientationOptions,
 } from "./datingProfile.consts";
-import useAuthUser from "@/hooks/useAuthUser";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import ImagePicker from "../ImagePicker/ImagePicker";
@@ -20,9 +19,10 @@ import { imageRefIds } from "@/constants/user-profile";
 import UserLocation from "../UserLocation/UserLocation";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import InterestsList from "../InterestsList/InterestsList";
+import { useUserContext } from "@/context/user-context";
 
 export default function DatingProfileForm() {
-	const { user } = useAuthUser();
+	const { user } = useUserContext();
 	const router = useRouter();
 	const { location, error, loading } = useUserLocation({ skipOnMount: false });
 	const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
