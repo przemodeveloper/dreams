@@ -44,8 +44,10 @@ export default function FormField({
 	keyValue,
 }: FormFieldProps) {
 	const classes = clsx(
-		"font-secondary appearance-none block w-full text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none",
-		error ? "bg-red-100" : "bg-gray-200",
+		"w-full px-4 py-2 rounded-md text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 transition duration-200",
+		error
+			? "bg-gray-200 border border-red-400 focus:border-red-400 focus:ring-red-400"
+			: "bg-gray-200 border border-gray-300 focus:border-amber-400 focus:ring-amber-400",
 		className
 	);
 	return (
