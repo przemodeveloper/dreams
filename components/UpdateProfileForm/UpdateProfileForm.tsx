@@ -6,12 +6,12 @@ import { useNotificationContext } from "@/context/notification-context";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Field } from "@/models/form";
 import { RiRefreshLine } from "@remixicon/react";
-import { EditableField } from "../EditableField/EditableField";
-import InterestsList from "../InterestsList/InterestsList";
 import type { UserProfile } from "@/models/auth";
 import type { UploadingImage } from "@/hooks/useManageUser";
 import { useEffect, useState } from "react";
 import { getGeminiResponse } from "@/lib/api/gemini";
+import { EditableField } from "../EditableField/EditableField";
+import InterestsList from "../InterestsList/InterestsList";
 
 export default function UpdateProfileForm({
 	userData,
