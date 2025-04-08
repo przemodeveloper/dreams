@@ -34,7 +34,7 @@ export default function Login() {
 		<div className="flex flex-col items-center w-full px-5 sm:px-0 sm:w-1/2 md:w-1/3 lg:w-1/4">
 			<button
 				type="button"
-				className="text-lg flex items-center text-amber-400"
+				className="text-lg flex items-center text-indigo-600"
 				title="Sign in with Google"
 				onClick={handleSignIn}
 			>

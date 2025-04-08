@@ -141,7 +141,6 @@ export default function UpdateProfileForm({
 						field="bio"
 						label="Bio"
 						type="text"
-						className="text-lg"
 						component="textarea"
 						initialValue={userData?.bio || ""}
 						onSave={handleSave}
@@ -159,7 +158,6 @@ export default function UpdateProfileForm({
 						component="input"
 						initialValue={String(userData?.age)}
 						onSave={handleSave}
-						className="text-lg"
 					/>
 				</div>
 
@@ -171,7 +169,6 @@ export default function UpdateProfileForm({
 						initialValue={userData?.gender || ""}
 						onSave={handleSave}
 						options={OPTIONS.gender}
-						className="text-lg"
 					/>
 				</div>
 
@@ -183,20 +180,19 @@ export default function UpdateProfileForm({
 						initialValue={userData?.orientation || ""}
 						onSave={handleSave}
 						options={OPTIONS.orientation}
-						className="text-lg"
 					/>
 				</div>
 
-				<div className="w-full mb-4">
+				<div className="w-full border-b-2 border-gray-200">
 					<InterestsList
 						selectedInterests={userData?.interests?.split(",") || []}
 						onSelectInterest={handleSelectInterest}
 					/>
 				</div>
 
-				<div className="w-full">
+				<div className="w-full mt-2">
 					<div className="flex items-center">
-						<p className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold">
+						<p className="block uppercase tracking-wide text-slate-700 text-sm font-bold">
 							Location
 						</p>
 						<button

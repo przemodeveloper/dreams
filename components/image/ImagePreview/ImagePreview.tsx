@@ -52,7 +52,7 @@ export default function ImagePreview({
 						type="button"
 						onClick={handleRemoveImage}
 						title="Remove image"
-						className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-black hover:text-white m-1 p-1 rounded-md"
+						className="absolute right-0 top-0 transition ease-in-out duration-300 hover:bg-emerald-600 hover:text-white m-1 p-1 rounded-md"
 					>
 						<RiFileReduceLine />
 					</button>

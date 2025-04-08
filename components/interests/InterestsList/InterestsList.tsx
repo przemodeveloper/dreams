@@ -11,13 +11,13 @@ const InterestsList = ({
 }) => {
 	return (
 		<>
-			<p className="text-sm font-secondary block uppercase tracking-wide text-gray-700 font-bold mb-2">
+			<p className="text-sm block uppercase tracking-wide text-slate-700 font-bold mb-2">
 				Interests
 			</p>
 			{Object.entries(profileInterests).map(
 				([category, { label, interests }]) => (
 					<div className="gap-2 mb-4" key={category}>
-						<p className="font-secondary block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+						<p className="block uppercase tracking-wide text-slate-700 text-xs font-bold mb-2">
 							{label}
 						</p>
 						<ul className="flex flex-wrap gap-2">

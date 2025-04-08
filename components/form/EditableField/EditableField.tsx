@@ -73,12 +73,12 @@ export const EditableField = ({
 	};
 
 	return (
-		<div className="border-b-2 w-full">
+		<div className="border-b-2 border-gray-200 w-full">
 			<div className="flex items-center mb-2">
 				{showLabel && (
 					<label
 						htmlFor={`field-${field}`}
-						className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold"
+						className="text-slate-700 block uppercase tracking-wide text-slate-700 text-sm font-bold"
 					>
 						{label}
 					</label>
@@ -138,12 +138,12 @@ export const EditableField = ({
 				<>
 					{component === "select" && options ? (
 						<p
-							className={`font-secondary mb-2 bg-gray-200 rounded-full w-fit px-2 py-1 ${className}`}
+							className={`mb-2 bg-gray-200 rounded-full w-fit px-2 py-1 ${className}`}
 						>
 							{getLabel(options, String(initialValue))}
 						</p>
 					) : (
-						<p className={`font-secondary mb-2 ${className} flex items-center`}>
+						<p className={`mb-2 ${className} flex items-center`}>
 							{initialValue}
 							{!editing && !showLabel && (
 								<button

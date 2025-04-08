@@ -60,7 +60,7 @@ export default function DatingProfileForm() {
 		<form className="w-full max-w-xl" action={formAction}>
 			<div className="w-full px-3 gap-3 mb-4">
 				<label
-					className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+					className="block uppercase tracking-wide text-slate-700 text-sm font-bold mb-2"
 					htmlFor="image"
 				>
 					Images
@@ -154,7 +154,7 @@ export default function DatingProfileForm() {
 				/>
 			</div>
 
-			<div className="w-full px-3 mb-4">
+			<div className="w-full px-3 mb-4 border-b-2 border-gray-200">
 				<InterestsList
 					selectedInterests={selectedInterests}
 					onSelectInterest={handleSelectInterest}
@@ -164,8 +164,8 @@ export default function DatingProfileForm() {
 				)}
 			</div>
 
-			<div className="w-full px-3 mb-4">
-				<p className="font-secondary block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2">
+			<div className="w-full px-3 mb-4 mt-2">
+				<p className="block uppercase tracking-wide text-slate-700 text-sm font-bold mb-2">
 					Location
 				</p>
 				{location && (

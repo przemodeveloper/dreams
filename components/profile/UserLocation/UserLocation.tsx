@@ -16,9 +16,9 @@ export default function UserLocation({
 			{loading ? (
 				<Loader />
 			) : error ? (
-				<p className="font-secondary text-red-500">{error}</p>
+				<p className="text-red-500">{error}</p>
 			) : (
-				<p className="font-secondary">{address}</p>
+				<p>{address}</p>
 			)}
 		</>
 	);
