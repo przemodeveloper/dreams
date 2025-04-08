@@ -7,6 +7,7 @@ import { auth, provider } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import FormField from "../../form/FormField/FormField";
+import SubmitButton from "@/components/form/SubmitButton/SubmitButton";
 
 export default function Login() {
 	const router = useRouter();
@@ -61,13 +62,7 @@ export default function Login() {
 				placeholder="Password"
 				className="mb-2"
 			/>
-			<button
-				type="submit"
-				title="Sign in with email"
-				className="transition ease-in-out duration-300 border-2 border-amber-400 bg-amber-400 hover:bg-white hover:border-2 hover:border-amber-400 hover:text-amber-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-			>
-				Sign in with email
-			</button>
+			<SubmitButton title="Sign in" text="Sign in with email" />
 		</div>
 	);
 }

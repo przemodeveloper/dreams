@@ -178,7 +178,7 @@ export default function DatingProfileForm() {
 			</div>
 
 			<div className="w-full text-right px-3 mb-4">
-				<SubmitButton />
+				<SubmitButton title="Start your dream" text="Start your dream" />
 			</div>
 		</form>
 	);

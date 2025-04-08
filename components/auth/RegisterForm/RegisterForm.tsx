@@ -8,6 +8,7 @@ import { useActionState } from "react";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
 import type { InitialRegisterFormState } from "@/models/form";
 import { initialRegisterFormState } from "@/constants/form";
+import SubmitButton from "@/components/form/SubmitButton/SubmitButton";
 
 export default function RegisterForm() {
 	const router = useRouter();
@@ -70,12 +71,7 @@ export default function RegisterForm() {
 				/>
 			</div>
 			<div className="w-full text-center px-3 mb-4">
-				<button
-					className="transition ease-in-out duration-300 border-2 border-amber-400 bg-amber-400 hover:bg-white hover:border-2 hover:border-amber-400 hover:text-amber-400 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-					type="submit"
-				>
-					Register
-				</button>
+				<SubmitButton title="Register" text="Register" />
 			</div>
 		</form>
 	);
