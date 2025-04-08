@@ -7,6 +7,7 @@ import { auth } from "@/firebase";
 import { RiLogoutBoxLine } from "@remixicon/react";
 import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
+import { ROUTES } from "@/routes/routes";
 
 const Navbar = () => {
 	const { userId, user } = useUserContext();
@@ -17,7 +18,7 @@ const Navbar = () => {
 
 	const handleSignOut = async () => {
 		await signOut(auth);
-		router.push("/");
+		router.push(ROUTES.HOME);
 	};
 
 	return (
@@ -36,7 +37,7 @@ const Navbar = () => {
 								href="/login"
 								className={clsx(
 									"transition-colors",
-									pathname === "/login"
+									pathname === ROUTES.LOGIN
 										? "text-emerald-600 border-b-2 border-emerald-600"
 										: "text-slate-500"
 								)}
@@ -47,7 +48,7 @@ const Navbar = () => {
 								href="/register"
 								className={clsx(
 									"transition-colors",
-									pathname === "/register"
+									pathname === ROUTES.REGISTER
 										? "text-emerald-600 border-b-2 border-emerald-600"
 										: "text-slate-500"
 								)}

@@ -1,13 +1,6 @@
 import "./globals.css";
 import { Roboto } from "next/font/google";
-import type { Metadata } from "next";
 import UserProvider from "@/components/context/UserProvider/UserProvider";
-
-export const metadata: Metadata = {
-	title: "Dreams",
-	description:
-		"Unique dating app designed to connect people who share similar aspirations and plans for the future",
-};
 
 const roboto = Roboto({
 	subsets: ["latin"],
