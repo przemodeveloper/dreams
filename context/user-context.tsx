@@ -6,29 +6,27 @@ import { useSubscribeUserProfile } from "@/hooks/useSubscribeUserProfile";
 type UserContextType = {
 	user: Partial<UserProfile> | null;
 	loading: "pending" | "resolved" | "error" | "idle";
-	isLoggedIn: boolean;
+	userId?: string;
 };
 
 const UserContext = createContext<UserContextType>({
 	user: null,
 	loading: "pending",
-	isLoggedIn: false,
+	userId: "",
 });
 
 export const UserContextProvider = ({
 	children,
 	userId,
-	isLoggedIn,
 }: {
 	children: ReactNode;
 	userId?: string;
-	isLoggedIn: boolean;
 }) => {
 	const { userData, loading } = useSubscribeUserProfile(userId || "");
 
 	const value = useMemo(
-		() => ({ user: { ...userData, uid: userId }, loading, isLoggedIn }),
-		[userData, loading, isLoggedIn, userId]
+		() => ({ user: userData, loading, userId }),
+		[userData, loading, userId]
 	);
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

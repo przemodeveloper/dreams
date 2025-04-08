@@ -9,7 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 
 const Navbar = () => {
-	const { isLoggedIn, user } = useUserContext();
+	const { userId, user } = useUserContext();
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -30,7 +30,7 @@ const Navbar = () => {
 					Dreams
 				</Link>
 				<div className="flex items-center gap-4">
-					{!isLoggedIn ? (
+					{!userId ? (
 						<Link
 							href="/register"
 							className={clsx(
