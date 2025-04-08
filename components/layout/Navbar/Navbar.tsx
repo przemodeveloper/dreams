@@ -31,17 +31,30 @@ const Navbar = () => {
 				</Link>
 				<div className="flex items-center gap-4">
 					{!userId ? (
-						<Link
-							href="/register"
-							className={clsx(
-								"transition-colors",
-								pathname === "/register"
-									? "text-emerald-600 border-b-2 border-emerald-600"
-									: "text-slate-500"
-							)}
-						>
-							Need account?
-						</Link>
+						<>
+							<Link
+								href="/login"
+								className={clsx(
+									"transition-colors",
+									pathname === "/login"
+										? "text-emerald-600 border-b-2 border-emerald-600"
+										: "text-slate-500"
+								)}
+							>
+								Login
+							</Link>
+							<Link
+								href="/register"
+								className={clsx(
+									"transition-colors",
+									pathname === "/register"
+										? "text-emerald-600 border-b-2 border-emerald-600"
+										: "text-slate-500"
+								)}
+							>
+								Need account?
+							</Link>
+						</>
 					) : (
 						<div className="flex items-center gap-4">
 							<div className="relative w-10 h-10 rounded-full overflow-hidden">
