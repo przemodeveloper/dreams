@@ -84,4 +84,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For any inquiries or feedback, please contact us at [przemyslaw.gorecki93@gmail.com](mailto:przemyslaw.gorecki93@gmail.com).
+For any inquiries or feedback, please contact me at [przemyslaw.gorecki93@gmail.com](mailto:przemyslaw.gorecki93@gmail.com).
