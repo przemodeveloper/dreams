@@ -1,7 +1,7 @@
 import { db } from "@/firebase";
 import type { UserProfile } from "@/models/auth";
 import type { FirestoreError } from "firebase/firestore";
-import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export function useSubscribeUserProfile(userId: string) {
@@ -13,38 +13,35 @@ export function useSubscribeUserProfile(userId: string) {
 	useEffect(() => {
 		if (!userId) return;
 
-		const getProfileDocRef = async () => {
-			const userProfileCollection = collection(
-				db,
-				"profiles",
-				userId,
-				"userProfile"
-			);
-			const snapshot = await getDocs(userProfileCollection);
-			if (snapshot.empty) throw new Error("User profile not found");
-			const userProfileDocId = snapshot.docs[0].id;
-			return doc(db, "profiles", userId, "userProfile", userProfileDocId);
-		};
+		const userProfileCollection = collection(
+			db,
+			"profiles",
+			userId,
+			"userProfile"
+		);
+		const q = query(userProfileCollection);
 
-		let unsubscribe: () => void;
-
-		getProfileDocRef().then((profileDocRef) => {
-			unsubscribe = onSnapshot(
-				profileDocRef,
-				(docSnap) => {
-					const data = docSnap.data();
-					setUserData((data as Partial<UserProfile>) || null);
+		const unsubscribe = onSnapshot(
+			q,
+			(snapshot) => {
+				if (snapshot.empty) {
+					setUserData(null);
 					setLoading("resolved");
-				},
-				(error: FirestoreError) => {
-					setLoading("error");
-					throw new Error(error.message);
+					return;
 				}
-			);
-		});
+
+				const docData = snapshot.docs[0].data();
+				setUserData(docData as Partial<UserProfile>);
+				setLoading("resolved");
+			},
+			(error: FirestoreError) => {
+				setLoading("error");
+				throw new Error(error.message);
+			}
+		);
 
 		return () => {
-			unsubscribe?.();
+			unsubscribe();
 			setUserData(null);
 		};
 	}, [userId]);

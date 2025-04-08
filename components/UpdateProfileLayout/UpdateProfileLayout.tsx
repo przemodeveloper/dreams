@@ -6,7 +6,7 @@ import { useUserContext } from "@/context/user-context";
 import UserProfileSkeleton from "../UserProfileSkeleton/UserProfileSkeleton";
 
 export default function UpdateProfileLayout() {
-	const { user, loading } = useUserContext();
+	const { user, loading, isLoggedIn } = useUserContext();
 
 	const {
 		handleUpdateUserProfile,
@@ -19,7 +19,7 @@ export default function UpdateProfileLayout() {
 		<div className="flex justify-center items-center flex-col pt-4">
 			{loading === "pending" && !user ? (
 				<UserProfileSkeleton />
-			) : (
+			) : isLoggedIn && user ? (
 				<UpdateProfileForm
 					userData={user}
 					userId={user?.userId}
@@ -28,7 +28,7 @@ export default function UpdateProfileLayout() {
 					onDeleteImage={handleDeleteImage}
 					onUploadImage={handleUploadImage}
 				/>
-			)}
+			) : null}
 		</div>
 	);
 }

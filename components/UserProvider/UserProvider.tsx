@@ -14,7 +14,7 @@ export default function UserProvider({
 	const { user, loading } = useAuthUser();
 
 	return (
-		<UserContextProvider userId={user?.uid} isLoggedIn={Boolean(user)}>
+		<UserContextProvider userId={user?.uid} isLoggedIn={Boolean(user?.uid)}>
 			<NotificationContextProvider>
 				<Navbar />
 				{loading === "pending" && !user ? <LoadingScreen /> : children}
