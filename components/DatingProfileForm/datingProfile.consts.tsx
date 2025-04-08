@@ -19,7 +19,21 @@ export const dreamOptions = [
 	{ label: "Start a family", value: "family" },
 ];
 
-export const initialFormState = {
+export const initialRegisterFormState = {
+	success: false,
+	formValues: {
+		email: "",
+		password: "",
+		confirmPassword: "",
+	},
+	formErrors: {
+		email: [""],
+		password: [""],
+		confirmPassword: [""],
+	},
+};
+
+export const initialSetupProfileFormState = {
 	success: false,
 	formValues: {
 		age: "",

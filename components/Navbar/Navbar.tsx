@@ -8,7 +8,7 @@ import { RiLogoutBoxLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-	const { user } = useUserContext();
+	const { isLoggedIn, user } = useUserContext();
 	const router = useRouter();
 
 	const userImage = user?.images?.find((image) => Boolean(image.downloadUrl));
@@ -25,7 +25,7 @@ const Navbar = () => {
 					Dreams
 				</Link>
 				<div className="flex items-center gap-4">
-					{!user ? (
+					{!isLoggedIn ? (
 						<Link
 							href="/register"
 							className="hover:text-gray-300 transition-colors"

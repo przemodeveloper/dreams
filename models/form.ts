@@ -1,4 +1,18 @@
-export interface InitialFormState {
+export interface InitialRegisterFormState {
+  success?: boolean;
+  formValues: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
+  formErrors: {
+    email?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+  };
+}
+
+export interface InitialSetupProfileFormState {
   success?: boolean;
   formValues: {
     age?: number | string | undefined;

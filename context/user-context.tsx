@@ -27,8 +27,8 @@ export const UserContextProvider = ({
 	const { userData, loading } = useSubscribeUserProfile(userId || "");
 
 	const value = useMemo(
-		() => ({ user: userData, loading, isLoggedIn }),
-		[userData, loading, isLoggedIn]
+		() => ({ user: { ...userData, uid: userId }, loading, isLoggedIn }),
+		[userData, loading, isLoggedIn, userId]
 	);
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

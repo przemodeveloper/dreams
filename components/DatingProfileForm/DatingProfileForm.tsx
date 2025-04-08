@@ -4,12 +4,12 @@ import FormField from "../FormField/FormField";
 import { handleSetProfile } from "@/lib/actions";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import { useActionState, useState } from "react";
-import type { InitialFormState } from "@/models/form";
+import type { InitialSetupProfileFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
 import {
 	dreamOptions,
 	genderOptions,
-	initialFormState,
+	initialSetupProfileFormState,
 	orientationOptions,
 } from "./datingProfile.consts";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ export default function DatingProfileForm() {
 	};
 
 	const [state, formAction] = useActionState(
-		async (prevState: InitialFormState, formData: FormData) => {
+		async (prevState: InitialSetupProfileFormState, formData: FormData) => {
 			formData.append("interests", selectedInterests.join(","));
 			const result = await handleSetProfile(
 				prevState,
@@ -50,11 +50,11 @@ export default function DatingProfileForm() {
 			}
 			return result;
 		},
-		initialFormState
+		initialSetupProfileFormState
 	);
 
-	const { formErrors } = state || initialFormState.formErrors;
-	const { formValues } = state || initialFormState.formValues;
+	const { formErrors } = state || initialSetupProfileFormState.formErrors;
+	const { formValues } = state || initialSetupProfileFormState.formValues;
 
 	return (
 		<form className="w-full max-w-xl" action={formAction}>
