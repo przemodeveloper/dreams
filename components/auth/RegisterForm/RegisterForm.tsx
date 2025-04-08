@@ -1,13 +1,13 @@
 "use client";
 
-import FormField from "@/components/FormField/FormField";
+import FormField from "@/components/form/FormField/FormField";
 import { handleRegister } from "@/lib/actions";
 import { ROUTES } from "@/routes/routes";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
-import { initialRegisterFormState } from "@/components/DatingProfileForm/datingProfile.consts";
 import type { InitialRegisterFormState } from "@/models/form";
+import { initialRegisterFormState } from "@/constants/form";
 
 export default function RegisterForm() {
 	const router = useRouter();

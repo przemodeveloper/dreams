@@ -1,4 +1,4 @@
-import { initialSetupProfileFormState, initialRegisterFormState } from "@/components/DatingProfileForm/datingProfile.consts";
+import { initialRegisterFormState, initialSetupProfileFormState } from "@/constants/form";
 import { imageRefIds } from "@/constants/user-profile";
 import { auth, db, storage } from "@/firebase";
 import type { ImageObject } from "@/hooks/useManageUser";

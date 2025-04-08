@@ -6,7 +6,7 @@ import { getSnapshot } from "@/utils/getSnapshot";
 import { auth, provider } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
-import FormField from "../FormField/FormField";
+import FormField from "../../form/FormField/FormField";
 
 export default function Login() {
 	const router = useRouter();

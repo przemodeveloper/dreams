@@ -1,10 +1,10 @@
 "use client";
 
 import useAuthUser from "@/hooks/useAuthUser";
-import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+import LoadingScreen from "@/components/layout/LoadingScreen/LoadingScreen";
 import { NotificationContextProvider } from "@/context/notification-context";
 import { UserContextProvider } from "@/context/user-context";
-import Navbar from "../Navbar/Navbar";
+import Navbar from "../../layout/Navbar/Navbar";
 
 export default function UserProvider({
 	children,

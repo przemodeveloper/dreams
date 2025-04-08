@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Roboto } from "next/font/google";
 import type { Metadata } from "next";
-import UserProvider from "@/components/UserProvider/UserProvider";
+import UserProvider from "@/components/context/UserProvider/UserProvider";
 
 export const metadata: Metadata = {
 	title: "Dreams",

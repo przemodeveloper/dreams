@@ -1,6 +1,6 @@
 "use client";
 
-import Login from "@/components/Login/Login";
+import Login from "@/components/auth/Login/Login";
 import { useUserContext } from "@/context/user-context";
 
 export default function Home() {

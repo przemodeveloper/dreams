@@ -1,6 +1,5 @@
 "use client";
 
-import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { generateAiPrompt, OPTIONS } from "@/constants/user-profile";
 import { useNotificationContext } from "@/context/notification-context";
 import { useUserLocation } from "@/hooks/useUserLocation";
@@ -10,8 +9,9 @@ import type { UserProfile } from "@/models/auth";
 import type { UploadingImage } from "@/hooks/useManageUser";
 import { useEffect, useState } from "react";
 import { getGeminiResponse } from "@/lib/api/gemini";
-import { EditableField } from "../EditableField/EditableField";
-import InterestsList from "../InterestsList/InterestsList";
+import { EditableField } from "@/components/form/EditableField/EditableField";
+import InterestsList from "@/components/interests/InterestsList/InterestsList";
+import ImagePreview from "@/components/image/ImagePreview/ImagePreview";
 
 export default function UpdateProfileForm({
 	userData,

@@ -1,4 +1,4 @@
-import ImageSkeleton from "../ImageSkeleton/ImageSkeleton";
+import ImageSkeleton from "@/components/image/ImageSkeleton/ImageSkeleton";
 
 export default function UserProfileSkeleton() {
 	return (

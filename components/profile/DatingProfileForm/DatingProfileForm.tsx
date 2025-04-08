@@ -1,25 +1,25 @@
 "use client";
 
-import FormField from "../FormField/FormField";
+import FormField from "../../form/FormField/FormField";
 import { handleSetProfile } from "@/lib/actions";
-import SubmitButton from "../SubmitButton/SubmitButton";
+import SubmitButton from "../../form/SubmitButton/SubmitButton";
 import { useActionState, useState } from "react";
 import type { InitialSetupProfileFormState } from "@/models/form";
 import { joinErrorMessages } from "@/utils/joinErrorMessages";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/routes/routes";
+import { imageRefIds } from "@/constants/user-profile";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import { useUserContext } from "@/context/user-context";
+import UserLocation from "../UserLocation/UserLocation";
+import ImagePicker from "@/components/image/ImagePicker/ImagePicker";
+import InterestsList from "@/components/interests/InterestsList/InterestsList";
 import {
 	dreamOptions,
 	genderOptions,
 	initialSetupProfileFormState,
 	orientationOptions,
-} from "./datingProfile.consts";
-import { useRouter } from "next/navigation";
-import { ROUTES } from "@/routes/routes";
-import ImagePicker from "../ImagePicker/ImagePicker";
-import { imageRefIds } from "@/constants/user-profile";
-import UserLocation from "../UserLocation/UserLocation";
-import { useUserLocation } from "@/hooks/useUserLocation";
-import InterestsList from "../InterestsList/InterestsList";
-import { useUserContext } from "@/context/user-context";
+} from "@/constants/form";
 
 export default function DatingProfileForm() {
 	const { user } = useUserContext();

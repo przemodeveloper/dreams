@@ -1,4 +1,4 @@
-import { dreamOptions, genderOptions, orientationOptions } from "@/components/DatingProfileForm/datingProfile.consts";
+import { dreamOptions, orientationOptions, genderOptions} from "./form";
 
 export const imageRefIds = [
   "profile_image_1",

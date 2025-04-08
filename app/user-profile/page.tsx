@@ -1,4 +1,4 @@
-import UpdateProfileLayout from "@/components/UpdateProfileLayout/UpdateProfileLayout";
+import UpdateProfileLayout from "@/components/profile/UpdateProfileLayout/UpdateProfileLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

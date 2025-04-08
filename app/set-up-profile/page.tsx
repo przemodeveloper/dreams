@@ -1,4 +1,4 @@
-import DatingProfileForm from "@/components/DatingProfileForm/DatingProfileForm";
+import DatingProfileForm from "@/components/profile/DatingProfileForm/DatingProfileForm";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

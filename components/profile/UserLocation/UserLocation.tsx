@@ -1,4 +1,4 @@
-import { Loader } from "../Loader/Loader";
+import { Loader } from "@/components/loader/Loader";
 
 interface UserLocationProps {
 	address: string | null;
