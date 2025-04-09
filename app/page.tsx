@@ -1,15 +1,7 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-	title: "Dreams",
-	description:
-		"Unique dating app designed to connect people who share similar aspirations and plans for the future",
-};
+import Parallax from "@/components/parallax/Parallax";
 
 export default function Home() {
-	return (
-		<>
-			<h1>Home</h1>
-		</>
-	);
+	return <Parallax />;
 }

@@ -15,7 +15,7 @@ const ImageSkeleton = ({ count = 1 }: ImageSkeletonProps) => {
 						className="animate-pulse w-full bg-gray-200 h-[300px] rounded-lg mb-5 flex justify-center items-center"
 						key={index}
 					>
-						<RiImageCircleFill className="w-10 h-10 dark:text-slate-700" />
+						<RiImageCircleFill className="w-10 h-10 dark:text-emerald-600" />
 					</div>
 				);
 			})}

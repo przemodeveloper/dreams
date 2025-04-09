@@ -13,6 +13,8 @@
 :root {
 	--font-primary: "Agu Display", serif;
 	--font-secondary: "Roboto", serif;
+	--color-primary: #059669;
+	--color-secondary: #4f46e5;
 }
 
 *,
@@ -25,6 +27,7 @@ html {
 	scroll-behavior: smooth;
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
+	scroll-snap-type: y mandatory;
 }
 
 body {

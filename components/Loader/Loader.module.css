@@ -12,8 +12,8 @@
 	--c: white 90deg, #0000 0;
 }
 
-.loader-black {
-	--c: black 90deg, #0000 0;
+.loader-emerald-600 {
+	--c: var(--color-primary) 90deg, #0000 0;
 }
 
 @keyframes l12 {

@@ -34,7 +34,7 @@ export default function ImagePreview({
 			{uploadingImage.loading === "pending" &&
 				uploadingImage.imageRefId === imageRefId && (
 					<div className="h-full absolute z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
-						<Loader color="white" />
+						<Loader />
 					</div>
 				)}
 			{imgSrc ? (

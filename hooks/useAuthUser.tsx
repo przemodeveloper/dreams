@@ -35,7 +35,6 @@ export default function useAuthUser() {
 				}
 			} else {
 				setUser(null);
-				router.push(ROUTES.LOGIN);
 				setLoading("resolved");
 			}
 		});

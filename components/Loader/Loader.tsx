@@ -1,10 +1,12 @@
 import styles from "./Loader.module.css";
 
-export function Loader({ color = "black" }) {
+export function Loader({ color = "emerald-600" }) {
 	return (
 		<div
 			className={`${styles.loader} ${
-				color === "black" ? styles["loader-black"] : styles["loader-white"]
+				color === "emerald-600"
+					? styles["loader-emerald-600"]
+					: styles["loader-white"]
 			}`}
 		/>
 	);
