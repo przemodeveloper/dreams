@@ -22,7 +22,7 @@ import {
 } from "@/constants/form";
 
 export default function DatingProfileForm() {
-	const { user } = useUserContext();
+	const { userId } = useUserContext();
 	const router = useRouter();
 	const { location, error, loading } = useUserLocation({ skipOnMount: false });
 	const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -42,7 +42,7 @@ export default function DatingProfileForm() {
 				prevState,
 				formData,
 				location,
-				user?.uid
+				userId
 			);
 
 			if (result.success) {
@@ -71,7 +71,7 @@ export default function DatingProfileForm() {
 							<ImagePicker
 								key={imageRefId}
 								imageRefId={imageRefId}
-								userId={user?.uid}
+								userId={userId}
 							/>
 						);
 					})}
