@@ -4,4 +4,5 @@ export const ROUTES = {
 	SET_UP_PROFILE: "/set-up-profile",
 	LOGIN: "/login",
 	REGISTER: "/register",
+	VERIFY_EMAIL: "/verify-email",
 };

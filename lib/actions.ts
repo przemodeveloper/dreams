@@ -4,7 +4,7 @@ import { auth, db, storage } from "@/firebase";
 import type { ImageObject } from "@/hooks/useManageUser";
 import type { InitialSetupProfileFormState, InitialRegisterFormState } from "@/models/form";
 import { uploadImage } from "@/utils/uploadImage";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { z } from "zod";
@@ -68,7 +68,18 @@ export async function handleRegister(
   const result = registerSchema.safeParse(registerUser);
 
   if (result?.success) {
-    await createUserWithEmailAndPassword(auth, registerUser.email, registerUser.password);
+    const userCredential = await createUserWithEmailAndPassword(auth, registerUser.email, registerUser.password);
+
+    if (userCredential) {
+      const user = userCredential.user;
+
+      if (user) {
+        await sendEmailVerification(user, {
+          url: `${process.env.NEXT_PUBLIC_APP_URL}/verify-email`
+        })
+      }
+    }
+
     return {
       success: true,
       formValues: registerUser,

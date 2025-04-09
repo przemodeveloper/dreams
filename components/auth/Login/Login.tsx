@@ -17,6 +17,10 @@ export default function Login() {
 			const result = await signInWithPopup(auth, provider);
 			const authUser = result.user;
 
+			if (!authUser.emailVerified) {
+				router.push(ROUTES.VERIFY_EMAIL);
+			}
+
 			const snapshot = await getSnapshot(authUser.uid);
 
 			if (snapshot.empty) {
