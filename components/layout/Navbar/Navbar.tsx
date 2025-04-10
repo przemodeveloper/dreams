@@ -58,14 +58,17 @@ const Navbar = () => {
 						</>
 					) : (
 						<div className="flex items-center gap-4">
-							<div className="relative w-10 h-10 rounded-full overflow-hidden">
+							<Link
+								href={ROUTES.USER_PROFILE}
+								className="relative w-10 h-10 rounded-full overflow-hidden"
+							>
 								<Image
 									src={userImage?.downloadUrl || AvatarImage}
 									alt="User image"
 									fill
 									className="object-cover"
 								/>
-							</div>
+							</Link>
 							<button
 								type="button"
 								title="Sign out"
