@@ -30,7 +30,7 @@ export default function RegisterForm() {
 
 	return (
 		<form
-			className="mx-auto w-full md:w-2/3 lg:w-1/3 h-[calc(100vh-60px)] flex flex-col justify-center"
+			className="mx-auto w-full md:w-2/3 lg:w-1/3 flex flex-col justify-center"
 			action={formAction}
 		>
 			<div className="mb-4">

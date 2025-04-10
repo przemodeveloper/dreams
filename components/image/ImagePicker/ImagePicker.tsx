@@ -69,7 +69,7 @@ export default function ImagePicker({
 					<button
 						onClick={handleClick}
 						type="button"
-						className="transition ease-in-out duration-300 group hover:bg-emerald-600 border w-full border-emerald-600 border-1 h-[300px] p-4 rounded-md"
+						className="transition ease-in-out duration-300 group hover:bg-emerald-600 border w-full border-slate-700 border-1 h-[300px] p-4 rounded-md"
 						title="Add image"
 					>
 						<RiImageCircleFill className="transition ease-in-out duration-300 group-hover:text-white w-10 h-10 mx-auto" />
