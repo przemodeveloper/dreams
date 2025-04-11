@@ -4,7 +4,7 @@ import { useManageUser } from "@/hooks/useManageUser";
 import UpdateProfileForm from "../UpdateProfileForm/UpdateProfileForm";
 import { useUserContext } from "@/context/user-context";
 import UserProfileSkeleton from "../UserProfileSkeleton/UserProfileSkeleton";
-
+import { LOADING_STATE } from "@/constants/user-profile";
 export default function UpdateProfileLayout() {
 	const { user, loading, userId } = useUserContext();
 
@@ -17,7 +17,7 @@ export default function UpdateProfileLayout() {
 
 	return (
 		<div className="flex justify-center items-center flex-col pt-4">
-			{loading === "pending" && !user ? (
+			{loading === LOADING_STATE.PENDING && !user ? (
 				<UserProfileSkeleton />
 			) : userId && user ? (
 				<UpdateProfileForm

@@ -1,14 +1,13 @@
 import { db } from "@/firebase";
 import type { UserProfile } from "@/models/auth";
+import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 import type { FirestoreError } from "firebase/firestore";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export function useSubscribeUserProfile(userId: string) {
 	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
-	const [loading, setLoading] = useState<
-		"pending" | "idle" | "error" | "resolved"
-	>("pending");
+	const [loading, setLoading] = useState<LoadingState>(LOADING_STATE.PENDING);
 
 	useEffect(() => {
 		if (!userId) return;
@@ -35,7 +34,7 @@ export function useSubscribeUserProfile(userId: string) {
 				setLoading("resolved");
 			},
 			(error: FirestoreError) => {
-				setLoading("error");
+				setLoading("rejected");
 				throw new Error(error.message);
 			}
 		);

@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Field } from "@/models/form";
 import { useNotificationContext } from "@/context/notification-context";
 import type { UserProfile } from "@/models/auth";
+import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 export interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
@@ -13,7 +14,7 @@ export interface ImageObject {
 }
 
 export interface UploadingImage {
-	loading: "idle" | "pending" | "resolved" | "error";
+	loading: LoadingState;
 	imageRefId: string | null;
 }
 
@@ -22,7 +23,7 @@ export function useManageUser(
 	userData?: Partial<UserProfile> | null
 ) {
 	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
-		loading: "idle",
+		loading: LOADING_STATE.IDLE,
 		imageRefId: null,
 	});
 
@@ -70,7 +71,7 @@ export function useManageUser(
 	) => {
 		if (!userId) return;
 
-		setUploadingImage({ loading: "pending", imageRefId });
+		setUploadingImage({ loading: LOADING_STATE.PENDING, imageRefId });
 
 		const res = await uploadImage(file, imageRefId, userId);
 
@@ -91,7 +92,7 @@ export function useManageUser(
 
 		notify("Image uploaded successfully!");
 
-		setUploadingImage({ loading: "resolved", imageRefId });
+		setUploadingImage({ loading: LOADING_STATE.RESOLVED, imageRefId });
 	};
 
 	const handleDeleteImage = async (filePath: string) => {

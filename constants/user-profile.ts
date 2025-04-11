@@ -6,6 +6,15 @@ export const imageRefIds = [
   "profile_image_3",
 ];
 
+export const LOADING_STATE = {
+  IDLE: "idle",
+  PENDING: "pending",
+  RESOLVED: "resolved",
+  REJECTED: "rejected",
+} as const;
+
+export type LoadingState = typeof LOADING_STATE[keyof typeof LOADING_STATE];
+
 export const OPTIONS = {
   gender: genderOptions.filter((option) => Boolean(option.value)),
   orientation: orientationOptions.filter((option) => Boolean(option.value)),
