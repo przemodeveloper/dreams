@@ -20,7 +20,7 @@ export default function RegisterForm() {
 		const result = await handleRegister(state, formData);
 
 		if (result.success) {
-			router.push(ROUTES.SET_UP_PROFILE);
+			router.push(ROUTES.VERIFY_EMAIL);
 		}
 		return result;
 	}, initialRegisterFormState);

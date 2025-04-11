@@ -3,6 +3,7 @@ import { imageRefIds } from "@/constants/user-profile";
 import { auth, db, storage } from "@/firebase";
 import type { ImageObject } from "@/hooks/useManageUser";
 import type { InitialSetupProfileFormState, InitialRegisterFormState } from "@/models/form";
+import { ROUTES } from "@/routes/routes";
 import { uploadImage } from "@/utils/uploadImage";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
@@ -75,7 +76,7 @@ export async function handleRegister(
 
       if (user) {
         await sendEmailVerification(user, {
-          url: `${process.env.NEXT_PUBLIC_APP_URL}/verify-email`
+          url: `${process.env.NEXT_PUBLIC_APP_URL}${ROUTES.LOGIN}`
         })
       }
     }

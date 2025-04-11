@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { ROUTES } from "@/routes/routes";
 
 const Navbar = () => {
-	const { userId, user } = useUserContext();
+	const { user } = useUserContext();
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -36,7 +36,7 @@ const Navbar = () => {
 					Dreams
 				</Link>
 				<div className="flex items-center gap-4">
-					{!userId ? (
+					{!user ? (
 						<>
 							<Link
 								href="/login"

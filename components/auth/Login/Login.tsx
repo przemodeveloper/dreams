@@ -12,7 +12,7 @@ import SubmitButton from "@/components/form/SubmitButton/SubmitButton";
 export default function Login() {
 	const router = useRouter();
 
-	const handleSignIn = async () => {
+	const handleSignInWithPopup = async () => {
 		try {
 			const result = await signInWithPopup(auth, provider);
 			const authUser = result.user;
@@ -44,7 +44,7 @@ export default function Login() {
 				type="button"
 				className="text-lg flex items-center text-indigo-600"
 				title="Sign in with Google"
-				onClick={handleSignIn}
+				onClick={handleSignInWithPopup}
 			>
 				<RiGoogleFill className="inline-block mr-2" size={20} />{" "}
 				<span>Sign in with Google</span>
