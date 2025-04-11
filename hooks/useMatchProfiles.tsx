@@ -1,12 +1,12 @@
 import { db } from "@/firebase";
-import type { UserProfile } from "@/models/auth";
+import type { UserProfile } from "@/lib/actions";
 import { collectionGroup, getDocs, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
 export function useMatchProfiles(userId: string) {
-	const [matchProfiles, setMatchProfiles] = useState<
-		Partial<UserProfile>[] | null
-	>(null);
+	const [matchProfiles, setMatchProfiles] = useState<UserProfile[] | null>(
+		null
+	);
 
 	const getMatchProfilesCollection = useCallback(async () => {
 		const userMatchProfilesCollection = collectionGroup(db, "userProfile");
@@ -18,7 +18,7 @@ export function useMatchProfiles(userId: string) {
 
 		const profiles = userMatchProfiles.filter(
 			(profile) => profile.userId !== userId
-		);
+		) as UserProfile[];
 		setMatchProfiles(profiles);
 	}, [userId]);
 

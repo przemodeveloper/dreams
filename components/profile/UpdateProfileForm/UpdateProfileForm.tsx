@@ -5,13 +5,13 @@ import { useNotificationContext } from "@/context/notification-context";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Field } from "@/models/form";
 import { RiRefreshLine } from "@remixicon/react";
-import type { UserProfile } from "@/models/auth";
 import type { UploadingImage } from "@/hooks/useManageUser";
 import { useEffect, useState } from "react";
 import { getGeminiResponse } from "@/lib/api/gemini";
 import { EditableField } from "@/components/form/EditableField/EditableField";
 import InterestsList from "@/components/interests/InterestsList/InterestsList";
 import ImagePreview from "@/components/image/ImagePreview/ImagePreview";
+import type { UserProfile } from "@/lib/actions";
 
 export default function UpdateProfileForm({
 	userData,
@@ -21,7 +21,7 @@ export default function UpdateProfileForm({
 	onUploadImage,
 	userId,
 }: {
-	userData: Partial<UserProfile> | null;
+	userData: UserProfile | null;
 	onUpdateUserProfile: (field: Field, value: string | object) => Promise<void>;
 	uploadingImage: UploadingImage;
 	onDeleteImage: (imageRefId: string) => Promise<void>;

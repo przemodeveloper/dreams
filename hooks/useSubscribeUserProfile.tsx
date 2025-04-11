@@ -1,12 +1,12 @@
 import { db } from "@/firebase";
-import type { UserProfile } from "@/models/auth";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 import type { FirestoreError } from "firebase/firestore";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import type { UserProfile } from "@/lib/actions";
 
 export function useSubscribeUserProfile(userId: string) {
-	const [userData, setUserData] = useState<Partial<UserProfile> | null>(null);
+	const [userData, setUserData] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState<LoadingState>(LOADING_STATE.PENDING);
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ export function useSubscribeUserProfile(userId: string) {
 				}
 
 				const docData = snapshot.docs[0].data();
-				setUserData(docData as Partial<UserProfile>);
+				setUserData(docData as UserProfile);
 				setLoading("resolved");
 			},
 			(error: FirestoreError) => {

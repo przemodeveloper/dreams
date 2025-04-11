@@ -17,6 +17,7 @@ const datingProfileSchema = z.object({
   username: z.string({ required_error: "Username is required." }).min(3, {
     message: "Username must be at least 3 characters.",
   }),
+  bio: z.string().optional(),
   dream: z.string({
     required_error: "Dream is required.",
   }),
@@ -39,6 +40,11 @@ const datingProfileSchema = z.object({
     }),
   }).required()
 });
+
+export type UserProfile = z.infer<typeof datingProfileSchema> & {
+  userId: string;
+  images: ImageObject[];
+};
 
 const registerSchema = z.object({
   email: z.string({ required_error: "Email is required." }).email({

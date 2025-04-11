@@ -5,8 +5,8 @@ import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import type { Field } from "@/models/form";
 import { useNotificationContext } from "@/context/notification-context";
-import type { UserProfile } from "@/models/auth";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
+import type { UserProfile } from "@/lib/actions";
 export interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
@@ -18,10 +18,7 @@ export interface UploadingImage {
 	imageRefId: string | null;
 }
 
-export function useManageUser(
-	userId?: string,
-	userData?: Partial<UserProfile> | null
-) {
+export function useManageUser(userId?: string, userData?: UserProfile | null) {
 	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
 		loading: LOADING_STATE.IDLE,
 		imageRefId: null,

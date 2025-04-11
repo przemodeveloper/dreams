@@ -1,11 +1,11 @@
-import type { UserProfile } from "@/models/auth";
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
 import { useSubscribeUserProfile } from "@/hooks/useSubscribeUserProfile";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
+import type { UserProfile } from "@/lib/actions";
 
 type UserContextType = {
-	user: Partial<UserProfile> | null;
+	user: UserProfile | null;
 	loading: LoadingState;
 	userId?: string;
 };
