@@ -18,6 +18,11 @@ const Navbar = () => {
 
 	const handleSignOut = async () => {
 		await signOut(auth);
+
+		await fetch("/api/set-token", {
+			method: "DELETE",
+		});
+
 		router.push(ROUTES.HOME);
 	};
 

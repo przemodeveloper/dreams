@@ -17,6 +17,14 @@ export default function Login() {
 			const result = await signInWithPopup(auth, provider);
 			const authUser = result.user;
 
+			const authToken = await authUser?.getIdToken();
+
+			await fetch("/api/set-token", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ authToken }),
+			});
+
 			const snapshot = await getSnapshot(authUser.uid);
 
 			if (snapshot.empty) {
