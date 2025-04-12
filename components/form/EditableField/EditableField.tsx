@@ -9,7 +9,7 @@ import {
 import { getLabel } from "@/utils/getLabel";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
-
+import type { ZodSchema } from "zod";
 interface EditableFieldProps {
 	field: Field;
 	label: string;
@@ -24,6 +24,7 @@ interface EditableFieldProps {
 	showLabel?: boolean;
 	aiGeneration?: () => Promise<void>;
 	aiText?: string;
+	validationSchema?: ZodSchema;
 }
 
 export const EditableField = ({
@@ -40,9 +41,11 @@ export const EditableField = ({
 	showLabel = true,
 	aiGeneration,
 	aiText,
+	validationSchema,
 }: EditableFieldProps) => {
 	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(initialValue || "");
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (aiText) {
@@ -55,6 +58,20 @@ export const EditableField = ({
 		setEditing(!editing);
 	};
 
+	const validateValue = (value: string) => {
+		if (validationSchema) {
+			const result = validationSchema.safeParse(
+				field === "age" ? Number(value) : value
+			);
+			if (!result.success) {
+				setError(result.error.errors[0].message);
+				return false;
+			}
+			setError(null);
+			return true;
+		}
+	};
+
 	const handleChange = (
 		e: React.ChangeEvent<
 			HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
@@ -64,8 +81,10 @@ export const EditableField = ({
 	};
 
 	const handleSave = async () => {
-		await onSave(field, value, label);
+		if (!validateValue(value)) return;
+		setValue(value.trim());
 		setEditing(false);
+		await onSave(field, value, label);
 	};
 
 	const handleDiscard = () => {
@@ -110,6 +129,7 @@ export const EditableField = ({
 						Component={component}
 						options={options}
 						className={className}
+						error={error || ""}
 						{...(component === "textarea" ? { rows: 4 } : {})}
 						{...(type === "number" && min ? { min } : {})}
 						{...(type === "number" && max ? { max } : {})}

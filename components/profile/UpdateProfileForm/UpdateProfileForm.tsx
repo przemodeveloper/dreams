@@ -15,6 +15,7 @@ import { EditableField } from "@/components/form/EditableField/EditableField";
 import InterestsList from "@/components/interests/InterestsList/InterestsList";
 import ImagePreview from "@/components/image/ImagePreview/ImagePreview";
 import type { UserProfile } from "@/lib/actions";
+import { z } from "zod";
 
 export default function UpdateProfileForm({
 	userData,
@@ -125,6 +126,9 @@ export default function UpdateProfileForm({
 						onSave={handleSave}
 						className="text-3xl"
 						showLabel={false}
+						validationSchema={z
+							.string({ required_error: "Username is required." })
+							.min(3, "Username must be at least 3 characters.")}
 					/>
 				</div>
 
@@ -161,6 +165,9 @@ export default function UpdateProfileForm({
 						component="input"
 						initialValue={String(userData?.age)}
 						onSave={handleSave}
+						validationSchema={z
+							.number({ required_error: "Age is required." })
+							.min(18, "You must be at least 18 years old.")}
 					/>
 				</div>
 
