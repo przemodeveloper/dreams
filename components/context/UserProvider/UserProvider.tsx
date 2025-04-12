@@ -6,6 +6,8 @@ import { NotificationContextProvider } from "@/context/notification-context";
 import { UserContextProvider } from "@/context/user-context";
 import Navbar from "../../layout/Navbar/Navbar";
 import { LOADING_STATE } from "@/constants/user-profile";
+import Footer from "@/components/layout/Footer/Footer";
+
 export default function UserProvider({
 	children,
 }: Readonly<{
@@ -22,6 +24,7 @@ export default function UserProvider({
 				) : (
 					children
 				)}
+				<Footer />
 			</NotificationContextProvider>
 		</UserContextProvider>
 	);

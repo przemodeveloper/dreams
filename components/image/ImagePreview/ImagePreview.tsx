@@ -31,7 +31,7 @@ export default function ImagePreview({
 	return (
 		<div className="relative h-[300px]">
 			{uploadingImages[imageRefId] === LOADING_STATE.PENDING && (
-				<div className="h-full absolute z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
+				<div className="h-full absolute rounded z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
 					<AppLoader />
 				</div>
 			)}
