@@ -41,35 +41,44 @@ export default function Login() {
 			}
 		} catch (error) {
 			const err = error as Error;
-			throw new Error(err.message);
+			notify(err.message);
 		}
 	};
 
 	const [state, formAction] = useActionState<InitialLoginFormState, FormData>(
-		async (state: InitialLoginFormState, formData: FormData) => {
-			const result = await handleLogin(state, formData);
+		async (
+			state: InitialLoginFormState,
+			formData: FormData
+		): Promise<InitialLoginFormState> => {
+			try {
+				const result = await handleLogin(state, formData);
 
-			await fetch("/api/set-token", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ authToken: result.authToken }),
-			});
+				await fetch("/api/set-token", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ authToken: result.authToken }),
+				});
 
-			if (result.userId) {
-				const snapshot = await getSnapshot(result.userId);
+				if (result.userId) {
+					const snapshot = await getSnapshot(result.userId);
 
-				if (result.emailVerified) {
-					if (snapshot.empty) {
-						router.push(ROUTES.SET_UP_PROFILE);
+					if (result.emailVerified) {
+						if (snapshot.empty) {
+							router.push(ROUTES.SET_UP_PROFILE);
+						} else {
+							router.push(ROUTES.USER_PROFILE);
+						}
 					} else {
-						router.push(ROUTES.USER_PROFILE);
+						notify("Please verify your email first.");
 					}
-				} else {
-					notify("Please verify your email first.");
 				}
-			}
 
-			return result;
+				return result;
+			} catch (error) {
+				const err = error as Error;
+				notify(err.message);
+				return state;
+			}
 		},
 		initialLoginFormState
 	);

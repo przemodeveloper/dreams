@@ -20,11 +20,13 @@ import {
 	initialSetupProfileFormState,
 	orientationOptions,
 } from "@/constants/form";
+import { useNotificationContext } from "@/context/notification-context";
 
 export default function DatingProfileForm() {
 	const { userId } = useUserContext();
 	const router = useRouter();
 	const { location, error, loading } = useUserLocation({ skipOnMount: false });
+	const { notify } = useNotificationContext();
 	const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
 	const handleSelectInterest = (interest: string) => {
@@ -36,19 +38,28 @@ export default function DatingProfileForm() {
 	};
 
 	const [state, formAction] = useActionState(
-		async (prevState: InitialSetupProfileFormState, formData: FormData) => {
+		async (
+			prevState: InitialSetupProfileFormState,
+			formData: FormData
+		): Promise<InitialSetupProfileFormState> => {
 			formData.append("interests", selectedInterests.join(","));
-			const result = await handleSetProfile(
-				prevState,
-				formData,
-				location,
-				userId
-			);
+			try {
+				const result = await handleSetProfile(
+					prevState,
+					formData,
+					location,
+					userId
+				);
 
-			if (result.success) {
-				router.push(ROUTES.USER_PROFILE);
+				if (result.success) {
+					router.push(ROUTES.USER_PROFILE);
+				}
+				return result;
+			} catch (error) {
+				const err = error as Error;
+				notify(err.message);
+				return prevState;
 			}
-			return result;
 		},
 		initialSetupProfileFormState
 	);

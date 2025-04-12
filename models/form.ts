@@ -34,13 +34,17 @@ export interface InitialSetupProfileFormState {
     username?: string | undefined;
     dream?: string | undefined;
     gender?: string | undefined;
+    orientation?: string | undefined;
     bio?: string | undefined;
+    interests?: string | undefined;
   };
   formErrors: {
     age?: string[];
     username?: string[];
     dream?: string[];
     gender?: string[];
+    orientation?: string[];
+    interests?: string[];
   };
 }
 

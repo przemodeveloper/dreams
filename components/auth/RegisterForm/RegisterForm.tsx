@@ -9,21 +9,35 @@ import { joinErrorMessages } from "@/utils/joinErrorMessages";
 import type { InitialRegisterFormState } from "@/models/form";
 import { initialRegisterFormState } from "@/constants/form";
 import SubmitButton from "@/components/form/SubmitButton/SubmitButton";
+import { useNotificationContext } from "@/context/notification-context";
 
 export default function RegisterForm() {
 	const router = useRouter();
+	const { notify } = useNotificationContext();
 
 	const [state, formAction] = useActionState<
 		InitialRegisterFormState,
 		FormData
-	>(async (state: InitialRegisterFormState, formData: FormData) => {
-		const result = await handleRegister(state, formData);
+	>(
+		async (
+			state: InitialRegisterFormState,
+			formData: FormData
+		): Promise<InitialRegisterFormState> => {
+			try {
+				const result = await handleRegister(state, formData);
 
-		if (result.success) {
-			router.push(ROUTES.VERIFY_EMAIL);
-		}
-		return result;
-	}, initialRegisterFormState);
+				if (result.success) {
+					router.push(ROUTES.VERIFY_EMAIL);
+				}
+				return result;
+			} catch (error) {
+				const err = error as Error;
+				notify(err.message);
+				return state;
+			}
+		},
+		initialRegisterFormState
+	);
 
 	const { formErrors } = state || initialRegisterFormState.formErrors;
 	const { formValues } = state || initialRegisterFormState.formValues;
