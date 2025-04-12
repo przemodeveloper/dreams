@@ -7,13 +7,13 @@ const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "dreams-a672f.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: "dreams-a672f.firebasestorage.app",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET_URL,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const STORAGE_BUCKET_URL = "gs://dreams-a672f.firebasestorage.app";
+const STORAGE_BUCKET_URL = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET_URL;
 
 const app = initializeApp(firebaseConfig);
 
