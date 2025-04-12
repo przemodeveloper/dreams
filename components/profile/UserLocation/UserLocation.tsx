@@ -1,4 +1,4 @@
-import Loader from "@/components/loader/Loader";
+import AppLoader from "@/components/appLoader/AppLoader";
 
 interface UserLocationProps {
 	address: string | null;
@@ -14,7 +14,7 @@ export default function UserLocation({
 	return (
 		<>
 			{loading ? (
-				<Loader />
+				<AppLoader />
 			) : error ? (
 				<p className="text-red-500">{error}</p>
 			) : (

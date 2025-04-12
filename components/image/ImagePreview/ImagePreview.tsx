@@ -2,8 +2,8 @@ import { RiFileReduceLine } from "@remixicon/react";
 import Image from "next/image";
 import ImagePicker from "../ImagePicker/ImagePicker";
 import type { UploadingImage } from "@/hooks/useManageUser";
-import Loader from "@/components/loader/Loader";
 import { LOADING_STATE } from "@/constants/user-profile";
+import AppLoader from "@/components/appLoader/AppLoader";
 interface ImagePreviewProps {
 	imgSrc: string | null;
 	alt: string;
@@ -34,7 +34,7 @@ export default function ImagePreview({
 			{uploadingImage.loading === LOADING_STATE.PENDING &&
 				uploadingImage.imageRefId === imageRefId && (
 					<div className="h-full absolute z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
-						<Loader />
+						<AppLoader />
 					</div>
 				)}
 			{imgSrc ? (

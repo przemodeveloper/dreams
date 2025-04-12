@@ -1,6 +1,6 @@
-import styles from "./Loader.module.css";
+import styles from "./AppLoader.module.css";
 
-export default function Loader({ color = "emerald-600" }) {
+export default function AppLoader({ color = "emerald-600" }) {
 	return (
 		<div
 			className={`${styles.loader} ${
