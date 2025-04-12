@@ -33,7 +33,7 @@ export default function UpdateProfileForm({
 		imageRefId: string,
 		userId: string
 	) => Promise<void>;
-	userId?: string;
+	userId: string;
 }) {
 	const { notify } = useNotificationContext();
 	const [geminiResponse, setGeminiResponse] = useState<string>("");
@@ -105,7 +105,7 @@ export default function UpdateProfileForm({
 						uploadingImages={uploadingImages}
 						onDeleteImage={onDeleteImage}
 						onUploadImage={async (file) =>
-							await onUploadImage(file, image.imageRefId, userId || "")
+							await onUploadImage(file, image.imageRefId, userId)
 						}
 						filePath={image.filePath}
 						imgSrc={image.downloadUrl}
