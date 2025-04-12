@@ -12,6 +12,21 @@ export interface InitialRegisterFormState {
   };
 }
 
+export interface InitialLoginFormState {
+  success?: boolean;
+  formValues: {
+    email: string;
+    password: string;
+  };
+  authToken: string | null;
+  emailVerified: boolean | null;
+  userId: string | null;
+  formErrors: {
+    email?: string[];
+    password?: string[];
+  };
+}
+
 export interface InitialSetupProfileFormState {
   success?: boolean;
   formValues: {

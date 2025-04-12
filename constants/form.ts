@@ -33,6 +33,21 @@ export const initialRegisterFormState = {
 	},
 };
 
+export const initialLoginFormState = {
+	success: false,
+	authToken: null,
+	userId: null,
+	emailVerified: null,
+	formValues: {
+		email: "",
+		password: "",
+	},
+	formErrors: {
+		email: [""],
+		password: [""],
+	},
+};
+
 export const initialSetupProfileFormState = {
 	success: false,
 	formValues: {

@@ -1,11 +1,11 @@
-import { initialRegisterFormState, initialSetupProfileFormState } from "@/constants/form";
+import { initialLoginFormState, initialRegisterFormState, initialSetupProfileFormState } from "@/constants/form";
 import { imageRefIds } from "@/constants/user-profile";
 import { auth, db, storage } from "@/firebase";
 import type { ImageObject } from "@/hooks/useManageUser";
-import type { InitialSetupProfileFormState, InitialRegisterFormState } from "@/models/form";
+import type { InitialSetupProfileFormState, InitialRegisterFormState, InitialLoginFormState } from "@/models/form";
 import { ROUTES } from "@/routes/routes";
 import { uploadImage } from "@/utils/uploadImage";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { z } from "zod";
@@ -60,6 +60,51 @@ const registerSchema = z.object({
   message: "Passwords don't match",
   path: ["confirmPassword"],
 });
+
+const loginSchema = z.object({
+  email: z.string({ required_error: "Email is required." }).email({
+    message: "Invalid email address.",
+  }),
+  password: z.string({ required_error: "Password is required." }).min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+
+export async function handleLogin(
+  prevState: InitialLoginFormState,
+  formData: FormData,
+) {
+  const loginUser = {
+    email: String(formData.get("email")),
+    password: String(formData.get("password")),
+  }
+
+  const result = loginSchema.safeParse(loginUser);
+
+  if (result?.success) {
+    const userCredential = await signInWithEmailAndPassword(auth, loginUser.email, loginUser.password);
+
+    const authToken = await userCredential.user.getIdToken();
+
+    return {
+      success: true,
+      formValues: loginUser,
+      formErrors: {},
+      authToken,
+      userId: userCredential.user.uid,
+      emailVerified: userCredential.user.emailVerified,
+    };
+  }
+
+  return {
+    success: result?.success,
+    formValues: loginUser,
+    formErrors: result.error?.formErrors?.fieldErrors || initialLoginFormState.formErrors,
+    authToken: null,
+    userId: null,
+    emailVerified: null,
+  };
+}
 
 export async function handleRegister(
   prevState: InitialRegisterFormState,
