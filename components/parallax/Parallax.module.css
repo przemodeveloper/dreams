@@ -12,12 +12,19 @@
 }
 
 .imageWrapper {
-	width: 400px;
-	height: 600px;
+	width: 200px;
+	height: 300px;
 	margin: 20px;
 	background: #f5f5f5;
 	overflow: hidden;
 	position: relative;
+}
+
+@media (min-width: 768px) {
+	.imageWrapper {
+		width: 400px;
+		height: 600px;
+	}
 }
 
 .image {
@@ -31,14 +38,19 @@
 	color: var(--color-primary);
 	margin: 0;
 	font-family: "Azeret Mono", monospace;
-	font-size: 50px;
 	font-weight: 700;
 	letter-spacing: -3px;
 	line-height: 1.2;
 	position: absolute;
 	display: inline-block;
-	top: calc(50% - 25px);
-	left: calc(50% + 120px);
+}
+
+@media (min-width: 768px) {
+	.title {
+		font-size: 50px;
+		top: calc(50% - 25px);
+		left: calc(50% + 120px);
+	}
 }
 
 .progress {
@@ -49,11 +61,4 @@
 	background: var(--color-primary);
 	bottom: 80px;
 	transform: scaleX(0);
-}
-
-@media (max-width: 500px) {
-	.imageWrapper {
-		width: 200px;
-		height: 300px;
-	}
 }
