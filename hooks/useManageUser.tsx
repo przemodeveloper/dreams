@@ -19,10 +19,9 @@ export interface UploadingImage {
 }
 
 export function useManageUser(userId?: string, userData?: UserProfile | null) {
-	const [uploadingImage, setUploadingImage] = useState<UploadingImage>({
-		loading: LOADING_STATE.IDLE,
-		imageRefId: null,
-	});
+	const [uploadingImages, setUploadingImages] = useState<
+		Record<string, LoadingState>
+	>({});
 
 	const { notify } = useNotificationContext();
 
@@ -68,28 +67,47 @@ export function useManageUser(userId?: string, userData?: UserProfile | null) {
 	) => {
 		if (!userId) return;
 
-		setUploadingImage({ loading: LOADING_STATE.PENDING, imageRefId });
+		try {
+			setUploadingImages((prev) => ({
+				...prev,
+				[imageRefId]: LOADING_STATE.PENDING,
+			}));
 
-		const res = await uploadImage(file, imageRefId, userId);
+			const res = await uploadImage(file, imageRefId, userId);
 
-		const profileDocRef = await getProfileDocRef(userId);
+			const profileDocRef = await getProfileDocRef(userId);
 
-		const imageRef = ref(storage, res?.metadata.fullPath);
-		const downloadUrl = await getDownloadURL(imageRef);
+			const imageRef = ref(storage, res?.metadata.fullPath);
+			const downloadUrl = await getDownloadURL(imageRef);
 
-		if (!res) return;
+			if (!res) return;
 
-		await updateDoc(profileDocRef, {
-			images: userData?.images?.map((image) =>
-				imageRefId === image.imageRefId
-					? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
-					: image
-			),
-		});
+			await updateDoc(profileDocRef, {
+				images: userData?.images?.map((image) =>
+					imageRefId === image.imageRefId
+						? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
+						: image
+				),
+			});
 
-		notify("Image uploaded successfully!");
+			notify("Image uploaded successfully!");
 
-		setUploadingImage({ loading: LOADING_STATE.RESOLVED, imageRefId });
+			setUploadingImages((prev) => ({
+				...prev,
+				[imageRefId]: LOADING_STATE.RESOLVED,
+			}));
+		} catch (error) {
+			setUploadingImages((prev) => ({
+				...prev,
+				[imageRefId]: LOADING_STATE.REJECTED,
+			}));
+
+			notify(
+				`Something went wrong while uploading image: ${
+					(error as Error).message
+				}`
+			);
+		}
 	};
 
 	const handleDeleteImage = async (filePath: string) => {
@@ -117,7 +135,7 @@ export function useManageUser(userId?: string, userData?: UserProfile | null) {
 	};
 
 	return {
-		uploadingImage,
+		uploadingImages,
 		handleUploadImage,
 		handleDeleteImage,
 		handleUpdateUserProfile,

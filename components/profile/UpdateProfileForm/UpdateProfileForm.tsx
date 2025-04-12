@@ -1,11 +1,14 @@
 "use client";
 
-import { generateAiPrompt, OPTIONS } from "@/constants/user-profile";
+import {
+	generateAiPrompt,
+	type LoadingState,
+	OPTIONS,
+} from "@/constants/user-profile";
 import { useNotificationContext } from "@/context/notification-context";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import type { Field } from "@/models/form";
 import { RiRefreshLine } from "@remixicon/react";
-import type { UploadingImage } from "@/hooks/useManageUser";
 import { useEffect, useState } from "react";
 import { getGeminiResponse } from "@/lib/api/gemini";
 import { EditableField } from "@/components/form/EditableField/EditableField";
@@ -16,14 +19,14 @@ import type { UserProfile } from "@/lib/actions";
 export default function UpdateProfileForm({
 	userData,
 	onUpdateUserProfile,
-	uploadingImage,
+	uploadingImages,
 	onDeleteImage,
 	onUploadImage,
 	userId,
 }: {
 	userData: UserProfile | null;
 	onUpdateUserProfile: (field: Field, value: string | object) => Promise<void>;
-	uploadingImage: UploadingImage;
+	uploadingImages: Record<string, LoadingState>;
 	onDeleteImage: (imageRefId: string) => Promise<void>;
 	onUploadImage: (
 		file: File,
@@ -99,7 +102,7 @@ export default function UpdateProfileForm({
 					<ImagePreview
 						key={image.imageRefId}
 						imageRefId={image.imageRefId}
-						uploadingImage={uploadingImage}
+						uploadingImages={uploadingImages}
 						onDeleteImage={onDeleteImage}
 						onUploadImage={async (file) =>
 							await onUploadImage(file, image.imageRefId, userId || "")

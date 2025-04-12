@@ -10,7 +10,7 @@ export default function UpdateProfileLayout() {
 
 	const {
 		handleUpdateUserProfile,
-		uploadingImage,
+		uploadingImages,
 		handleDeleteImage,
 		handleUploadImage,
 	} = useManageUser(user?.userId, user);
@@ -24,7 +24,7 @@ export default function UpdateProfileLayout() {
 					userData={user}
 					userId={user?.userId}
 					onUpdateUserProfile={handleUpdateUserProfile}
-					uploadingImage={uploadingImage}
+					uploadingImages={uploadingImages}
 					onDeleteImage={handleDeleteImage}
 					onUploadImage={handleUploadImage}
 				/>

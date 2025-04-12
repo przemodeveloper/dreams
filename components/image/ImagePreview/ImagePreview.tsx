@@ -1,8 +1,7 @@
 import { RiFileReduceLine } from "@remixicon/react";
 import Image from "next/image";
 import ImagePicker from "../ImagePicker/ImagePicker";
-import type { UploadingImage } from "@/hooks/useManageUser";
-import { LOADING_STATE } from "@/constants/user-profile";
+import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 import AppLoader from "@/components/appLoader/AppLoader";
 interface ImagePreviewProps {
 	imgSrc: string | null;
@@ -12,7 +11,7 @@ interface ImagePreviewProps {
 	imageRefId: string;
 	onDeleteImage: (imageRef: string) => Promise<void>;
 	onUploadImage: (file: File) => Promise<void>;
-	uploadingImage: UploadingImage;
+	uploadingImages: Record<string, LoadingState>;
 }
 
 export default function ImagePreview({
@@ -21,7 +20,7 @@ export default function ImagePreview({
 	imageRefId,
 	filePath,
 	userId,
-	uploadingImage,
+	uploadingImages,
 	onUploadImage,
 	onDeleteImage,
 }: ImagePreviewProps) {
@@ -31,12 +30,11 @@ export default function ImagePreview({
 
 	return (
 		<div className="relative h-[300px]">
-			{uploadingImage.loading === LOADING_STATE.PENDING &&
-				uploadingImage.imageRefId === imageRefId && (
-					<div className="h-full absolute z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
-						<AppLoader />
-					</div>
-				)}
+			{uploadingImages[imageRefId] === LOADING_STATE.PENDING && (
+				<div className="h-full absolute z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
+					<AppLoader />
+				</div>
+			)}
 			{imgSrc ? (
 				<div className="h-full">
 					<Image
