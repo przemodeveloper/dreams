@@ -12,13 +12,22 @@ export const NotificationContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
-	const notify = (message: string) =>
-		toast(message, { theme: "dark", hideProgressBar: true });
+	const notify = (message: string) => toast(message);
 
 	return (
 		<NotificationContext.Provider value={{ notify }}>
 			{children}
-			<ToastContainer />
+			<ToastContainer
+				position="top-right"
+				theme="light"
+				autoClose={3000}
+				closeOnClick
+				style={
+					{
+						"--toastify-color-progress-light": "#4f46e5",
+					} as React.CSSProperties
+				}
+			/>
 		</NotificationContext.Provider>
 	);
 };
