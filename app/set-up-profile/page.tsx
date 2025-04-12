@@ -17,7 +17,7 @@ export default async function SetUpProfilePage() {
 
 	return (
 		<div className="flex justify-center items-center flex-col">
-			<h1 className="font-primary mb-6 text-center">
+			<h1 className="font-primary mb-6 text-center text-emerald-600">
 				Set up your dating profile!
 			</h1>
 			<DatingProfileForm />

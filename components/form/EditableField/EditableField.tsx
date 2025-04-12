@@ -8,6 +8,7 @@ import {
 } from "@remixicon/react";
 import { getLabel } from "@/utils/getLabel";
 import { useState, useEffect } from "react";
+import clsx from "clsx";
 
 interface EditableFieldProps {
 	field: Field;
@@ -75,14 +76,16 @@ export const EditableField = ({
 	return (
 		<div className="border-b-2 border-gray-200 w-full">
 			<div className="flex items-center mb-2">
-				{showLabel && (
-					<label
-						htmlFor={`field-${field}`}
-						className="text-slate-700 block uppercase tracking-wide text-slate-700 text-sm font-bold"
-					>
-						{label}
-					</label>
-				)}
+				<label
+					htmlFor={`field-${field}`}
+					className={clsx(
+						"text-slate-700 block uppercase tracking-wide text-slate-700 text-sm font-bold",
+						showLabel ? "" : "visually-hidden"
+					)}
+				>
+					{label}
+				</label>
+
 				{!editing && showLabel && (
 					<button
 						type="button"

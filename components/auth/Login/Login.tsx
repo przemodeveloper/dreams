@@ -114,7 +114,9 @@ export default function Login() {
 					className="mb-2"
 					error={joinErrorMessages(formErrors.password)}
 				/>
-				<SubmitButton title="Sign in" text="Sign in with email" />
+				<div className="w-full text-center mb-4">
+					<SubmitButton title="Sign in" text="Sign in with email" />
+				</div>
 			</form>
 		</div>
 	);

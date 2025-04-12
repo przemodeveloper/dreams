@@ -86,7 +86,7 @@ export default function UpdateProfileForm({
 				} else {
 					clearInterval(interval);
 				}
-			}, 40); // Adjust typing speed here (lower number = faster typing)
+			}, 30);
 
 			return () => clearInterval(interval);
 		}

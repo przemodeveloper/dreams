@@ -77,6 +77,10 @@ export default function ImagePicker({
 				</>
 			)}
 
+			<label htmlFor={imageRefId} className="visually-hidden">
+				Upload image
+			</label>
+
 			<input
 				type="file"
 				id={imageRefId}
