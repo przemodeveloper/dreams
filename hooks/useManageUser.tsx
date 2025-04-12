@@ -1,12 +1,18 @@
 import { db, storage } from "@/firebase";
 import { uploadImage } from "@/utils/uploadImage";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	updateDoc,
+} from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import type { Field } from "@/models/form";
 import { useNotificationContext } from "@/context/notification-context";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
-import type { UserProfile } from "@/lib/actions";
+
 export interface ImageObject {
 	filePath: string;
 	downloadUrl: string;
@@ -18,7 +24,7 @@ export interface UploadingImage {
 	imageRefId: string | null;
 }
 
-export function useManageUser(userId?: string, userData?: UserProfile | null) {
+export function useManageUser(userId?: string) {
 	const [uploadingImages, setUploadingImages] = useState<
 		Record<string, LoadingState>
 	>({});
@@ -74,20 +80,24 @@ export function useManageUser(userId?: string, userData?: UserProfile | null) {
 			}));
 
 			const res = await uploadImage(file, imageRefId, userId);
+			if (!res) return;
 
 			const profileDocRef = await getProfileDocRef(userId);
+
+			const currentDoc = await getDoc(profileDocRef);
+			const currentImages = currentDoc.data()?.images || [];
 
 			const imageRef = ref(storage, res?.metadata.fullPath);
 			const downloadUrl = await getDownloadURL(imageRef);
 
-			if (!res) return;
+			const updatedImages = currentImages.map((image: ImageObject) =>
+				imageRefId === image.imageRefId
+					? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
+					: image
+			);
 
 			await updateDoc(profileDocRef, {
-				images: userData?.images?.map((image) =>
-					imageRefId === image.imageRefId
-						? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
-						: image
-				),
+				images: updatedImages,
 			});
 
 			notify("Image uploaded successfully!");
@@ -115,23 +125,32 @@ export function useManageUser(userId?: string, userData?: UserProfile | null) {
 
 		const profileDocRef = await getProfileDocRef(userId);
 
+		const currentDoc = await getDoc(profileDocRef);
+		const currentImages = currentDoc.data()?.images || [];
+
 		const imageRef = ref(storage, filePath);
 
-		await deleteObject(imageRef)
-			.then(async () => {
-				await updateDoc(profileDocRef, {
-					images: userData?.images?.map((image) =>
-						image.filePath === filePath
-							? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
-							: image
-					),
-				});
+		try {
+			await deleteObject(imageRef);
 
-				notify("Image deleted successfully!");
-			})
-			.catch((error) => {
-				notify(`Something went wrong while deleting image: ${error.message}`);
+			const updatedImages = currentImages.map((image: ImageObject) =>
+				image.filePath === filePath
+					? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
+					: image
+			);
+
+			await updateDoc(profileDocRef, {
+				images: updatedImages,
 			});
+
+			notify("Image deleted successfully!");
+		} catch (error: unknown) {
+			notify(
+				`Something went wrong while deleting image: ${
+					error instanceof Error ? error.message : "Unknown error"
+				}`
+			);
+		}
 	};
 
 	return {

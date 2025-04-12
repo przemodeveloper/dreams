@@ -13,7 +13,7 @@ export default function UpdateProfileLayout() {
 		uploadingImages,
 		handleDeleteImage,
 		handleUploadImage,
-	} = useManageUser(user?.userId, user);
+	} = useManageUser(user?.userId);
 
 	return (
 		<div className="flex justify-center items-center flex-col pt-4">
