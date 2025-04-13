@@ -1,5 +1,6 @@
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 import { auth } from "@/firebase";
+import { setToken } from "@/lib/api/set-token";
 import type { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 
@@ -12,6 +13,9 @@ export default function useAuthUser() {
 			if (authUser) {
 				setUser(authUser);
 				setLoading(LOADING_STATE.RESOLVED);
+
+				const token = await authUser.getIdToken(true);
+				await setToken(token);
 			} else {
 				setUser(null);
 				setLoading(LOADING_STATE.RESOLVED);

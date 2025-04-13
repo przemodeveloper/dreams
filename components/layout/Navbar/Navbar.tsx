@@ -8,6 +8,7 @@ import { RiLogoutBoxLine } from "@remixicon/react";
 import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { ROUTES } from "@/routes/routes";
+import { deleteToken } from "@/lib/api/set-token";
 
 const Navbar = () => {
 	const { user } = useUserContext();
@@ -19,9 +20,7 @@ const Navbar = () => {
 	const handleSignOut = async () => {
 		await signOut(auth);
 
-		await fetch("/api/set-token", {
-			method: "DELETE",
-		});
+		await deleteToken();
 
 		router.push(ROUTES.HOME);
 	};
