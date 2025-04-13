@@ -16,52 +16,52 @@ env:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    secret: firebase-messaging-sender-id
+    secret: DREAMS_MESSAGING_SENDER_ID
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    secret: firebase-app-id
+    secret: DREAMS_APP_ID
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    secret: firebase-measurement-id
+    secret: DREAMS_MEASUREMENT_ID
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    secret: google-maps-api-key
+    secret: DREAMS_GOOGLE_MAPS_API_KEY
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_GEMINI_API_KEY
-    secret: gemini-api-key
+    secret: DREAMS_GEMINI_API_KEY
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_APP_URL
-    secret: app-url
+    secret: DREAMS_APP_URL
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    secret: firebase-project-id
+    secret: DREAMS_PROJECT_ID
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    secret: firebase-storage-bucket-url
+    secret: DREAMS_STORAGE_BUCKET
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL
-    secret: firebase-client-email
+    secret: DREAMS_CLIENT_EMAIL
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_PRIVATE_KEY
-    secret: firebase-private-key
+    secret: DREAMS_PRIVATE_KEY
     availability:
       - BUILD
       - RUNTIME
