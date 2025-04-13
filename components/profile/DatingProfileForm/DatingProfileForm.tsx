@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/routes";
 import { imageRefIds } from "@/constants/user-profile";
 import { useUserLocation } from "@/hooks/useUserLocation";
-import { useUserContext } from "@/context/user-context";
 import UserLocation from "../UserLocation/UserLocation";
 import ImagePicker from "@/components/image/ImagePicker/ImagePicker";
 import InterestsList from "@/components/interests/InterestsList/InterestsList";
@@ -21,9 +20,10 @@ import {
 	orientationOptions,
 } from "@/constants/form";
 import { useNotificationContext } from "@/context/notification-context";
+import { useUserStore } from "@/hooks/useUserStore";
 
 export default function DatingProfileForm() {
-	const { userId } = useUserContext();
+	const { authUser } = useUserStore((state) => state);
 	const router = useRouter();
 	const { location, error, loading } = useUserLocation({ skipOnMount: false });
 	const { notify } = useNotificationContext();
@@ -48,7 +48,7 @@ export default function DatingProfileForm() {
 					prevState,
 					formData,
 					location,
-					userId
+					authUser?.uid
 				);
 
 				if (result.success) {
@@ -75,7 +75,7 @@ export default function DatingProfileForm() {
 						<ImagePicker
 							key={imageRefId}
 							imageRefId={imageRefId}
-							userId={userId}
+							userId={authUser?.uid}
 						/>
 					);
 				})}

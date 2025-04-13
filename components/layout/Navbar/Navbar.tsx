@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useUserContext } from "@/context/user-context";
 import Image from "next/image";
 import AvatarImage from "@/assets/default-avatar.png";
 import { signOut } from "firebase/auth";
@@ -9,17 +8,20 @@ import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { ROUTES } from "@/routes/routes";
 import { deleteToken } from "@/lib/api/set-token";
+import { useUserStore } from "@/hooks/useUserStore";
 
 const Navbar = () => {
-	const { user } = useUserContext();
+	const { authUser, profile, clear } = useUserStore((state) => state);
 	const router = useRouter();
 	const pathname = usePathname();
 
-	const userImage = user?.images?.find((image) => Boolean(image.downloadUrl));
+	const userImage = profile?.images?.find((image) =>
+		Boolean(image.downloadUrl)
+	);
 
 	const handleSignOut = async () => {
 		await signOut(auth);
-
+		clear();
 		await deleteToken();
 
 		router.push(ROUTES.HOME);
@@ -35,7 +37,7 @@ const Navbar = () => {
 					Dreams
 				</Link>
 				<div className="flex items-center gap-4">
-					{!user ? (
+					{!authUser ? (
 						<>
 							<Link
 								href="/login"

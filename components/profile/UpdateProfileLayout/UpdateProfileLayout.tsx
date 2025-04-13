@@ -2,27 +2,28 @@
 
 import { useManageUser } from "@/hooks/useManageUser";
 import UpdateProfileForm from "../UpdateProfileForm/UpdateProfileForm";
-import { useUserContext } from "@/context/user-context";
 import UserProfileSkeleton from "../UserProfileSkeleton/UserProfileSkeleton";
 import { LOADING_STATE } from "@/constants/user-profile";
+import { useUserStore } from "@/hooks/useUserStore";
+
 export default function UpdateProfileLayout() {
-	const { user, loading, userId } = useUserContext();
+	const { profile, loading } = useUserStore((state) => state);
 
 	const {
 		handleUpdateUserProfile,
 		uploadingImages,
 		handleDeleteImage,
 		handleUploadImage,
-	} = useManageUser(user?.userId);
+	} = useManageUser(profile?.userId);
 
 	return (
 		<div className="flex justify-center items-center flex-col pt-4">
-			{loading === LOADING_STATE.PENDING && !user ? (
+			{loading === LOADING_STATE.PENDING && !profile ? (
 				<UserProfileSkeleton />
-			) : userId && user ? (
+			) : profile ? (
 				<UpdateProfileForm
-					userData={user}
-					userId={user?.userId}
+					userData={profile}
+					userId={profile?.userId}
 					onUpdateUserProfile={handleUpdateUserProfile}
 					uploadingImages={uploadingImages}
 					onDeleteImage={handleDeleteImage}
