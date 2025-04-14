@@ -4,9 +4,9 @@ import { useRef } from "react";
 import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import styles from "./Parallax.module.css";
-import photo1 from "../../assets/photos/1.jpg";
-import photo2 from "../../assets/photos/2.jpg";
-import photo3 from "../../assets/photos/3.jpg";
+import photo1 from "@/public/photos/1.jpg";
+import photo2 from "@/public/photos/2.jpg";
+import photo3 from "@/public/photos/3.jpg";
 
 export interface ParallaxItem {
 	id: number;

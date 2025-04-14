@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import AvatarImage from "@/assets/default-avatar.png";
+import AvatarImage from "@/public/default-avatar.png";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { RiLogoutBoxLine } from "@remixicon/react";
