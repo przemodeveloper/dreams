@@ -46,10 +46,11 @@ function ParallaxImage({ item }: { item: ParallaxItem }) {
 		<section className={styles.section}>
 			<div ref={ref} className={styles.imageWrapper}>
 				<Image
+					loading={`${item.id === 1 ? "eager" : "lazy"}`}
+					priority={item.id === 1}
 					src={item.image}
 					alt={item.title}
-					width={400}
-					height={600}
+					fill
 					className={styles.image}
 				/>
 			</div>
