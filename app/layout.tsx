@@ -5,6 +5,9 @@ import Footer from "@/components/layout/Footer/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+	title: "Dreams",
+	description:
+		"Dreams is a unique dating app designed to connect people who share similar aspirations and plans for the future. By focusing on alignment in values and goals, Dreams fosters meaningful relationships that stand the test of time.",
 	manifest: "/manifest.json",
 	icons: [
 		{
