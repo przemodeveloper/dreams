@@ -49,6 +49,18 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				<link
+					rel="preconnect"
+					href="https://dreams-a672f.firebaseapp.com"
+					crossOrigin="anonymous"
+				/>
+				<link
+					rel="preconnect"
+					href="https://apis.google.com"
+					crossOrigin="anonymous"
+				/>
+			</head>
 			<body className={roboto.className}>
 				<div className="pb-[64px]">
 					<UserProvider>{children}</UserProvider>
