@@ -70,6 +70,8 @@ const Navbar = () => {
 							>
 								<Image
 									src={userImage?.downloadUrl || AvatarImage}
+									loading="eager"
+									priority
 									alt="User image"
 									fill
 									className="object-cover"
