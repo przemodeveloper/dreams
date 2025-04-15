@@ -51,8 +51,7 @@ export default function ImagePicker({
 						alt="Image"
 						loading="eager"
 						priority
-						width={300}
-						height={300}
+						fill
 						className="object-cover rounded-md h-[300px]"
 					/>
 					<button
