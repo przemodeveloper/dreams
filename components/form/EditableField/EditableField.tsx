@@ -70,6 +70,7 @@ export const EditableField = ({
 			setError(null);
 			return true;
 		}
+		return true;
 	};
 
 	const handleChange = (
