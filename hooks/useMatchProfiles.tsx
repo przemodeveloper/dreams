@@ -1,6 +1,6 @@
 import { db } from "@/firebase";
 import type { UserProfile } from "@/lib/actions";
-import { collectionGroup, getDocs, query } from "firebase/firestore";
+import { collectionGroup, getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
 export function useMatchProfiles(userId: string) {
@@ -11,14 +11,14 @@ export function useMatchProfiles(userId: string) {
 	const getMatchProfilesCollection = useCallback(async () => {
 		const userMatchProfilesCollection = collectionGroup(db, "userProfile");
 
-		const querySnapshot = await getDocs(query(userMatchProfilesCollection));
-		const userMatchProfiles = querySnapshot.docs.map((doc) => ({
-			...doc.data(),
-		})) || [{}];
+		const q = query(userMatchProfilesCollection, where("userId", "!=", userId));
 
-		const profiles = userMatchProfiles.filter(
-			(profile) => profile.userId !== userId
-		) as UserProfile[];
+		const querySnapshot = await getDocs(q);
+
+		const profiles = querySnapshot.docs.map((doc) => ({
+			...doc.data(),
+		})) as UserProfile[];
+
 		setMatchProfiles(profiles);
 	}, [userId]);
 
