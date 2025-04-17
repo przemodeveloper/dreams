@@ -31,7 +31,7 @@ const Navbar = () => {
 		<nav className="bg-gray-100 border-b border-emerald-600 text-white p-4 sticky top-0 z-50 h-[60px]">
 			<div className="container mx-auto flex justify-between h-full items-center">
 				<Link
-					href="/"
+					href={ROUTES.HOME}
 					className="text-xl font-bold font-primary text-emerald-600"
 				>
 					Dreams
@@ -40,7 +40,7 @@ const Navbar = () => {
 					{!profile ? (
 						<>
 							<Link
-								href="/login"
+								href={ROUTES.LOGIN}
 								className={clsx(
 									"transition-colors",
 									pathname === ROUTES.LOGIN
@@ -51,7 +51,7 @@ const Navbar = () => {
 								Login
 							</Link>
 							<Link
-								href="/register"
+								href={ROUTES.REGISTER}
 								className={clsx(
 									"transition-colors",
 									pathname === ROUTES.REGISTER
