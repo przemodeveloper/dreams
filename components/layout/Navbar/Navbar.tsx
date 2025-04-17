@@ -11,7 +11,7 @@ import { deleteToken } from "@/lib/api/set-token";
 import { useUserStore } from "@/hooks/useUserStore";
 
 const Navbar = () => {
-	const { authUser, profile, clear } = useUserStore((state) => state);
+	const { profile, clear } = useUserStore((state) => state);
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -37,7 +37,7 @@ const Navbar = () => {
 					Dreams
 				</Link>
 				<div className="flex items-center gap-4">
-					{!authUser ? (
+					{!profile ? (
 						<>
 							<Link
 								href="/login"
