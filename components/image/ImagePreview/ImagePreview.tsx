@@ -42,7 +42,8 @@ export default function ImagePreview({
 						alt={alt}
 						loading="eager"
 						priority
-						fill
+						width={244}
+						height={300}
 						className="object-cover rounded-md h-full border"
 					/>
 					<button
