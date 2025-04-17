@@ -64,7 +64,7 @@ export default function FormField({
 				<Component
 					className={classes}
 					onChange={onChange}
-					{...(value ? { value } : {})}
+					value={value ?? ""}
 					{...(defaultValue ? { defaultValue } : {})}
 					name={name}
 					{...(placeholder ? { placeholder } : {})}
@@ -84,7 +84,7 @@ export default function FormField({
 					type={type}
 					onChange={onChange}
 					{...(placeholder ? { placeholder } : {})}
-					{...(value ? { value } : {})}
+					value={value ?? ""}
 					{...(defaultValue ? { defaultValue } : {})}
 					name={name}
 					{...(Component === "textarea" ? { rows } : {})}

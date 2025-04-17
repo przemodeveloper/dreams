@@ -44,7 +44,7 @@ export const EditableField = ({
 	validationSchema,
 }: EditableFieldProps) => {
 	const [editing, setEditing] = useState(false);
-	const [value, setValue] = useState(initialValue || "");
+	const [value, setValue] = useState(initialValue ?? "");
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {

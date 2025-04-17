@@ -122,7 +122,7 @@ export default function UpdateProfileForm({
 						label="Username"
 						type="text"
 						component="input"
-						initialValue={userData?.username || ""}
+						initialValue={userData?.username ?? ""}
 						onSave={handleSave}
 						className="text-3xl"
 						showLabel={false}
