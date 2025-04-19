@@ -5,4 +5,5 @@ export const ROUTES = {
 	LOGIN: "/login",
 	REGISTER: "/register",
 	VERIFY_EMAIL: "/verify-email",
+	MEET_DREAMERS: "/meet-dreamers",
 };
