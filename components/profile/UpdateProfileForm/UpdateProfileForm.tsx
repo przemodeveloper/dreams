@@ -2,6 +2,7 @@
 
 import {
 	generateAiPrompt,
+	LOADING_STATE,
 	type LoadingState,
 	OPTIONS,
 } from "@/constants/user-profile";
@@ -39,16 +40,28 @@ export default function UpdateProfileForm({
 	const { notify } = useNotificationContext();
 	const [geminiResponse, setGeminiResponse] = useState<string>("");
 	const [generatedBio, setGeneratedBio] = useState<string>("");
+	const [loadingAiContent, setLoadingAiContent] = useState<LoadingState>(
+		LOADING_STATE.IDLE
+	);
 
 	const { loading: loadingLocation, getUserLocation } = useUserLocation({
 		skipOnMount: true,
 	});
 
 	const generateBioAi = async () => {
-		const response = await getGeminiResponse(
-			generateAiPrompt(userData?.username, userData?.dream, userData?.interests)
-		);
-		setGeminiResponse(response);
+		try {
+			setLoadingAiContent(LOADING_STATE.PENDING);
+			const response = await getGeminiResponse(
+				generateAiPrompt(
+					userData?.username,
+					userData?.dream,
+					userData?.interests
+				)
+			);
+			setGeminiResponse(response);
+		} catch {
+			notify("Error generating bio");
+		}
 	};
 
 	const location = userData?.location;
@@ -88,6 +101,7 @@ export default function UpdateProfileForm({
 					setGeneratedBio(geminiResponse.slice(0, currentIndex));
 					currentIndex++;
 				} else {
+					setLoadingAiContent(LOADING_STATE.RESOLVED);
 					clearInterval(interval);
 				}
 			}, 30);
@@ -153,6 +167,8 @@ export default function UpdateProfileForm({
 						onSave={handleSave}
 						aiGeneration={generateBioAi}
 						aiText={generatedBio}
+						loadingAiContent={loadingAiContent}
+						rows={7}
 					/>
 				</div>
 

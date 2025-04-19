@@ -22,7 +22,7 @@ export const OPTIONS = {
 };
 
 export const generateAiPrompt = (username?: string, dream?: string, interests?: string) => {
-  return `Generate a dating profile bio for me that is 100 words long and is about me. My name is ${username}, my dream/long term goal is ${dream}, my interests are ${interests}.`;
+  return `Generate a dating profile bio for me that is 80 words long and is about me. My name is ${username}, my dream/long term goal is ${dream}, my interests are ${interests}.`;
 };
 
 export const initialValues = {

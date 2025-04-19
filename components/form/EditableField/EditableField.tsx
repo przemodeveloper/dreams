@@ -10,6 +10,7 @@ import { getLabel } from "@/utils/getLabel";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import type { ZodSchema } from "zod";
+import { LOADING_STATE, LoadingState } from "@/constants/user-profile";
 interface EditableFieldProps {
 	field: Field;
 	label: string;
@@ -25,6 +26,8 @@ interface EditableFieldProps {
 	aiGeneration?: () => Promise<void>;
 	aiText?: string;
 	validationSchema?: ZodSchema;
+	rows?: number;
+	loadingAiContent?: LoadingState;
 }
 
 export const EditableField = ({
@@ -42,10 +45,18 @@ export const EditableField = ({
 	aiGeneration,
 	aiText,
 	validationSchema,
+	rows = 4,
+	loadingAiContent,
 }: EditableFieldProps) => {
 	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(initialValue ?? "");
 	const [error, setError] = useState<string | null>(null);
+
+	const classes = clsx(
+		className,
+		loadingAiContent === LOADING_STATE.PENDING &&
+			"animate-pulse pointer-events-none border-2 border-indigo-500"
+	);
 
 	useEffect(() => {
 		if (aiText) {
@@ -129,9 +140,9 @@ export const EditableField = ({
 						onChange={handleChange}
 						Component={component}
 						options={options}
-						className={className}
+						className={classes}
 						error={error || ""}
-						{...(component === "textarea" ? { rows: 4 } : {})}
+						{...(component === "textarea" && rows ? { rows } : {})}
 						{...(type === "number" && min ? { min } : {})}
 						{...(type === "number" && max ? { max } : {})}
 					/>
