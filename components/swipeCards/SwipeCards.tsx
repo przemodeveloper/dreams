@@ -18,6 +18,7 @@ const SwipeCards = ({ profiles }: SwipeCardsProps) => {
 					setCards={setCards}
 					cards={cards}
 					index={index}
+					zIndex={cards.length - index} // top card gets highest z-index
 				/>
 			))}
 		</div>
