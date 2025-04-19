@@ -53,6 +53,9 @@ const Card = ({ profile, setCards, index, zIndex }: CardProps) => {
 				right: 0,
 			}}
 			onDragEnd={handleDragEnd}
+			loading="eager"
+			decoding="sync"
+			fetchPriority="high"
 		/>
 	);
 };
