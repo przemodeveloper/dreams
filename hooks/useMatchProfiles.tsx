@@ -3,32 +3,32 @@ import type { UserProfile } from "@/lib/actions";
 import { collectionGroup, getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
-export function useMatchProfiles(userId: string) {
+export function useMatchProfiles(userId?: string) {
 	const [matchProfiles, setMatchProfiles] = useState<UserProfile[] | null>(
 		null
 	);
 
-	const getMatchProfilesCollection = useCallback(async () => {
+	const getMatchProfilesCollection = useCallback(async (userId: string) => {
 		const userMatchProfilesCollection = collectionGroup(db, "userProfile");
 
-		const q = query(userMatchProfilesCollection, where("userId", "!=", userId));
-
-		const querySnapshot = await getDocs(q);
-
-		const profiles = querySnapshot.docs.map((doc) => ({
+		const querySnapshot = await getDocs(
+			query(userMatchProfilesCollection, where("userId", "!=", userId))
+		);
+		const userMatchProfiles = querySnapshot.docs.map((doc) => ({
 			...doc.data(),
-		})) as UserProfile[];
+		})) || [{}];
 
-		setMatchProfiles(profiles);
-	}, [userId]);
+		setMatchProfiles(userMatchProfiles as UserProfile[]);
+	}, []);
 
 	useEffect(() => {
+		if (!userId) return;
 		const getProfiles = async () => {
-			await getMatchProfilesCollection();
+			await getMatchProfilesCollection(userId);
 		};
 
 		getProfiles();
-	}, [getMatchProfilesCollection]);
+	}, [getMatchProfilesCollection, userId]);
 
 	return { matchProfiles };
 }

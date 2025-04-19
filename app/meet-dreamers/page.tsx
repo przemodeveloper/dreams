@@ -1,3 +1,4 @@
+import MeetDreamersLayout from "@/components/meetDreamers/MeetDreamersLayout/MeetDreamersLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -5,9 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function MeetDreamersPage() {
-	return (
-		<div>
-			<h1 className="font-primary mb-4 text-emerald-600">Meet Dreamers</h1>
-		</div>
-	);
+	return <MeetDreamersLayout />;
 }
