@@ -3,6 +3,7 @@ import Image from "next/image";
 import ImagePicker from "../ImagePicker/ImagePicker";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 import AppLoader from "@/components/appLoader/AppLoader";
+
 interface ImagePreviewProps {
   imgSrc: string | null;
   alt: string;
@@ -10,7 +11,7 @@ interface ImagePreviewProps {
   userId?: string;
   imageRefId: string;
   onDeleteImage: (imageRef: string) => Promise<void>;
-  onUploadImage: (file: File) => Promise<void>;
+  onUploadImage: (file: File) => void;
   uploadingImages: Record<string, LoadingState>;
 }
 
@@ -31,7 +32,7 @@ export default function ImagePreview({
   return (
     <div className="relative h-[300px]">
       {uploadingImages[imageRefId] === LOADING_STATE.PENDING && (
-        <div className="h-full absolute rounded z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="h-full w-full absolute rounded z-50 top-0 left-0 w-full bg-black bg-opacity-50 flex justify-center items-center">
           <AppLoader />
         </div>
       )}
