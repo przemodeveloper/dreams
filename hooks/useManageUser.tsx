@@ -1,12 +1,6 @@
 import { db, storage } from "@/firebase";
 import { uploadImage } from "@/utils/uploadImage";
-import {
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { useState } from "react";
 import type { Field } from "@/models/form";
@@ -14,149 +8,133 @@ import { useNotificationContext } from "@/context/notification-context";
 import { LOADING_STATE, type LoadingState } from "@/constants/user-profile";
 
 export interface ImageObject {
-	filePath: string;
-	downloadUrl: string;
-	imageRefId: string;
+  filePath: string;
+  downloadUrl: string;
+  imageRefId: string;
 }
 
 export interface UploadingImage {
-	loading: LoadingState;
-	imageRefId: string | null;
+  loading: LoadingState;
+  imageRefId: string | null;
 }
 
 export function useManageUser(userId?: string) {
-	const [uploadingImages, setUploadingImages] = useState<
-		Record<string, LoadingState>
-	>({});
+  const [uploadingImages, setUploadingImages] = useState<
+    Record<string, LoadingState>
+  >({});
 
-	const { notify } = useNotificationContext();
+  const { notify } = useNotificationContext();
 
-	const getProfileDocRef = async (userId: string) => {
-		const userProfileCollection = collection(
-			db,
-			"profiles",
-			userId,
-			"userProfile"
-		);
+  const getProfileDoc = async (userId: string) => {
+    const userProfileDoc = doc(db, "profiles", userId);
 
-		const snapshot = await getDocs(userProfileCollection);
+    return userProfileDoc;
+  };
 
-		const userProfileDocId = snapshot.docs[0].id;
+  const handleUpdateUserProfile = async (
+    field: Field | "location",
+    value: string | object
+  ) => {
+    if (!userId) return;
 
-		const profileDocRef = doc(
-			db,
-			"profiles",
-			userId,
-			"userProfile",
-			userProfileDocId
-		);
-		return profileDocRef;
-	};
+    const profileDoc = await getProfileDoc(userId);
 
-	const handleUpdateUserProfile = async (
-		field: Field | "location",
-		value: string | object
-	) => {
-		if (!userId) return;
+    await updateDoc(profileDoc, {
+      [field]: value,
+    });
+  };
 
-		const profileDocRef = await getProfileDocRef(userId);
+  const handleUploadImage = async (
+    file: File,
+    imageRefId: string,
+    userId?: string
+  ) => {
+    if (!userId) return;
 
-		await updateDoc(profileDocRef, {
-			[field]: value,
-		});
-	};
+    try {
+      setUploadingImages((prev) => ({
+        ...prev,
+        [imageRefId]: LOADING_STATE.PENDING,
+      }));
 
-	const handleUploadImage = async (
-		file: File,
-		imageRefId: string,
-		userId?: string
-	) => {
-		if (!userId) return;
+      const res = await uploadImage(file, imageRefId, userId);
+      if (!res) return;
 
-		try {
-			setUploadingImages((prev) => ({
-				...prev,
-				[imageRefId]: LOADING_STATE.PENDING,
-			}));
+      const profileDoc = await getProfileDoc(userId);
 
-			const res = await uploadImage(file, imageRefId, userId);
-			if (!res) return;
+      const currentDoc = await getDoc(profileDoc);
+      const currentImages = currentDoc.data()?.images || [];
 
-			const profileDocRef = await getProfileDocRef(userId);
+      const imageRef = ref(storage, res?.metadata.fullPath);
+      const downloadUrl = await getDownloadURL(imageRef);
 
-			const currentDoc = await getDoc(profileDocRef);
-			const currentImages = currentDoc.data()?.images || [];
+      const updatedImages = currentImages.map((image: ImageObject) =>
+        imageRefId === image.imageRefId
+          ? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
+          : image
+      );
 
-			const imageRef = ref(storage, res?.metadata.fullPath);
-			const downloadUrl = await getDownloadURL(imageRef);
+      await updateDoc(profileDoc, {
+        images: updatedImages,
+      });
 
-			const updatedImages = currentImages.map((image: ImageObject) =>
-				imageRefId === image.imageRefId
-					? { filePath: res?.metadata.fullPath, downloadUrl, imageRefId }
-					: image
-			);
+      notify("Image uploaded successfully!");
 
-			await updateDoc(profileDocRef, {
-				images: updatedImages,
-			});
+      setUploadingImages((prev) => ({
+        ...prev,
+        [imageRefId]: LOADING_STATE.RESOLVED,
+      }));
+    } catch (error) {
+      setUploadingImages((prev) => ({
+        ...prev,
+        [imageRefId]: LOADING_STATE.REJECTED,
+      }));
 
-			notify("Image uploaded successfully!");
+      notify(
+        `Something went wrong while uploading image: ${
+          (error as Error).message
+        }`
+      );
+    }
+  };
 
-			setUploadingImages((prev) => ({
-				...prev,
-				[imageRefId]: LOADING_STATE.RESOLVED,
-			}));
-		} catch (error) {
-			setUploadingImages((prev) => ({
-				...prev,
-				[imageRefId]: LOADING_STATE.REJECTED,
-			}));
+  const handleDeleteImage = async (filePath: string) => {
+    if (!userId) return;
 
-			notify(
-				`Something went wrong while uploading image: ${
-					(error as Error).message
-				}`
-			);
-		}
-	};
+    const profileDoc = await getProfileDoc(userId);
 
-	const handleDeleteImage = async (filePath: string) => {
-		if (!userId) return;
+    const currentDoc = await getDoc(profileDoc);
+    const currentImages = currentDoc.data()?.images || [];
 
-		const profileDocRef = await getProfileDocRef(userId);
+    const imageRef = ref(storage, filePath);
 
-		const currentDoc = await getDoc(profileDocRef);
-		const currentImages = currentDoc.data()?.images || [];
+    try {
+      await deleteObject(imageRef);
 
-		const imageRef = ref(storage, filePath);
+      const updatedImages = currentImages.map((image: ImageObject) =>
+        image.filePath === filePath
+          ? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
+          : image
+      );
 
-		try {
-			await deleteObject(imageRef);
+      await updateDoc(profileDoc, {
+        images: updatedImages,
+      });
 
-			const updatedImages = currentImages.map((image: ImageObject) =>
-				image.filePath === filePath
-					? { filePath: "", downloadUrl: "", imageRefId: image.imageRefId }
-					: image
-			);
+      notify("Image deleted successfully!");
+    } catch (error: unknown) {
+      notify(
+        `Something went wrong while deleting image: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  };
 
-			await updateDoc(profileDocRef, {
-				images: updatedImages,
-			});
-
-			notify("Image deleted successfully!");
-		} catch (error: unknown) {
-			notify(
-				`Something went wrong while deleting image: ${
-					error instanceof Error ? error.message : "Unknown error"
-				}`
-			);
-		}
-	};
-
-	return {
-		uploadingImages,
-		handleUploadImage,
-		handleDeleteImage,
-		handleUpdateUserProfile,
-	};
+  return {
+    uploadingImages,
+    handleUploadImage,
+    handleDeleteImage,
+    handleUpdateUserProfile,
+  };
 }

@@ -21,7 +21,7 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { z } from "zod";
 
@@ -248,7 +248,7 @@ export async function handleSetProfile(
         })
       );
     }
-    await addDoc(collection(db, "profiles", userId, "userProfile"), {
+    await setDoc(doc(db, "profiles", userId), {
       ...userProfile,
       images: images.sort((a, b) => a.imageRefId.localeCompare(b.imageRefId)),
     });
