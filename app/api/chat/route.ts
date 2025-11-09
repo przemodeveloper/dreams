@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(request: Request) {
   try {
@@ -14,10 +14,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(response.text);
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
+    console.error("Error calling Gemini API:", error);
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: "Failed to process request" },
       { status: 500 }
     );
   }
-} 
+}

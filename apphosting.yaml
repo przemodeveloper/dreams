@@ -35,7 +35,7 @@ env:
     availability:
       - BUILD
       - RUNTIME
-  - variable: NEXT_PUBLIC_GEMINI_API_KEY
+  - variable: GEMINI_API_KEY
     secret: DREAMS_GEMINI_API_KEY
     availability:
       - BUILD
@@ -55,12 +55,12 @@ env:
     availability:
       - BUILD
       - RUNTIME
-  - variable: NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL
+  - variable: FIREBASE_CLIENT_EMAIL
     secret: DREAMS_CLIENT_EMAIL
     availability:
       - BUILD
       - RUNTIME
-  - variable: NEXT_PUBLIC_FIREBASE_PRIVATE_KEY
+  - variable: FIREBASE_PRIVATE_KEY
     secret: DREAMS_PRIVATE_KEY
     availability:
       - BUILD
