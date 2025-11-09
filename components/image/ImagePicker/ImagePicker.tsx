@@ -85,7 +85,7 @@ export default function ImagePicker({
         type="file"
         id={imageRefId}
         onChange={handleImageChange}
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/webp"
         name={imageRefId}
         ref={inputRef}
         className="hidden"
