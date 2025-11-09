@@ -20,15 +20,15 @@ export function useMatchProfiles(userId?: string) {
     const querySnapshot = await getDocs(
       query(
         userMatchProfilesCollection,
-        where("userId", "!=", userId),
+        where("userId", "not-in", [userId]),
         orderBy("userId")
       )
     );
-    const userMatchProfiles = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
-    })) || [{}];
+    const userMatchProfiles = querySnapshot.docs.map((doc) =>
+      doc.data()
+    ) as UserProfile[];
 
-    setMatchProfiles(userMatchProfiles as UserProfile[]);
+    setMatchProfiles(userMatchProfiles);
   }, []);
 
   useEffect(() => {
