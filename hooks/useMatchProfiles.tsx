@@ -9,8 +9,10 @@ import {
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
+type MatchProfile = Omit<UserProfile, "location">;
+
 export function useMatchProfiles(userId?: string) {
-  const [matchProfiles, setMatchProfiles] = useState<UserProfile[] | null>(
+  const [matchProfiles, setMatchProfiles] = useState<MatchProfile[] | null>(
     null
   );
 
@@ -24,9 +26,10 @@ export function useMatchProfiles(userId?: string) {
         orderBy("userId")
       )
     );
-    const userMatchProfiles = querySnapshot.docs.map((doc) =>
-      doc.data()
-    ) as UserProfile[];
+    const userMatchProfiles = querySnapshot.docs.map((doc) => {
+      const { location: _location, ...profile } = doc.data() as UserProfile;
+      return profile;
+    });
 
     setMatchProfiles(userMatchProfiles);
   }, []);
