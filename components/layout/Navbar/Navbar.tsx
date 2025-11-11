@@ -64,7 +64,15 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center gap-4">
-              <Link href={ROUTES.MEET_DREAMERS} className="text-slate-500">
+              <Link
+                href={ROUTES.MEET_DREAMERS}
+                className={clsx(
+                  "transition-colors",
+                  pathname === ROUTES.MEET_DREAMERS
+                    ? "text-emerald-600 border-b-2 border-emerald-600"
+                    : "text-slate-500"
+                )}
+              >
                 Meet Dreamers
               </Link>
               <Link
