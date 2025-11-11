@@ -45,11 +45,17 @@ export default function Login() {
       try {
         const result = await handleLogin(state, formData);
 
-        await fetch("/api/set-token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ authToken: result.authToken }),
-        });
+        if (result.authToken) {
+          const response = await fetch("/api/set-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ authToken: result.authToken }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to persist auth token.");
+          }
+        }
 
         if (result.userId) {
           const snapshot = await getSnapshot(result.userId);
