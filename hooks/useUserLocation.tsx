@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { fromLatLng, setKey } from "react-geocode";
 
-const fetchGeolocation = async () => {
+interface LocationData {
+  address: string;
+  coords: { latitude: number; longitude: number };
+}
+
+interface GeolocationResult {
+  location: LocationData | null;
+  error: string | null;
+}
+
+const fetchGeolocation = async (): Promise<GeolocationResult> => {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   if (apiKey) {
     setKey(apiKey);
@@ -31,7 +41,10 @@ const fetchGeolocation = async () => {
         error: null,
       };
     }
-    return null;
+    return {
+      location: null,
+      error: "Unable to determine address from coordinates.",
+    };
   } catch (err) {
     return {
       location: null,
@@ -46,10 +59,7 @@ export function useUserLocation({
   skipOnMount?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
-  const [location, setLocation] = useState<{
-    address: "";
-    coords: { latitude: number; longitude: number };
-  } | null>(null);
+  const [location, setLocation] = useState<LocationData | null>(null);
   const [loading, setLoading] = useState(false);
 
   const getUserLocation = useCallback(async () => {
@@ -75,9 +85,7 @@ export function useUserLocation({
       return;
     }
 
-    (async () => {
-      await getUserLocation();
-    })();
+    getUserLocation();
   }, [getUserLocation, skipOnMount]);
 
   return { error, location, loading, getUserLocation };
