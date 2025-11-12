@@ -13,15 +13,21 @@ interface UserStore {
   loading: LoadingState;
   init: () => () => void; // ✅ explicitly return an unsubscribe function
   clear: () => void;
+  unsubProfile: (() => void) | null;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   authUser: null,
   profile: null,
   loading: LOADING_STATE.PENDING,
+  unsubProfile: null,
+
   init: () => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
+        const prevUnsubProfile = get().unsubProfile;
+        if (prevUnsubProfile) prevUnsubProfile();
+
         set({ authUser, loading: LOADING_STATE.PENDING });
 
         const token = await authUser.getIdToken(true);
@@ -51,22 +57,26 @@ export const useUserStore = create<UserStore>((set) => ({
         );
 
         // Unsub both on logout
-        set(() => ({
-          clear: () => {
-            unsubProfile();
-            set({ authUser: null, profile: null });
-          },
-        }));
+        set({ unsubProfile });
       } else {
-        set({ authUser: null, profile: null, loading: LOADING_STATE.RESOLVED });
+        const prevUnsubProfile = get().unsubProfile;
+        if (prevUnsubProfile) prevUnsubProfile();
+
+        set({
+          authUser: null,
+          profile: null,
+          loading: LOADING_STATE.RESOLVED,
+          unsubProfile: null,
+        });
       }
     });
 
-    // Unsubscribe from auth listener on unload (optional, for SSR/hard refresh)
     return unsubscribe;
   },
 
   clear: () => {
-    set({ authUser: null, profile: null });
+    const { unsubProfile } = get();
+    if (unsubProfile) unsubProfile();
+    set({ authUser: null, profile: null, unsubProfile: null });
   },
 }));
