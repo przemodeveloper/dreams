@@ -51,6 +51,7 @@ const Card = ({ profile, setCards, index, zIndex }: CardProps) => {
       animate={{
         scale: isFront ? 1 : 0.9,
       }}
+      dragConstraints={{ left: 0, right: 0 }}
       drag={isFront ? "x" : false}
       onDragEnd={handleDragEnd}
     >
