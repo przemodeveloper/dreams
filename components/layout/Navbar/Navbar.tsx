@@ -11,7 +11,7 @@ import { deleteToken } from "@/lib/api/set-token";
 import { useUserStore } from "@/hooks/useUserStore";
 
 const Navbar = () => {
-  const { profile, clear, hydrated } = useUserStore((state) => state);
+  const { profile, clear } = useUserStore((state) => state);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -27,7 +27,7 @@ const Navbar = () => {
     router.push(ROUTES.HOME);
   };
 
-  if (!hydrated) return null;
+  if (!useUserStore.persist?.hasHydrated()) return null;
 
   return (
     <nav className="bg-gray-100 border-b border-emerald-600 text-white p-4 sticky top-0 z-50 h-[60px]">

@@ -28,8 +28,6 @@ interface UserStore {
   matchProfiles: Profile[] | null;
   matchProfilesLoading: LoadingState;
   getMatchProfiles: (userId: string) => Promise<void>;
-  hydrated: boolean;
-  setHydrated: (value: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -42,22 +40,20 @@ export const useUserStore = create<UserStore>()(
 
       matchProfiles: null,
       matchProfilesLoading: LOADING_STATE.IDLE,
-      hydrated: false,
-      setHydrated: (value: boolean) => set({ hydrated: value }),
 
       getMatchProfiles: async (userId: string) => {
         const { matchProfiles } = get();
 
-        if (matchProfiles) return;
+        if (matchProfiles?.length) return;
 
         set({ matchProfilesLoading: LOADING_STATE.PENDING });
 
-        const userMatchProfilesCollection = collection(db, "profiles");
         const q = query(
-          userMatchProfilesCollection,
-          where("userId", "not-in", [userId]),
+          collection(db, "profiles"),
+          where("userId", "!=", userId),
           orderBy("userId")
         );
+
         const querySnapshot = await getDocs(q);
 
         const userMatchProfiles = querySnapshot.docs.map((doc) => {
@@ -144,7 +140,12 @@ export const useUserStore = create<UserStore>()(
       clear: () => {
         const { unsubProfile } = get();
         if (unsubProfile) unsubProfile();
-        set({ authUser: null, profile: null, unsubProfile: null });
+        set({
+          authUser: null,
+          profile: null,
+          unsubProfile: null,
+          matchProfiles: null,
+        });
       },
     }),
     {
@@ -153,9 +154,6 @@ export const useUserStore = create<UserStore>()(
       partialize: (state) => ({
         profile: state.profile,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHydrated(true);
-      },
     }
   )
 );
