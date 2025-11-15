@@ -4,8 +4,18 @@ import type { UserProfile } from "@/lib/actions";
 import { setToken } from "@/lib/api/set-token";
 import type { User } from "firebase/auth";
 import type { FirestoreError } from "firebase/firestore";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { create } from "zustand";
+import AvatarImage from "@/public/default-avatar.png";
+import { Profile } from "@/models/profiles";
 
 interface UserStore {
   authUser: User | null;
@@ -14,13 +24,61 @@ interface UserStore {
   init: () => () => void; // ✅ explicitly return an unsubscribe function
   clear: () => void;
   unsubProfile: (() => void) | null;
+  matchProfiles: Profile[] | null;
+  matchProfilesLoading: LoadingState;
+  getMatchProfiles: (userId: string) => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
   authUser: null,
   profile: null,
-  loading: LOADING_STATE.PENDING,
+  loading: LOADING_STATE.IDLE,
   unsubProfile: null,
+
+  matchProfiles: null,
+  matchProfilesLoading: LOADING_STATE.IDLE,
+
+  getMatchProfiles: async (userId: string) => {
+    const { matchProfiles } = get();
+
+    if (matchProfiles) return;
+
+    set({ matchProfilesLoading: LOADING_STATE.PENDING });
+
+    const userMatchProfilesCollection = collection(db, "profiles");
+    const q = query(
+      userMatchProfilesCollection,
+      where("userId", "not-in", [userId]),
+      orderBy("userId")
+    );
+    const querySnapshot = await getDocs(q);
+
+    const userMatchProfiles = querySnapshot.docs.map((doc) => {
+      const { location: _location, ...profile } = doc.data() as UserProfile;
+      return profile;
+    });
+
+    const processedProfiles: Profile[] = userMatchProfiles.map((profile) => ({
+      id: profile.userId,
+      username: profile.username,
+      image: profile.images.find((i) => i.downloadUrl) ?? {
+        downloadUrl: AvatarImage.src,
+        filePath: "",
+        imageRefId: "",
+      },
+      age: profile.age,
+      bio: profile.bio || "",
+      dream: profile.dream,
+      orientation: profile.orientation,
+      interests: profile.interests,
+      gender: profile.gender,
+    }));
+
+    set({
+      matchProfiles: processedProfiles,
+      matchProfilesLoading: LOADING_STATE.RESOLVED,
+    });
+  },
 
   init: () => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {

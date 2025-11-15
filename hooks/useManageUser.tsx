@@ -25,7 +25,7 @@ export function useManageUser(userId?: string) {
 
   const { notify } = useNotificationContext();
 
-  const getProfileDoc = async (userId: string) => {
+  const getProfileDoc = (userId: string) => {
     const userProfileDoc = doc(db, "profiles", userId);
 
     return userProfileDoc;
@@ -37,7 +37,7 @@ export function useManageUser(userId?: string) {
   ) => {
     if (!userId) return;
 
-    const profileDoc = await getProfileDoc(userId);
+    const profileDoc = getProfileDoc(userId);
 
     await updateDoc(profileDoc, {
       [field]: value,
@@ -60,7 +60,7 @@ export function useManageUser(userId?: string) {
       const res = await uploadImage(file, imageRefId, userId);
       if (!res) return;
 
-      const profileDoc = await getProfileDoc(userId);
+      const profileDoc = getProfileDoc(userId);
 
       const currentDoc = await getDoc(profileDoc);
       const currentImages = currentDoc.data()?.images || [];
@@ -101,7 +101,7 @@ export function useManageUser(userId?: string) {
   const handleDeleteImage = async (filePath: string) => {
     if (!userId) return;
 
-    const profileDoc = await getProfileDoc(userId);
+    const profileDoc = getProfileDoc(userId);
 
     const currentDoc = await getDoc(profileDoc);
     const currentImages = currentDoc.data()?.images || [];
