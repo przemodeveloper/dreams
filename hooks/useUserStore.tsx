@@ -14,6 +14,7 @@ import {
   query,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { create } from "zustand";
 import AvatarImage from "@/public/default-avatar.png";
@@ -64,10 +65,26 @@ export const useUserStore = create<UserStore>()(
         if (!profile?.userId) return;
         if ((profile?.acceptedProfiles || []).includes(userId)) return;
 
+        const batch = writeBatch(db);
+
+        const profileRef = doc(db, "profiles", profile.userId);
+
+        batch.update(profileRef, {
+          acceptedProfiles: arrayUnion(userId),
+        });
+
+        const userRef = doc(db, "profiles", userId);
+        batch.update(userRef, {
+          likesReceived: arrayUnion(profile.userId),
+        });
+
+        if ((profile?.likesReceived || []).includes(userId)) {
+          batch.update(profileRef, { matches: arrayUnion(userId) });
+          batch.update(userRef, { matches: arrayUnion(profile.userId) });
+        }
+
         try {
-          await updateDoc(doc(db, "profiles", profile.userId), {
-            acceptedProfiles: arrayUnion(userId),
-          });
+          await batch.commit();
         } catch (err) {
           console.error("Failed to accept user:", err);
         }
@@ -139,7 +156,6 @@ export const useUserStore = create<UserStore>()(
             const token = await authUser.getIdToken(true);
             await setToken(token);
 
-            // Subscribe to Firestore profile
             const userProfileDoc = doc(db, "profiles", authUser.uid);
 
             const unsubProfile = onSnapshot(
@@ -162,7 +178,6 @@ export const useUserStore = create<UserStore>()(
               }
             );
 
-            // Unsub both on logout
             set({ unsubProfile });
           } else {
             const prevUnsubProfile = get().unsubProfile;

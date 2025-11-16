@@ -72,6 +72,8 @@ export type UserProfile = z.infer<typeof datingProfileSchema> & {
   images: ImageObject[];
   acceptedProfiles: string[];
   rejectedProfiles: string[];
+  likesReceived: string[];
+  matches: string[];
 };
 
 const registerSchema = z
