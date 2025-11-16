@@ -5,12 +5,14 @@ import { setToken } from "@/lib/api/set-token";
 import type { User } from "firebase/auth";
 import type { FirestoreError } from "firebase/firestore";
 import {
+  arrayUnion,
   collection,
   doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { create } from "zustand";
@@ -22,12 +24,14 @@ interface UserStore {
   authUser: User | null;
   profile: UserProfile | null;
   loading: LoadingState;
-  init: () => () => void; // ✅ explicitly return an unsubscribe function
+  init: () => () => void;
   clear: () => void;
   unsubProfile: (() => void) | null;
   matchProfiles: Profile[] | null;
   matchProfilesLoading: LoadingState;
   getMatchProfiles: (userId: string) => Promise<void>;
+  setAccept: (userId: string) => Promise<void>;
+  setReject: (userId: string) => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -41,48 +45,87 @@ export const useUserStore = create<UserStore>()(
       matchProfiles: null,
       matchProfilesLoading: LOADING_STATE.IDLE,
 
-      getMatchProfiles: async (userId: string) => {
-        const { matchProfiles } = get();
+      setReject: async (userId: string) => {
+        const { profile } = get();
+        if (!profile?.userId) return;
+        if ((profile?.rejectedProfiles || []).includes(userId)) return;
 
-        if (matchProfiles?.length) return;
+        try {
+          await updateDoc(doc(db, "profiles", profile.userId), {
+            rejectedProfiles: arrayUnion(userId),
+          });
+        } catch (err) {
+          console.error("Failed to reject user:", err);
+        }
+      },
+
+      setAccept: async (userId: string) => {
+        const { profile } = get();
+        if (!profile?.userId) return;
+        if ((profile?.acceptedProfiles || []).includes(userId)) return;
+
+        try {
+          await updateDoc(doc(db, "profiles", profile.userId), {
+            acceptedProfiles: arrayUnion(userId),
+          });
+        } catch (err) {
+          console.error("Failed to accept user:", err);
+        }
+      },
+
+      getMatchProfiles: async (userId: string) => {
+        const { profile } = get();
 
         set({ matchProfilesLoading: LOADING_STATE.PENDING });
 
-        const q = query(
-          collection(db, "profiles"),
-          where("userId", "!=", userId),
-          orderBy("userId")
-        );
+        try {
+          const q = query(
+            collection(db, "profiles"),
+            where("userId", "!=", userId),
+            orderBy("userId")
+          );
 
-        const querySnapshot = await getDocs(q);
+          const querySnapshot = await getDocs(q);
 
-        const userMatchProfiles = querySnapshot.docs.map((doc) => {
-          const { location: _location, ...profile } = doc.data() as UserProfile;
-          return profile;
-        });
+          const excludedProfiles = new Set([
+            userId,
+            ...(profile?.acceptedProfiles || []),
+            ...(profile?.rejectedProfiles || []),
+          ]);
 
-        const processedProfiles: Profile[] = userMatchProfiles.map(
-          (profile) => ({
-            id: profile.userId,
-            username: profile.username,
-            image: profile.images.find((i) => i.downloadUrl) ?? {
-              downloadUrl: AvatarImage.src,
-              filePath: "",
-              imageRefId: "",
-            },
-            age: profile.age,
-            bio: profile.bio || "",
-            dream: profile.dream,
-            orientation: profile.orientation,
-            interests: profile.interests,
-            gender: profile.gender,
-          })
-        );
+          const userMatchProfiles = querySnapshot.docs
+            .map((doc) => doc.data() as UserProfile)
+            .filter((profile) => !excludedProfiles.has(profile.userId));
 
-        set({
-          matchProfiles: processedProfiles,
-          matchProfilesLoading: LOADING_STATE.RESOLVED,
-        });
+          const processedProfiles: Profile[] = userMatchProfiles.map(
+            (profile) => ({
+              id: profile.userId,
+              username: profile.username,
+              image: profile.images.find((i) => i.downloadUrl) ?? {
+                downloadUrl: AvatarImage.src,
+                filePath: "",
+                imageRefId: "",
+              },
+              age: profile.age,
+              bio: profile.bio || "",
+              dream: profile.dream,
+              orientation: profile.orientation,
+              interests: profile.interests,
+              gender: profile.gender,
+            })
+          );
+
+          set({
+            matchProfiles: processedProfiles,
+            matchProfilesLoading: LOADING_STATE.RESOLVED,
+          });
+        } catch (error) {
+          console.error("Error getting match profiles:", error);
+          set({
+            matchProfiles: [],
+            matchProfilesLoading: LOADING_STATE.REJECTED,
+          });
+        }
       },
 
       init: () => {

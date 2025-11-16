@@ -3,26 +3,26 @@ import Card from "./Card";
 import { useState } from "react";
 
 interface SwipeCardsProps {
-	profiles: Profile[];
+  profiles: Profile[];
 }
 
 const SwipeCards = ({ profiles }: SwipeCardsProps) => {
-	const [cards, setCards] = useState<Profile[]>(profiles);
+  const [cards, setCards] = useState<Profile[]>(profiles);
 
-	return (
-		<div className="grid min-h-screen place-items-center">
-			{cards.map((profile, index) => (
-				<Card
-					key={profile.id}
-					profile={profile}
-					setCards={setCards}
-					cards={cards}
-					index={index}
-					zIndex={cards.length - index} // top card gets highest z-index
-				/>
-			))}
-		</div>
-	);
+  return (
+    <div className="grid min-h-screen place-items-center">
+      {cards.map((profile, index) => (
+        <Card
+          key={profile.id}
+          profile={profile}
+          setCards={setCards}
+          cards={cards}
+          index={index}
+          zIndex={cards.length - index} // top card gets highest z-index
+        />
+      ))}
+    </div>
+  );
 };
 
 export default SwipeCards;

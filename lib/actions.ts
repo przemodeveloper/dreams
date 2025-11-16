@@ -70,6 +70,8 @@ const datingProfileSchema = z.object({
 export type UserProfile = z.infer<typeof datingProfileSchema> & {
   userId: string;
   images: ImageObject[];
+  acceptedProfiles: string[];
+  rejectedProfiles: string[];
 };
 
 const registerSchema = z
