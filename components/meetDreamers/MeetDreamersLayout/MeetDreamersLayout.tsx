@@ -22,9 +22,21 @@ export default function MeetDreamersLayout() {
           <AppLoader />
         </div>
       )}
+
+      {matchProfilesLoading === LOADING_STATE.REJECTED && (
+        <div className="flex h-screen items-center justify-center">
+          <h1 className="text-2xl text-center font-secondary text-red-600">
+            Something went wrong while loading dreamers.
+            <br />
+            Please try again later.
+          </h1>
+        </div>
+      )}
+
       {matchProfiles && matchProfiles.length > 0 && (
         <SwipeCards profiles={matchProfiles} />
       )}
+
       {matchProfilesLoading === LOADING_STATE.RESOLVED &&
         matchProfiles &&
         matchProfiles.length === 0 && (
