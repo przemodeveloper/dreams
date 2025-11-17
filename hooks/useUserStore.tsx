@@ -47,9 +47,15 @@ export const useUserStore = create<UserStore>()(
       matchProfilesLoading: LOADING_STATE.IDLE,
 
       setReject: async (userId: string) => {
-        const { profile } = get();
+        const { profile, matchProfiles } = get();
         if (!profile?.userId) return;
         if ((profile?.rejectedProfiles || []).includes(userId)) return;
+
+        set({
+          matchProfiles: matchProfiles?.filter(
+            (profile) => profile.id !== userId
+          ),
+        });
 
         try {
           await updateDoc(doc(db, "profiles", profile.userId), {
@@ -61,9 +67,15 @@ export const useUserStore = create<UserStore>()(
       },
 
       setAccept: async (userId: string) => {
-        const { profile } = get();
+        const { profile, matchProfiles } = get();
         if (!profile?.userId) return;
         if ((profile?.acceptedProfiles || []).includes(userId)) return;
+
+        set({
+          matchProfiles: matchProfiles?.filter(
+            (profile) => profile.id !== userId
+          ),
+        });
 
         const batch = writeBatch(db);
 
@@ -91,7 +103,9 @@ export const useUserStore = create<UserStore>()(
       },
 
       getMatchProfiles: async (userId: string) => {
-        const { profile } = get();
+        const { profile, matchProfiles } = get();
+
+        if (matchProfiles?.length) return;
 
         set({ matchProfilesLoading: LOADING_STATE.PENDING });
 
