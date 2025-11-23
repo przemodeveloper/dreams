@@ -1,27 +1,28 @@
 .footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	padding: 20px;
-	background-image: radial-gradient(rgba(0, 0, 0, 0) 1px, white 1px);
-	background-size: 4px 4px;
-	backdrop-filter: blur(3px);
-	-webkit-backdrop-filter: blur(3px);
-	-moz-backdrop-filter: blur(3px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  background-image: radial-gradient(rgba(0, 0, 0, 0) 1px, white 1px);
+  background-size: 4px 4px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  -moz-backdrop-filter: blur(3px);
+  z-index: 100;
 }
 
 .footer::before {
-	display: block;
-	content: "";
-	position: absolute;
-	top: -1px;
-	left: 0;
-	right: 0;
-	height: 1px;
-	background: white;
-	opacity: 0.2;
+  display: block;
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: white;
+  opacity: 0.2;
 }

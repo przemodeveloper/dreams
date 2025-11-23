@@ -9,6 +9,7 @@ import {
   collection,
   doc,
   getDocs,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -28,11 +29,16 @@ interface UserStore {
   init: () => () => void;
   clear: () => void;
   unsubProfile: (() => void) | null;
-  matchProfiles: Profile[] | null;
-  matchProfilesLoading: LoadingState;
-  getMatchProfiles: (userId: string) => Promise<void>;
+  // Potential matches
+  profiles: Profile[] | null;
+  profilesLoading: LoadingState;
+  getProfiles: (userId: string) => Promise<void>;
   setAccept: (userId: string) => Promise<void>;
   setReject: (userId: string) => Promise<void>;
+  // Actual matches
+  matchedProfiles: Profile[] | null;
+  matchedProfilesLoading: LoadingState;
+  getMatchedProfiles: () => Promise<void>;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -43,23 +49,25 @@ export const useUserStore = create<UserStore>()(
       loading: LOADING_STATE.IDLE,
       unsubProfile: null,
 
-      matchProfiles: null,
-      matchProfilesLoading: LOADING_STATE.IDLE,
+      // Potential matches
+      profiles: null,
+      profilesLoading: LOADING_STATE.IDLE,
+      // Actual matches
+      matchedProfiles: null,
+      matchedProfilesLoading: LOADING_STATE.IDLE,
 
       setReject: async (userId: string) => {
-        const { profile, matchProfiles } = get();
+        const { profile, profiles } = get();
         if (!profile?.userId) return;
         if ((profile?.rejectedProfiles || []).includes(userId)) return;
-
-        set({
-          matchProfiles: matchProfiles?.filter(
-            (profile) => profile.id !== userId
-          ),
-        });
 
         try {
           await updateDoc(doc(db, "profiles", profile.userId), {
             rejectedProfiles: arrayUnion(userId),
+          });
+
+          set({
+            profiles: profiles?.filter((profile) => profile.id !== userId),
           });
         } catch (err) {
           console.error("Failed to reject user:", err);
@@ -67,15 +75,9 @@ export const useUserStore = create<UserStore>()(
       },
 
       setAccept: async (userId: string) => {
-        const { profile, matchProfiles } = get();
+        const { profile, profiles, getMatchedProfiles } = get();
         if (!profile?.userId) return;
         if ((profile?.acceptedProfiles || []).includes(userId)) return;
-
-        set({
-          matchProfiles: matchProfiles?.filter(
-            (profile) => profile.id !== userId
-          ),
-        });
 
         const batch = writeBatch(db);
 
@@ -90,24 +92,30 @@ export const useUserStore = create<UserStore>()(
           likesReceived: arrayUnion(profile.userId),
         });
 
-        if ((profile?.likesReceived || []).includes(userId)) {
+        const isMatch = (profile?.likesReceived || []).includes(userId);
+
+        if (isMatch) {
           batch.update(profileRef, { matches: arrayUnion(userId) });
           batch.update(userRef, { matches: arrayUnion(profile.userId) });
         }
 
         try {
           await batch.commit();
+          set({
+            profiles: profiles?.filter((profile) => profile.id !== userId),
+          });
+          if (isMatch) {
+            await getMatchedProfiles();
+          }
         } catch (err) {
           console.error("Failed to accept user:", err);
         }
       },
 
-      getMatchProfiles: async (userId: string) => {
-        const { profile, matchProfiles } = get();
+      getProfiles: async (userId: string) => {
+        const { profile } = get();
 
-        if (matchProfiles?.length) return;
-
-        set({ matchProfilesLoading: LOADING_STATE.PENDING });
+        set({ profilesLoading: LOADING_STATE.PENDING });
 
         try {
           const q = query(
@@ -147,14 +155,78 @@ export const useUserStore = create<UserStore>()(
           );
 
           set({
-            matchProfiles: processedProfiles,
-            matchProfilesLoading: LOADING_STATE.RESOLVED,
+            profiles: processedProfiles,
+            profilesLoading: LOADING_STATE.RESOLVED,
           });
         } catch (error) {
           console.error("Error getting match profiles:", error);
           set({
-            matchProfiles: [],
-            matchProfilesLoading: LOADING_STATE.REJECTED,
+            profiles: [],
+            profilesLoading: LOADING_STATE.REJECTED,
+          });
+        }
+      },
+
+      getMatchedProfiles: async () => {
+        const { profile } = get();
+
+        if (!profile?.userId) {
+          set({
+            matchedProfiles: [],
+            matchedProfilesLoading: LOADING_STATE.RESOLVED,
+          });
+          return;
+        }
+
+        set({ matchedProfilesLoading: LOADING_STATE.PENDING });
+
+        try {
+          const { matches } = profile;
+
+          if (!matches || matches.length === 0) {
+            set({
+              matchedProfiles: [],
+              matchedProfilesLoading: LOADING_STATE.RESOLVED,
+            });
+            return;
+          }
+
+          const profilePromises = matches.map((matchedUserId) =>
+            getDoc(doc(db, "profiles", matchedUserId))
+          );
+
+          const profileSnapshots = await Promise.all(profilePromises);
+
+          const processedProfiles: Profile[] = profileSnapshots
+            .filter((snapshot) => snapshot.exists())
+            .map((snapshot) => {
+              const profileData = snapshot.data() as UserProfile;
+              return {
+                id: profileData.userId,
+                username: profileData.username,
+                image: profileData.images.find((i) => i.downloadUrl) ?? {
+                  downloadUrl: AvatarImage.src,
+                  filePath: "",
+                  imageRefId: "",
+                },
+                age: profileData.age,
+                bio: profileData.bio || "",
+                dream: profileData.dream,
+                orientation: profileData.orientation,
+                interests: profileData.interests,
+                gender: profileData.gender,
+              };
+            });
+
+          set({
+            matchedProfiles: processedProfiles,
+            matchedProfilesLoading: LOADING_STATE.RESOLVED,
+          });
+        } catch (error) {
+          console.error("Error getting matched profiles:", error);
+          set({
+            matchedProfiles: [],
+            matchedProfilesLoading: LOADING_STATE.REJECTED,
           });
         }
       },
@@ -200,8 +272,12 @@ export const useUserStore = create<UserStore>()(
             set({
               authUser: null,
               profile: null,
-              loading: LOADING_STATE.RESOLVED,
+              loading: LOADING_STATE.IDLE,
               unsubProfile: null,
+              profiles: null,
+              profilesLoading: LOADING_STATE.IDLE,
+              matchedProfiles: null,
+              matchedProfilesLoading: LOADING_STATE.IDLE,
             });
           }
         });
@@ -216,7 +292,11 @@ export const useUserStore = create<UserStore>()(
           authUser: null,
           profile: null,
           unsubProfile: null,
-          matchProfiles: null,
+          loading: LOADING_STATE.IDLE,
+          profiles: null,
+          profilesLoading: LOADING_STATE.IDLE,
+          matchedProfiles: null,
+          matchedProfilesLoading: LOADING_STATE.IDLE,
         });
       },
     }),

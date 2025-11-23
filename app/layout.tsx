@@ -1,8 +1,8 @@
 import "./globals.css";
 import { Roboto } from "next/font/google";
 import UserProvider from "@/providers/UserProvider";
-import Footer from "@/components/layout/Footer/Footer";
 import type { Metadata } from "next";
+import MatchesDrawer from "@/components/matchesDrawer/MatchesDrawer";
 
 export const metadata: Metadata = {
   title: "Dreams",
@@ -62,10 +62,10 @@ export default function RootLayout({
         />
       </head>
       <body className={roboto.className}>
+        <MatchesDrawer />
         <div className="pb-[64px]">
           <UserProvider>{children}</UserProvider>
         </div>
-        <Footer />
       </body>
     </html>
   );

@@ -7,23 +7,24 @@ import { LOADING_STATE } from "@/constants/user-profile";
 import AppLoader from "@/components/appLoader/AppLoader";
 
 export default function MeetDreamersLayout() {
-  const { profile, matchProfiles, getMatchProfiles, matchProfilesLoading } =
-    useUserStore((state) => state);
+  const { profile, profiles, getProfiles, profilesLoading } = useUserStore(
+    (state) => state
+  );
 
   useEffect(() => {
     if (!profile?.userId) return;
-    getMatchProfiles(profile.userId);
-  }, [profile?.userId, getMatchProfiles]);
+    getProfiles(profile.userId);
+  }, [profile?.userId, getProfiles]);
 
   return (
     <div className="container mx-auto">
-      {matchProfilesLoading === LOADING_STATE.PENDING && (
+      {profilesLoading === LOADING_STATE.PENDING && (
         <div className="flex h-screen items-center justify-center">
           <AppLoader />
         </div>
       )}
 
-      {matchProfilesLoading === LOADING_STATE.REJECTED && (
+      {profilesLoading === LOADING_STATE.REJECTED && (
         <div className="flex h-screen items-center justify-center">
           <h1 className="text-2xl text-center font-secondary text-red-600">
             Something went wrong while loading dreamers.
@@ -33,13 +34,11 @@ export default function MeetDreamersLayout() {
         </div>
       )}
 
-      {matchProfiles && matchProfiles.length > 0 && (
-        <SwipeCards profiles={matchProfiles} />
-      )}
+      {profiles && profiles.length > 0 && <SwipeCards profiles={profiles} />}
 
-      {matchProfilesLoading === LOADING_STATE.RESOLVED &&
-        matchProfiles &&
-        matchProfiles.length === 0 && (
+      {profilesLoading === LOADING_STATE.RESOLVED &&
+        profiles &&
+        profiles.length === 0 && (
           <div className="flex h-screen items-center justify-center">
             <h1 className="text-2xl text-center font-secondary text-emerald-600">
               No dreamers? Don't worry, they are signing up every day!
