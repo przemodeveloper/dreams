@@ -8,25 +8,25 @@ import { useUserStore } from "@/hooks/useUserStore";
 import { useEffect } from "react";
 
 export default function UserProvider({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const { init, loading, authUser } = useUserStore((state) => state);
+	const { init, loading, authUser } = useUserStore((state) => state);
 
-  useEffect(() => {
-    const unsub = init();
-    return () => unsub?.();
-  }, [init]);
+	useEffect(() => {
+		const unsub = init();
+		return () => unsub?.();
+	}, [init]);
 
-  return (
-    <NotificationContextProvider>
-      <Navbar />
-      {loading === LOADING_STATE.PENDING && !authUser ? (
-        <LoadingScreen />
-      ) : (
-        children
-      )}
-    </NotificationContextProvider>
-  );
+	return (
+		<NotificationContextProvider>
+			<Navbar />
+			{loading === LOADING_STATE.PENDING && !authUser ? (
+				<LoadingScreen />
+			) : (
+				children
+			)}
+		</NotificationContextProvider>
+	);
 }

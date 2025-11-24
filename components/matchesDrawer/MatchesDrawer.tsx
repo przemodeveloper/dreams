@@ -16,7 +16,7 @@ const MatchesDrawer = () => {
 		getMatchedProfiles,
 		matchedProfiles,
 		matchedProfilesLoading,
-	} = useUserStore();
+	} = useUserStore((state) => state);
 
 	const handleClose = () => setIsOpen((prev) => !prev);
 
