@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { LOADING_STATE } from "@/constants/user-profile";
 import AppLoader from "../appLoader/AppLoader";
+import Link from "next/link";
+import { ROUTES } from "@/routes/routes";
 
 const MatchesDrawer = () => {
 	const [isOpen, setIsOpen] = useState(true);
@@ -41,19 +43,23 @@ const MatchesDrawer = () => {
 				)}
 				{matchedProfiles?.map((item) => (
 					<li key={item.username} className="text-sm flex items-center gap-2">
-						<div className="rounded-full overflow-hidden w-8 h-8">
-							<Image
-								src={item.image.downloadUrl}
-								alt={item.username}
-								width={30}
-								height={30}
-								className="object-cover w-full h-full"
-							/>
-						</div>
+						<Link href={ROUTES.YOUR_DREAMERS.replace(":slug", item.id)}>
+							<div className="flex items-center gap-2">
+								<div className="rounded-full overflow-hidden w-8 h-8">
+									<Image
+										src={item.image.downloadUrl}
+										alt={item.username}
+										width={30}
+										height={30}
+										className="object-cover w-full h-full"
+									/>
+								</div>
 
-						<span className="text-sm font-medium text-neutral-500">
-							{item.username}
-						</span>
+								<span className="text-sm font-medium text-neutral-500">
+									{item.username}
+								</span>
+							</div>
+						</Link>
 					</li>
 				))}
 			</ul>

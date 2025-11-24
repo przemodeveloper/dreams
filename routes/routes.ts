@@ -6,4 +6,5 @@ export const ROUTES = {
 	REGISTER: "/register",
 	VERIFY_EMAIL: "/verify-email",
 	MEET_DREAMERS: "/meet-dreamers",
+	YOUR_DREAMERS: "/your-dreamers/:slug",
 };
