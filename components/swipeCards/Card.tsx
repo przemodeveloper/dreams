@@ -8,6 +8,7 @@ import { motion, useMotionValue, useTransform } from "motion/react";
 import Image from "next/image";
 import type { Dispatch, SetStateAction } from "react";
 import { useUserStore } from "@/hooks/useUserStore";
+import { useNotificationContext } from "@/context/notification-context";
 
 interface CardProps {
 	profile: Profile;
@@ -20,7 +21,7 @@ interface CardProps {
 const Card = ({ profile, setCards, index, zIndex }: CardProps) => {
 	const x = useMotionValue(0);
 	const { setAccept, setReject } = useUserStore((state) => state);
-
+	const { notify } = useNotificationContext();
 	const rotateRaw = useTransform(x, [-150, 150], [-18, 18]);
 	const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]);
 
@@ -34,9 +35,9 @@ const Card = ({ profile, setCards, index, zIndex }: CardProps) => {
 	const handleDragEnd = () => {
 		if (Math.abs(x.get()) > 100) {
 			if (x.get() > 0) {
-				setAccept(profile.id);
+				setAccept(profile.id, notify);
 			} else {
-				setReject(profile.id);
+				setReject(profile.id, notify);
 			}
 			setCards((prev) => prev.filter((card) => card.id !== profile.id));
 		}

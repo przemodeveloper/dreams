@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 import type { ReactNode } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -12,7 +12,7 @@ export const NotificationContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
-	const notify = (message: string) => toast(message);
+	const notify = useCallback((message: string) => toast(message), []);
 
 	return (
 		<NotificationContext.Provider value={{ notify }}>

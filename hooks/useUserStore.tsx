@@ -33,8 +33,14 @@ interface UserStore {
 	profiles: Profile[] | null;
 	profilesLoading: LoadingState;
 	getProfiles: (userId: string) => Promise<void>;
-	setAccept: (userId: string) => Promise<void>;
-	setReject: (userId: string) => Promise<void>;
+	setAccept: (
+		userId: string,
+		notify: (message: string) => void
+	) => Promise<void>;
+	setReject: (
+		userId: string,
+		notify: (message: string) => void
+	) => Promise<void>;
 	// Actual matches
 	matchedProfiles: Profile[] | null;
 	matchedProfilesLoading: LoadingState;
@@ -56,7 +62,7 @@ export const useUserStore = create<UserStore>()(
 			matchedProfiles: null,
 			matchedProfilesLoading: LOADING_STATE.IDLE,
 
-			setReject: async (userId: string) => {
+			setReject: async (userId: string, notify: (message: string) => void) => {
 				const { profile, profiles } = get();
 				if (!profile?.userId) return;
 				if ((profile?.rejectedProfiles || []).includes(userId)) return;
@@ -70,11 +76,11 @@ export const useUserStore = create<UserStore>()(
 						profiles: profiles?.filter((profile) => profile.id !== userId),
 					});
 				} catch (err) {
-					console.error("Failed to reject user:", err);
+					notify(`Failed to reject user: ${err}`);
 				}
 			},
 
-			setAccept: async (userId: string) => {
+			setAccept: async (userId: string, notify: (message: string) => void) => {
 				const { profile, profiles, getMatchedProfiles } = get();
 				if (!profile?.userId) return;
 				if ((profile?.acceptedProfiles || []).includes(userId)) return;
@@ -106,9 +112,10 @@ export const useUserStore = create<UserStore>()(
 					});
 					if (isMatch) {
 						await getMatchedProfiles(userId);
+						notify(`You have a match! Check your matches drawer to see them.`);
 					}
 				} catch (err) {
-					console.error("Failed to accept user:", err);
+					notify(`Failed to accept user: ${err}`);
 				}
 			},
 
