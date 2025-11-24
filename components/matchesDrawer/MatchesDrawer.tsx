@@ -22,7 +22,6 @@ const MatchesDrawer = () => {
 
   return (
     <>
-      {/* Drawer */}
       <aside
         className={clsx(
           "fixed top-[60px] left-0 h-screen w-[300px] bg-white p-2 shadow-lg border-r border-emerald-600 z-40",
