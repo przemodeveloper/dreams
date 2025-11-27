@@ -1,9 +1,10 @@
-import YourDreamersLayout from "@/components/yourDreamers/YourDreamersLayout";
+import YourDreamersLayout from "@/components/your-dreamers-layout/YourDreamersLayout";
 
-export default function YourDreamersPage({
+export default async function YourDreamersPage({
 	params,
 }: {
-	params: { slug: string };
+	params: Promise<{ slug: string }>;
 }) {
-	return <YourDreamersLayout slug={params.slug} />;
+	const { slug } = await params;
+	return <YourDreamersLayout slug={slug} />;
 }

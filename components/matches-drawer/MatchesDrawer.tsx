@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { LOADING_STATE } from "@/constants/user-profile";
-import AppLoader from "../appLoader/AppLoader";
+import AppLoader from "../app-loader/AppLoader";
 import Link from "next/link";
 import { ROUTES } from "@/routes/routes";
 

@@ -1,4 +1,4 @@
-import AppLoader from "@/components/appLoader/AppLoader";
+import AppLoader from "@/components/app-loader/AppLoader";
 
 export default function LoadingScreen() {
 	return (

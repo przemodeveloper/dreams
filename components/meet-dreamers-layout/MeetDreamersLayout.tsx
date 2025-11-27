@@ -2,9 +2,9 @@
 
 import { useUserStore } from "@/hooks/useUserStore";
 import { useEffect } from "react";
-import SwipeCards from "@/components/swipeCards/SwipeCards";
+import SwipeCards from "@/components/swipe-cards/SwipeCards";
 import { LOADING_STATE } from "@/constants/user-profile";
-import AppLoader from "@/components/appLoader/AppLoader";
+import AppLoader from "@/components/app-loader/AppLoader";
 
 export default function MeetDreamersLayout() {
 	const { profile, profiles, getProfiles, profilesLoading } = useUserStore(

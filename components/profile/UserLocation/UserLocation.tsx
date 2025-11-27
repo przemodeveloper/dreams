@@ -1,4 +1,4 @@
-import AppLoader from "@/components/appLoader/AppLoader";
+import AppLoader from "@/components/app-loader/AppLoader";
 
 interface UserLocationProps {
 	address: string | null;
